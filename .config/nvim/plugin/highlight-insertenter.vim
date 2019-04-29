@@ -3,5 +3,8 @@
 "
 
 highlight CursorLine ctermbg=235
-au InsertEnter * set cursorline
-au InsertLeave * set nocursorline
+augroup cassava_highlight_insertenter
+  autocmd!
+  au InsertEnter * set cursorline
+  au InsertLeave * set nocursorline
+augroup END

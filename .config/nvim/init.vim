@@ -144,8 +144,8 @@ Plug 'junegunn/gv.vim'
 " If you need to align, you will never need to look further:
 "   ga<motion><character>
 Plug 'junegunn/vim-easy-align'                                                 " [*]
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
+xnoremap ga <Plug>(EasyAlign)
+nnoremap ga <Plug>(EasyAlign)
 
 " Git time metrics lets you track how much time you spend in a git project.
 " This requires that the executable gtm is installed.
@@ -210,7 +210,7 @@ if executable('ctags')
     " If you have ctags installed, tagbar can show you the stuff you have in
     " your file, use F8 to toggle it open and closed.
     Plug 'majutsushi/tagbar'
-    nmap <leader>t :TagbarToggle<cr>
+    nnoremap <leader>t :TagbarToggle<cr>
 endif
 
 " Plug 'vimwiki/vimwiki' {{{
@@ -276,7 +276,7 @@ endif
 if executable('cmake')
     Plug 'vhdirk/vim-cmake'
 
-    nmap <leader>m :CMake<cr>:Make<cr>
+    nnoremap <leader>m :CMake<cr>:Make<cr>
 endif
 
 " Automatically format C++ files
@@ -331,6 +331,7 @@ Plug 'jacoborus/tender.vim'
 Plug 'jnurmine/zenburn'
 Plug 'nanotech/jellybeans.vim'
 Plug 'tomasr/molokai'
+Plug 'sjl/badwolf'
 
 Plug 'ayu-theme/ayu-vim'
 let g:ayucolor='light'
@@ -360,3 +361,7 @@ nnoremap <leader>h :vert h<space>
 " Don't lose selection when shifting sideways
 xnoremap < <gv
 xnoremap > >gv
+
+" Allow me to quickly edit and source my Vimrc.
+nnoremap <leader>ve :vsplit $MYVIMRC<cr>
+nnoremap <leader>vs :source $MYVIMRC<cr>

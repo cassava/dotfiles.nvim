@@ -4,7 +4,7 @@
 " Here, we specify for which file types we do not want this behavior.
 "
 
-augroup plaintext
+augroup cassava_nocindent
   autocmd!
   au FileType text      setlocal nocindent
   au FileType gitcommit setlocal nocindent

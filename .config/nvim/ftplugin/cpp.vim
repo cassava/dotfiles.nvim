@@ -6,5 +6,8 @@ let g:load_doxygen_syntax=1
 set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,bO:///,O://
 
 " Quickly jump to header or source
-autocmd BufLeave *.{c,cc,cpp} mark C
-autocmd BufLeave *.h          mark H
+augroup cassava_ft_cpp
+  autocmd!
+  autocmd BufLeave *.{c,cc,cpp} mark C
+  autocmd BufLeave *.h          mark H
+augroup END

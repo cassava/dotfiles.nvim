@@ -10,20 +10,12 @@ setl nolist
 " Use markers {{{ and }}} to control folding in Go.
 setl fdm=marker
 
-" Map S-k to an equivalent command
-nmap <S-k> <Plug>(go-doc-vertical)
-nmap <Leader>gi <Plug>(go-info)
-nmap <Leader>gd <Plug>(go-def-vertical)
+let g:go_auto_type_info = 0
 
-" Function jumping
-noremap <buffer> <silent> ]] :<c-u>call GoJumpToDef( v:count1, '' )<CR>
-noremap <buffer> <silent> [[ :<c-u>call GoJumpToDef( v:count1, 'b' )<CR>
-function! GoJumpToDef( cnt, dir )
-    let i = 0
-    let pat = '^\(func\|type\)'
-    let flags = 'W' . a:dir
-    while i < a:cnt && search( pat, flags ) > 0
-        let i = i+1
-    endwhile
-    let @/ = pat
-endfunction
+" Map S-k to an equivalent command
+nnoremap <buffer> <S-k> <Plug>(go-doc-vertical)
+nnoremap <buffer> <Leader>gi <Plug>(go-info)
+nnoremap <buffer> <Leader>gd <Plug>(go-def-vertical)
+
+" Set up omnicompletion
+call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })

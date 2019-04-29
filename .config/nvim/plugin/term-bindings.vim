@@ -6,7 +6,7 @@ if $TMUX == ""
     tnoremap <c-space><space> <c-\><c-n>
 endif
 
-augroup terms
+augroup cassava_term_bindings
     autocmd!
     au TermOpen * setlocal nonumber
 augroup END
