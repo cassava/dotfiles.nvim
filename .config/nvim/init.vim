@@ -346,7 +346,7 @@ Plug 'peter-edge/vim-capnp'
 Plug 'sheerun/vim-polyglot'
 let g:polyglot_disabled = ['go', 'rust']
 
-" Colorschemes:
+" Colorschemes: {{{
 Plug 'altercation/vim-colors-solarized'
 Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'endel/vim-github-colorscheme'
@@ -364,6 +364,16 @@ let g:gruvbox_italic=1
 let g:gruvbox_contrast_dark='hard'
 let g:gruvbox_contrast_light='hard'
 let g:gruvbox_invert_selection=0
+
+function! ToggleBackground()
+  if &background ==? 'dark'
+    set background=light
+  else
+    set background=dark
+  endif
+endfunction
+nnoremap <silent> <leader>s :call ToggleBackground()<cr>
+" }}}
 
 call plug#end()
 
