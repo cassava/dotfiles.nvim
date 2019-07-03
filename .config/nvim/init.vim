@@ -398,3 +398,6 @@ xnoremap > >gv
 " Allow me to quickly edit and source my Vimrc.
 nnoremap <leader>ve :vsplit $MYVIMRC<cr>
 nnoremap <leader>vs :source $MYVIMRC<cr>
+
+" Quickly format current paragraph
+nnoremap <leader>f gqip
