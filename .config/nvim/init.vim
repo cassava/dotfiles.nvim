@@ -103,10 +103,17 @@ Plug 'tpope/vim-repeat'                                                        "
 Plug 'justinmk/vim-dirvish'                                                    " [*]
 let g:dirvish_mode = ':sort i@^.*[\/]@'
 
+" Plug 'tpope/vim-abolish' {{{
 " Provide coercian and substitution with:
 "   :Subvert
 "   {crs, crm, crc, cru, cr-, cr., cr<space>, crt}
 Plug 'tpope/vim-abolish'
+function! MakeLineTitleCase()
+  s/\<./\U&/
+  call histdel('search', -1)
+endfunction
+nnoremap crT :call MakeLineTitleCase()<cr>
+" }}}
 
 " Vim sugar for the UNIX shell commands that need it the most:
 "   :{Delete, Unlink, Move, Rename, Chmod, Mkdir, Cfind, Clocate, Lfind, ...}
