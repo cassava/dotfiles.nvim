@@ -154,6 +154,9 @@ Plug 'junegunn/vim-easy-align'                                                 "
 xnoremap ga <Plug>(EasyAlign)
 nnoremap ga <Plug>(EasyAlign)
 
+" Swap around function arguments with g<, g>, and gs
+Plug 'machakann/vim-swap'
+
 " Git time metrics lets you track how much time you spend in a git project.
 " This requires that the executable gtm is installed.
 if executable('gtm')
