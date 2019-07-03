@@ -176,6 +176,19 @@ Plug 'qpkorr/vim-renamer'                                                      "
 " Allows you to diff blocks of text with :Linediff
 Plug 'andrewradev/linediff.vim'
 
+" Plug 'mileszs/ack.vim' {{{
+" Provide search functionality for the entire project (i.e. recursive grep
+" starting from the current directory), and add a few useful mappings.
+" Redefine * to search for selection when something is currently selected.
+" Warning: These visual mappings clobber the registers s.
+Plug 'mileszs/ack.vim'                                                         " [*]
+let g:ackprg=&grepprg
+nnoremap <leader>* :Ack! --fixed-strings "<cword>"<cr>
+vnoremap <leader>* "sy:Ack! --fixed-strings "<c-r><c-r>""<cr>
+vnoremap * "sy/<c-r><c-r>"<cr>
+nnoremap <leader>a :Ack<space>
+" }}}
+
 " fzf is a fuzzy finder. Open this fold and see what mappings I created.
 " Press enter on a file to open it, `c-x` to open in a split, `c-v` to open
 " in a vertical split. You can switch between splits with `c-w c-w` or use
