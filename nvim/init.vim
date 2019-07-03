@@ -334,7 +334,8 @@ if executable('racer')
 endif
 " }}}
 
-Plug 'peter-edge/vim-capnp'
+" Filetype: capnp
+Plug 'cstrahan/vim-capnp'
 
 Plug 'sheerun/vim-polyglot'
 let g:polyglot_disabled = ['go', 'rust']
