@@ -189,11 +189,11 @@ vnoremap * "sy/<c-r><c-r>"<cr>
 nnoremap <leader>a :Ack<space>
 " }}}
 
+" Plug 'junegunn/fzf' | '.../fzf.vim' {{{
 " fzf is a fuzzy finder. Open this fold and see what mappings I created.
 " Press enter on a file to open it, `c-x` to open in a split, `c-v` to open
 " in a vertical split. You can switch between splits with `c-w c-w` or use
 " `c-w [hjkl]`.
-" Plug 'junegunn/fzf' | '.../fzf.vim' {{{
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }              " [*]
 Plug 'junegunn/fzf.vim'
 
@@ -208,12 +208,12 @@ function! s:with_git_root()
 endfunction
 command! -nargs=* GRg call fzf#vim#ag(<q-args>, s:with_git_root())
 
-nnoremap <silent> <leader><space><space> :GRg<cr>
-nnoremap <silent> <leader><space>f :Files<cr>
-nnoremap <silent> <leader><space>g :GFiles -co<cr>
-nnoremap <silent> <leader><space>a :Buffers<cr>
-nnoremap <silent> <leader><space>w :Windows<cr>
-nnoremap <silent> <leader><space>t :Tags<cr>
+nnoremap <silent> <leader>/<space> :GRg<cr>
+nnoremap <silent> <leader>/f :Files<cr>
+nnoremap <silent> <leader>/g :GFiles -co<cr>
+nnoremap <silent> <leader>/a :Buffers<cr>
+nnoremap <silent> <leader>/w :Windows<cr>
+nnoremap <silent> <leader>/t :Tags<cr>
 " }}}
 
 " Plug 'vim-airline/vim-airline' | '.../vim-airline-themes' {{{
