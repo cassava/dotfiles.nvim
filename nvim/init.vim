@@ -311,14 +311,14 @@ augroup END
 
 " Filetype: go {{{
 if executable('go')
-    Plug 'fatih/vim-go'
+    Plug 'fatih/vim-go', { 'for': 'go' }
     let g:go_highlight_trailing_whitespace_error = 0
     let g:go_auto_type_info = 1
     let g:go_fmt_command = "goimports"
     let g:go_fmt_experimental = 1
 
     if executable('gocode')
-        Plug 'zchee/deoplete-go', { 'do': 'make' }
+        Plug 'zchee/deoplete-go', { 'for': 'go', 'do': 'make' }
     endif
 endif
 " }}}
