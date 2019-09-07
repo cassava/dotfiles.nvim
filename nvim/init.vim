@@ -387,6 +387,12 @@ let g:netrw_preview=1
 
 " ============================================================================= MAPPINGS
 
+" Easier yanking and pasting from the clipboard
+xnoremap <leader>y "+y
+xnoremap <leader>Y "+Y
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+
 " Saner Ctrl+L
 nnoremap <leader>l :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr>:SignifyRefresh<cr><c-l>
 nnoremap <leader>h :vert h<space>
