@@ -1,0 +1,8 @@
+- link:
+    ~/.config/nvim:
+      path: nvim
+      relink: true
+
+- shell:
+  - nvim --headless +PlugInstall +qa
+  - nvim --headless +UpdateRemotePlugins +qa

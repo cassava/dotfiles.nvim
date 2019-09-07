@@ -1,11 +1,3 @@
-# Vim
-.netrwhist
-.config/nvim/undo/
-
-# Ansible
-*.retry
-
-# Vagrant
-.vagrant/
-*.log
-/.gtm/
+nvim/.netrwhist
+nvim/undo/
+nvim/spell/
