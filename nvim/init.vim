@@ -258,14 +258,13 @@ let g:deoplete#skip_chars = [';']
 
 " Plug 'w0rp/ale' {{{
 " ALE provides asynchronous linting.
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_delay = 1000
-" }}}
-
-" Plug 'chiel92/vim-autoformat' {{{
-Plug 'chiel92/vim-autoformat'
-let g:autoformat_autoindent = 0
+let g:ale_fix_on_save = 1
+let g:ale_fixers = {
+\  'cpp': ['clang-format'],
+\}
 " }}}
 
 " ----------------------------------------------------------------------------- FILETYPE PLUGINS
@@ -301,12 +300,6 @@ if executable('cmake')
 
     nnoremap <leader>m :CMake<cr>:Make<cr>
 endif
-
-" Automatically format C++ files
-augroup autoformat_cpp_settings
-    autocmd!
-    autocmd FileType cpp  au BufWrite *.{h,cpp} :Autoformat
-augroup END
 " }}}
 
 " Filetype: go {{{
