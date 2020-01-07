@@ -272,6 +272,8 @@ let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \  'cpp': ['clang-format'],
 \}
+nnoremap <leader>x :ALEToggle<cr>
+nnoremap <leader>k :ALEDetail<cr>
 " }}}
 
 " ----------------------------------------------------------------------------- FILETYPE PLUGINS
