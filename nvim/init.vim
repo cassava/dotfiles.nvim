@@ -388,6 +388,8 @@ set background=dark
 " netrw preview opens on the left
 let g:netrw_preview=1
 
+autocmd FileType help wincmd L
+
 " ============================================================================= MAPPINGS
 
 " Easier yanking and pasting from the clipboard
@@ -398,6 +400,8 @@ nnoremap <leader>P "+P
 
 " Saner Ctrl+L
 nnoremap <leader>l :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr>:SignifyRefresh<cr><c-l>
+
+" Open help in a vertical split
 nnoremap <leader>h :vert h<space>
 
 " Don't lose selection when shifting sideways
