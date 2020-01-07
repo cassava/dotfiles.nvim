@@ -175,17 +175,24 @@ Plug 'qpkorr/vim-renamer'                                                      "
 " Allows you to diff blocks of text with :Linediff
 Plug 'andrewradev/linediff.vim'
 
+" Extend * and # to also work with visual selections.                          " [*]
+Plug 'thinca/vim-visualstar'
+
 " Plug 'mileszs/ack.vim' {{{
 " Provide search functionality for the entire project (i.e. recursive grep
 " starting from the current directory), and add a few useful mappings.
-" Redefine * to search for selection when something is currently selected.
-" Warning: These visual mappings clobber the registers s.
+" Define <leader>* to search for visual selection or word under cusor.
+" Note: Consider using mhinz/vim-grepper
 Plug 'mileszs/ack.vim'                                                         " [*]
 let g:ackprg=&grepprg
-nnoremap <leader>* :Ack! --fixed-strings "<cword>"<cr>
-vnoremap <leader>* "sy:Ack! --fixed-strings "<c-r><c-r>""<cr>
-vnoremap * "sy/<c-r><c-r>"<cr>
 nnoremap <leader>a :Ack<space>
+nnoremap <leader>A :Ack --fixed-strings<space>
+nnoremap <leader>* :Ack! --fixed-strings "<cword>"<cr>
+vnoremap <silent> <leader>* :<c-u>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<cr>
+  \gvy:Ack! '<c-r><c-r>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\s+', 'g')<cr>'<cr>
+  \gV:call setreg('"', old_reg, old_regtype)<cr>
 " }}}
 
 " Plug 'junegunn/fzf' | '.../fzf.vim' {{{
