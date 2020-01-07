@@ -91,9 +91,8 @@ let g:EditorConfig_exclude_patterns = ['fugitive://.*']
 Plug 'tpope/vim-dispatch'
 Plug 'radenling/vim-dispatch-neovim'
 
-" vim-commentary provides actions and movements to comment text.
-" Consider also using tomtom/tcomment_vim
-Plug 'tpope/vim-commentary'
+" Provide gc* mappings for commenting and uncommenting code.
+Plug 'tomtom/tcomment_vim'
 
 Plug 'tpope/vim-surround'
 Plug 'wellle/targets.vim'
