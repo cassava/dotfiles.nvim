@@ -61,3 +61,6 @@ noremap <a-[> :botright split term://zsh<cr>i
 tnoremap <a-w> <c-\><c-n><c-w>c
 inoremap <a-w> <c-\><c-n><c-w>c
 nnoremap <a-w> <c-w>c
+
+" Close tabs with <a-W>
+noremap <a-W> :tabclose<cr>
