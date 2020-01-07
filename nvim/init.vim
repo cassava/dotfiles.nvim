@@ -395,6 +395,10 @@ autocmd FileType help wincmd L
 " Close the quicklist and location list
 nnoremap <silent> <leader>c :cclose<cr>:lclose<cr>
 
+" Make moving between issues faster using whatever [q and ]q are mapped to
+nmap <m-,> [q
+nmap <m-.> ]q
+
 " Easier yanking and pasting from the clipboard
 xnoremap <leader>y "+y
 xnoremap <leader>Y "+Y
