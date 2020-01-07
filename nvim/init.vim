@@ -143,6 +143,12 @@ Plug 'mhinz/vim-signify'                                                       "
 Plug 'tpope/vim-fugitive'                                                      " [*]
 let g:signify_vcs_list = ['git']
 
+" Git time metrics lets you track how much time you spend in a git project.
+" This requires that the executable gtm is installed.
+if executable('gtm')
+    Plug 'git-time-metric/gtm-vim-plugin'
+endif
+
 " gv.vim allows you to use `:GV` to see a particularly nice view of the Git
 " history. Press `q` to exit the view.
 Plug 'junegunn/gv.vim'
@@ -155,12 +161,6 @@ nnoremap ga <Plug>(EasyAlign)
 
 " Swap around function arguments with g<, g>, and gs
 Plug 'machakann/vim-swap'
-
-" Git time metrics lets you track how much time you spend in a git project.
-" This requires that the executable gtm is installed.
-if executable('gtm')
-    Plug 'git-time-metric/gtm-vim-plugin'
-endif
 
 " vim-localvimrc is useful for storing project-specific vim settings.
 " Plug 'embear/vim-localvimrc' {{{
