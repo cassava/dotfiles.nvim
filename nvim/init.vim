@@ -392,6 +392,9 @@ autocmd FileType help wincmd L
 
 " ============================================================================= MAPPINGS
 
+" Close the quicklist and location list
+nnoremap <silent> <leader>c :cclose<cr>:lclose<cr>
+
 " Easier yanking and pasting from the clipboard
 xnoremap <leader>y "+y
 xnoremap <leader>Y "+Y
