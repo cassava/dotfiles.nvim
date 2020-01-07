@@ -266,6 +266,7 @@ let g:deoplete#skip_chars = [';']
 " ALE provides asynchronous linting.
 Plug 'dense-analysis/ale'
 let g:airline#extensions#ale#enabled = 1
+let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
 let g:ale_lint_delay = 1000
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
