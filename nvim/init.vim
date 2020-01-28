@@ -346,6 +346,9 @@ endif
 " Filetype: capnp
 Plug 'cstrahan/vim-capnp'
 
+" Filetype: bats
+Plug 'aliou/bats.vim'
+
 Plug 'sheerun/vim-polyglot'
 let g:polyglot_disabled = ['go', 'rust']
 
