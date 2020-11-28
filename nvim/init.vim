@@ -395,6 +395,9 @@ autocmd FileType help wincmd L
 
 " ============================================================================= MAPPINGS
 
+" Write the file with sudo
+cnoremap w!! execute 'silent! write !sudo /usr/bin/tee % >/dev/null' <bar> edit!
+
 " Close the quicklist and location list
 nnoremap <silent> <leader>c :cclose<cr>:lclose<cr>
 
