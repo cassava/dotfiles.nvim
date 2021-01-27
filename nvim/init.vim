@@ -1,17 +1,18 @@
 " Neovim configuration
-" vim: set tw=100 cc=80 fdm=marker:
+" vim: set textwidth=79 colorcolumn=80 foldmethod=marker foldlevel=0:
 "
-" Maintainer: Benjamin Morgan
+" Author: Benjamin Morgan
 " Usage: Run nvim +PlugUpdate to install and update the list of plugins.
 " Requirements:
-" - cargo:  euclio/vim-markdown-composer
-" - clang:  zchee/deoplete-clang
-" - ctags:  ludovicchabant/vim-gutentags
-" - cmake:  vhdirk/vim-cmake
-" - go:     fatih/vim-go
-" - gocode: zchee/deoplete-go
-" - gtm:    git-time-metric/gtm-vim-plugin
-" - racer:  sebastianmarkow/deoplete-rust
+" - cargo:      euclio/vim-markdown-composer
+" - clang:      zchee/deoplete-clang
+" - ctags:      ludovicchabant/vim-gutentags
+" - cmake:      vhdirk/vim-cmake
+" - go:         fatih/vim-go
+" - gocode:     zchee/deoplete-go
+" - gtm:        git-time-metric/gtm-vim-plugin
+" - racer:      sebastianmarkow/deoplete-rust
+" - xdotool:    raghur/vim-ghost
 "
 
 " ============================================================================= OPTIONS
@@ -79,33 +80,222 @@ endif
 " ============================================================================= PLUGINS
 call plug#begin('~/.local/share/nvim/plugged')
 
-" When starting nvim without any arguments, show something useful!
-Plug 'mhinz/vim-startify'                                                      " [*]
+" Plug: startify {{{
+" About: When starting nvim without any arguments, show something useful!
+" Help: startify.txt
+Plug 'mhinz/vim-startify'
+" }}}
 
-" Support editorconfig.org configurations
-Plug 'editorconfig/editorconfig-vim'                                           " [*]
-let g:EditorConfig_exclude_patterns = ['fugitive://.*']
-
-" vim-dispatch helps run commands asynchronously.
-" Alternatives include: neomake
+" Plug: dispatch | dispatch-neovim {{{
+" About: Run commands asynchronously.
+" Usage:
+"   :Make[!] [arguments]
+"   :Dispatch[!] [options] {program} [arguments]
+"   :Start[!]
+" Help: dispatch.txt
+" Alternatives: neomake
 Plug 'tpope/vim-dispatch'
 Plug 'radenling/vim-dispatch-neovim'
+" }}}
 
-" Provide gc* mappings for commenting and uncommenting code.
-Plug 'tomtom/tcomment_vim'
+" Plug: deoplete | neoinclude {{{
+" About: Deoplete is responsible for autocompletion. On my system it currently
+" could work better. But you can give it a try. Some things that are completed
+" are pretty handy, others don't work at all.
+"
+" Usage: automatic
+" Help: deoplete.txt neoinclude.txt
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/neoinclude.vim'
+let g:deoplete#enable_at_startup = 0
+let g:deoplete#max_menu_width = 50
+let g:deoplete#auto_complete_delay = 100
+let g:deoplete#auto_complete = 0
+let g:deoplete#auto_refresh_delay = 50
+let g:deoplete#skip_chars = [';']
+" }}}
 
-Plug 'tpope/vim-surround'
-Plug 'wellle/targets.vim'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-repeat'                                                        " [*]
+" Plug: fugitive | signify | gv {{{
+"
+" About: Git integration for Vim.
+" Usage: Use :G<tab> to get an idea of the commands available.
+" Help: fugitive.txt
+Plug 'tpope/vim-fugitive'
 
-Plug 'justinmk/vim-dirvish'                                                    " [*]
+" About: Show source revision changes on the side of buffers.
+" Usage: automatic
+" Help: signify.txt
+Plug 'mhinz/vim-signify'
+let g:signify_vcs_list = ['git']
+
+" About: Fast Git commit browser.
+" Usage:
+"   :GV     | Open commit browser. You can pass git log options to the command,
+"           | e.g. :GV -S foobar -- plugins. Also works on lines in visual mode.
+"   :GV!    | List commits that affected the current file.
+"   :GV?    | Fill the location list with the revisions of the current file.
+"           | Also works on lines in visual mode.
+"
+" Mappings:
+"   o       | Display commit contents or diff
+"   O       | Opens a new tab instead
+"   gb      | Launches :Gbrowse
+"   ]]      | Move to next commit
+"   [[      | Move to previous commit
+"   .       | Start command-line with :Git [CURSOR] SHA à la fugitive
+"   q       | to close
+Plug 'junegunn/gv.vim'
+
+" About: Git time metrics lets you track how much time you spend in a git
+" project. This requires that the executable gtm is installed.
+" Usage: If gtm init has been executed in the git repository, then this plugin
+" will track times automatically.
+if executable('gtm')
+    Plug 'git-time-metric/gtm-vim-plugin'
+endif
+" }}}
+
+" Plug: airline | airline-themes {{{
+" About: vim-airline provides the informative bar at the bottom of your vim.
+" The themes are necessary to be compatible with multiple colorschemes.
+" For best viewing experience, it is recommended to use a NERDfont.
+"
+" Help: airline.txt
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+let g:airline_powerline_fonts=1     " use the available powerline font
+" }}}
+
+" Plug: repeat {{{
+" About: Extend repeat command . to mappings.
+" This plugin is required by several other plugins to also provide sane repeat
+" behavior.
+" Help: https://github.com/tpope/vim-repeat
+Plug 'tpope/vim-repeat'
+" }}}
+
+" Filesystem:
+
+" Plug: dirvish {{{
+" About: Minimalist directory viewer.
+"
+" Dirvish basically dumps a list of paths into a Vim buffer and provides some
+" sugar to work with those paths.
+"
+" It's totally fine to slice, dice, and smash any Dirvish buffer: it will never
+" modify the filesystem. If you edit the buffer, Dirvish automatically disables
+" conceal so you can see the full text.
+"
+" Mappings:
+"   -    | Open the [count]th parent directory
+"   <cr> | Open selected file(s)
+"   o    | Open file in new window
+"   K    | Show file info
+"   p    | Preview file at cursor
+"   c-n  | Preview next file
+"   c-p  | Preview previous file
+" Help: dirvish.txt
+Plug 'justinmk/vim-dirvish'
 let g:dirvish_mode = ':sort i@^.*[\/]@'
+" }}}
 
-" Plug 'tpope/vim-abolish' {{{
-" Provide coercian and substitution with:
-"   :Subvert
-"   {crs, crm, crc, cru, cr-, cr., cr<space>, crt}
+" Plug: eunuch {{{
+" About: Sugar for the UNIX shell commands that need it the most.
+" Usage:
+"   :Delete[!]          | Delete current file from disk
+"   :Unlink[!]          | Delete current file from disk and reload buffer
+"   :Remove[!]          | Alias for :Unlink
+"   :Move[!] {file}     | Like :saveas, but delete the old file afterwards
+"   :Rename[!] {file}   | Like :Move, but relative to current file directory
+"   :Chmod {mode}       | Change permissions of current file
+"   :Mkdir[!] [dir]     | Create directory [with -p]
+"   :Cfind[!] {args}    | Run find and load results in quicklist
+"   :Clocate[!] {args}  | Run locate and load results in quicklist
+"   :SudoEdit [file]    | Edit a file using sudo
+"   :SudoWrite          | Write current file using sudo; uses :SudoEdit
+" Help: eunuch.txt
+Plug 'tpope/vim-eunuch'
+" }}}
+
+" Plug: renamer {{{
+" About: Quickly rename many files using Vim text editing.
+" Usage:
+"   :Renamer [path]
+" Help: renamer.txt
+Plug 'qpkorr/vim-renamer'
+" }}}
+
+" Motions:
+
+" Plug: !targets {{{
+" About: Provide additional text objects.
+" Examples:
+"   cin)    | Change in parentheses
+"   da,     | Delete item in comma-separated list
+"Plug 'wellle/targets.vim'
+" }}}
+
+" Plug: unimpaired {{{
+" About: Pairs of handy braket mappings.
+" Help: unimpaired.txt
+Plug 'tpope/vim-unimpaired'
+
+" Make moving between issues faster using whatever [q and ]q are mapped to
+nmap <m-,> [q
+nmap <m-.> ]q
+" }}}
+
+" Plug: sneak {{{
+" About: Jump to any location specified by two characters.
+" Usage:
+"   s{char}{char}       | Go to next occurrence of {char}{char}
+"   S{char}{char}       | Go to previous occurrence of {char}{char}
+"   ;                   | Go to the [count]th next match
+"   ,                   | Go to the [count]th previous match
+" Help: sneak.txt
+Plug 'justinmk/vim-sneak'
+" }}}
+
+" Manipulation:
+
+" Plug: tcomment {{{
+" About: Provide mappings for commenting and uncommenting code.
+" Mappings:
+"   gc{motion}  | Toggle block comments
+"   gcc         | Toggle block comments for this line
+"   gC{motion}  | Toggle line comments
+"   gCc         | Toggle line comments for this line
+" Help: tcomment.txt
+Plug 'tomtom/tcomment_vim'
+" }}}
+
+" Plug: surround {{{
+" About: Tool for dealing with pairs of surroundings.
+" Mappings:
+"   ds{char}            | Delete surrounding given by {char}
+"   cs{char}{char}      | Change first surround {char} to second {char}
+"   ys{motion}{char}    | Surround text object or motion with {char}
+"   S{char}             | In visual mode, surround selection with {char}
+" Help: surround.txt
+Plug 'tpope/vim-surround'
+" }}}
+
+" Plug: abolish {{{
+" About: Language friendly searches, substitutions and abbreviations.
+" Usage:
+"   :Abolish [options] {abbreviation} {replacement}
+"   :Subvert /{pattern}[/flags]
+"   :S /{pattern}[/flags]
+" Coercion Mappings:
+"   crc         | camelCase
+"   crm         | MixedCase
+"   crs         | snake_case
+"   cru         | SNAKE_UPPERCASE
+"   cr-         | dash-case
+"   cr.         | dot.case
+"   cr<space>   | space case
+"   crt         | Title Case
+" Help: abolish.txt
 Plug 'tpope/vim-abolish'
 function! MakeLineTitleCase()
   s/\<./\U&/
@@ -114,79 +304,121 @@ endfunction
 nnoremap crT :call MakeLineTitleCase()<cr>
 " }}}
 
-" Vim sugar for the UNIX shell commands that need it the most:
-"   :{Delete, Unlink, Move, Rename, Chmod, Mkdir, Cfind, Clocate, Lfind, ...}
-Plug 'tpope/vim-eunuch'                                                        " [*]
+" Plug: easy-align {{{
+" About: Align text by character and motion.
+" Usage: ga<motion><character>
+" Help: easy-align.txt easyalign
+Plug 'junegunn/vim-easy-align'
+xnoremap ga <Plug>(EasyAlign)
+nnoremap ga <Plug>(EasyAlign)
+" }}}
 
-" Jump to any location specified by two characters.
-Plug 'justinmk/vim-sneak'                                                      " [*]
+" Plug: swap {{{
+" About: Reorder delimited items.
+" Usage: g<, g>, and gs
+" Help: swap.txt
+Plug 'machakann/vim-swap'
+" }}}
 
-" Provides a graphical representation of the vim undo tree.
-Plug 'mbbill/undotree'                                                         " [*]
-nnoremap <leader>u :UndotreeToggle<cr>
-
+" Plug: vim-visual-multi {{{
 " Alternative multiple cursors implementation
-Plug 'mg979/vim-visual-multi'                                                  " [*]
+Plug 'mg979/vim-visual-multi'
 let g:VM_leader = '\'
 let g:VM_mouse_mappings = 1
+" }}}
 
-" rainbow_parentheses.vim highlights the parenthesis layers differently.
+" Tools:
+
+" Plug: ghost {{{
+" About: Bi-directionally edit text content in the browser with Vim.
+" You will need to install the browser plugin for this to work, of course.
+"
+" Usage:
+"   :GhostStart     | Start the server.
+" Help: ghost.txt
+Plug 'raghur/vim-ghost', {'do': ':GhostInstall'}
+let g:ghost_autostart = 0
+" }}}
+
+" Plug: undotree {{{
+" About: Provides a graphical representation of the vim undo tree.
+" Usage:
+"   :UndotreeToggle | Show or close the undo-tree panel
+" Mappings:
+"   ?               | Show quick help in undotree window
+" Help: undotree.txt
+Plug 'mbbill/undotree'
+nnoremap <leader>u :UndotreeToggle<cr>
+" }}}
+
+" Plug: rainbow_parentheses {{{
+" About: Highlight the parenthesis layers differently to help identify opening
+" and closing. Is approximate, so often has false positives.
 Plug 'junegunn/rainbow_parentheses.vim'
 let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['<', '>']]
 nnoremap <leader>r :RainbowParentheses!!<cr>
-
-" The following two plugins are really good for visualizing and working with
-" files that reside in git repositories. vim-signify shows changes on the
-" side, and vim-fugitive allows you to do crazy things, like `:Gdiff` and
-" `:Glog`.
-Plug 'mhinz/vim-signify'                                                       " [*]
-Plug 'tpope/vim-fugitive'                                                      " [*]
-let g:signify_vcs_list = ['git']
-
-" Git time metrics lets you track how much time you spend in a git project.
-" This requires that the executable gtm is installed.
-if executable('gtm')
-    Plug 'git-time-metric/gtm-vim-plugin'
-endif
-
-" gv.vim allows you to use `:GV` to see a particularly nice view of the Git
-" history. Press `q` to exit the view.
-Plug 'junegunn/gv.vim'
-
-" If you need to align, you will never need to look further:
-"   ga<motion><character>
-Plug 'junegunn/vim-easy-align'                                                 " [*]
-xnoremap ga <Plug>(EasyAlign)
-nnoremap ga <Plug>(EasyAlign)
-
-" Swap around function arguments with g<, g>, and gs
-Plug 'machakann/vim-swap'
-
-" vim-localvimrc is useful for storing project-specific vim settings.
-" Plug 'embear/vim-localvimrc' {{{
-Plug 'embear/vim-localvimrc'                                                   " [*]
-let g:localvimrc_sandbox=0          " let local config do dangerous things
-let g:localvimrc_ask=0              " don't ask for permission
 " }}}
 
-" Start this amazing plugin with :Renamer [path] or :Ren [path]
-Plug 'qpkorr/vim-renamer'                                                      " [*]
+" Plug: goyo | !limelight {{{
+" About: Distraction free writing in Vim.
+" Help: goyo.txt
+Plug 'junegunn/goyo.vim'
 
-" Allows you to diff blocks of text with :Linediff
+" About: Highlight the line that you are currently editing.
+" Plug 'junegunn/limelight.vim'
+" }}}
+
+" Plug: peekaboo {{{
+" About:
+" Peekaboo will show you the contents of the registers on the sidebar when you
+" hit " or @ in normal mode or <CTRL-R> in insert mode. The sidebar is
+" automatically closed on subsequent key strokes.
+"
+" Help:
+" You can toggle fullscreen mode by pressing spacebar.
+"
+" Config                 Default         Description
+" ---------------------  --------------  --------------------------------------
+" g:peekaboo_window      vert bo 30new   Command for creating Peekaboo window
+" g:peekaboo_delay       0 (ms)          Delay opening of Peekaboo window
+" g:peekaboo_compact     0 (boolean)     Compact display
+" g:peekaboo_prefix      Empty (string)  Prefix for key mapping (e.g. <leader>)
+" g:peekaboo_ins_prefix  Empty (string)  Prefix for insert mode key mapping
+"                                        (e.g. <c-x>)
+"
+Plug 'junegunn/vim-peekaboo'
+" }}}
+
+" Plug: linediff {{{
+" About: Diff multiple blocks (lines) of text, instead of files.
+" If you want to diff files, you can use the internal :diffthis command on
+" multiple files. This plugin allows the same for lines.
+"
+" Usage: Use :LineDiff with multiple selections of lines.
+" Help: linediff.txt
 Plug 'andrewradev/linediff.vim'
+" }}}
 
-" Extend * and # to also work with visual selections.                          " [*]
-Plug 'thinca/vim-visualstar'
-
-" Plug 'mileszs/ack.vim' {{{
-" Provide search functionality for the entire project (i.e. recursive grep
+" Plug: ack | visualstar {{{
+" About: Provide search functionality for the entire project (i.e. recursive grep
 " starting from the current directory), and add a few useful mappings.
-" Define <leader>* to search for visual selection or word under cusor.
+"
+" Usage: Pass :Ack search arguments for &grepprg command.
+" Help: ack.txt
 " Note: Consider using mhinz/vim-grepper
-Plug 'mileszs/ack.vim'                                                         " [*]
+Plug 'mileszs/ack.vim'
 let g:ackprg=&grepprg
 nnoremap <leader>a :Ack<space>
 nnoremap <leader>A :Ack --fixed-strings<space>
+
+" About: Extend * and # to also work with visual selections.
+" Usage: automatic
+" Help: visualstar.txt
+Plug 'thinca/vim-visualstar'
+
+" About: Extend <leader>* to use Ack to search across the entire project.
+" Note that strings that can be interpreted as regular expressions can have
+" cause some problems.
 nnoremap <leader>* :Ack! --fixed-strings "<cword>"<cr>
 vnoremap <silent> <leader>* :<c-u>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<cr>
@@ -195,12 +427,13 @@ vnoremap <silent> <leader>* :<c-u>
   \gV:call setreg('"', old_reg, old_regtype)<cr>
 " }}}
 
-" Plug 'junegunn/fzf' | '.../fzf.vim' {{{
-" fzf is a fuzzy finder. Open this fold and see what mappings I created.
-" Press enter on a file to open it, `c-x` to open in a split, `c-v` to open
-" in a vertical split. You can switch between splits with `c-w c-w` or use
+" Plug: fzf | fzf.vim {{{
+" About: fzf is a fuzzy finder.
+" Usage: Press enter on a file to open it, `c-x` to open in a split, `c-v` to
+" open in a vertical split. You can switch between splits with `c-w c-w` or use
 " `c-w [hjkl]`.
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }              " [*]
+" Help: fzf.txt fzf-vim.txt
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 command! -bang -nargs=* GGrep
@@ -222,63 +455,68 @@ nnoremap <silent> <leader>/w :Windows<cr>
 nnoremap <silent> <leader>/t :Tags<cr>
 " }}}
 
-" Plug 'vim-airline/vim-airline' | '.../vim-airline-themes' {{{
-" vim-airline provides the informative bar at the bottom of your vim.
-" The themes are necessary to be compatible with multiple colorschemes.
-Plug 'vim-airline/vim-airline'                                                 " [*]
-Plug 'vim-airline/vim-airline-themes'
-let g:airline_powerline_fonts=1     " use the available powerline font
-" }}}
-
+" Plug: gutentags | tagbar {{{
 if executable('ctags')
-    " This just automatically manages the tags for your projects. You may have
-    " to create the directory below.
-    Plug 'ludovicchabant/vim-gutentags'                                        " [*]
+    " About: This just automatically manages the tags for your projects.
+    " You may have to create the directory below.
+    "
+    " Usage: automatic
+    " Help: gutentags.txt
+    Plug 'ludovicchabant/vim-gutentags'
     let g:gutentags_cache_dir = '~/.cache/tags'
 
-    " If you have ctags installed, tagbar can show you the stuff you have in
-    " your file, use F8 to toggle it open and closed.
+    " About: If you have ctags installed, tagbar can show you the stuff you
+    " have in your file, use F8 to toggle it open and closed.
+    "
+    " Usage: :TagbarToggle
+    " Help: tagbar.txt
     Plug 'majutsushi/tagbar'
     nnoremap <leader>t :TagbarToggle<cr>
 endif
-
-" Plug 'vimwiki/vimwiki' {{{
-Plug 'vimwiki/vimwiki'
-let g:vimwiki_list = [{'path': '~/documents/wiki', 'path_html': '~/public/wiki'}]
-let g:vimwiki_hl_headers = 1
 " }}}
 
-" Plug 'Shougo/deoplete.nvim' | 'Shougo/neoinclude' | 'zchee/...' {{{
-" Deoplete is responsible for autocompletion. On my system it currently
-" could work better. But you can give it a try. Some things that are
-" completed are pretty handy, others don't work at all.
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neoinclude.vim'
-let g:deoplete#enable_at_startup = 0
-let g:deoplete#max_menu_width = 50
-let g:deoplete#auto_complete_delay = 100
-let g:deoplete#auto_complete = 0
-let g:deoplete#auto_refresh_delay = 50
-let g:deoplete#skip_chars = [';']
-" }}}
-
-" Plug 'w0rp/ale' {{{
-" ALE provides asynchronous linting.
+" Plug: ale {{{
+" About: ALE provides asynchronous linting and fixing of files.
+" Usage:
+"   :ALEToggle
+" Help: ale.txt
 Plug 'dense-analysis/ale'
 let g:airline#extensions#ale#enabled = 1
 let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
 let g:ale_lint_delay = 1000
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
+\  '*': ['remove_trailing_lines', 'trim_whitespace'],
 \  'cpp': ['clang-format'],
+\  'css': ['prettier'],
+\  'python': ['black'],
 \}
 nnoremap <leader>x :ALEToggle<cr>
 nnoremap <leader>k :ALEDetail<cr>
 " }}}
 
-" ----------------------------------------------------------------------------- FILETYPE PLUGINS
+" Filetypes:
 
-" Filetype: markdown {{{
+" Plug: localvimrc [.lvimrc] {{{
+" About: Load workspace specific settings.
+" Help: localvimrc.txt
+Plug 'embear/vim-localvimrc'
+let g:localvimrc_sandbox=0          " let local config do dangerous things
+let g:localvimrc_ask=0              " don't ask for permission
+" }}}
+
+" Plug: editorconfig [.editorconfig] {{{
+" About: Support editorconfig.org configurations
+" Help: editorconfig.txt
+Plug 'editorconfig/editorconfig-vim'
+let g:EditorConfig_exclude_patterns = ['fugitive://.*']
+" }}}
+
+" Plug: markdown | markdown-composer [*.md] {{{
+Plug 'plasticboy/vim-markdown'
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_toml_frontmatter = 1
+
 if executable('cargo')
     function! BuildComposer(info)
     if a:info.status != 'unchanged' || a:info.force
@@ -290,11 +528,16 @@ if executable('cargo')
     endif
     endfunction
 
+    " About: Provide instant preview in a browser window when working on
+    "        Markdown.
+    " Usage: :ComposerStart
+    " Help: markdown-composer.txt
     Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+    let g:markdown_composer_autostart = 0
 endif
 " }}}
 
-" Filetype: c/c++ {{{
+" Plug: deoplete-clang | cmake [*.cpp] {{{
 if executable('clang')
     Plug 'zchee/deoplete-clang'
     let g:deoplete#sources#clang#libclang_path = '/usr/lib//libclang.so'
@@ -311,7 +554,7 @@ if executable('cmake')
 endif
 " }}}
 
-" Filetype: go {{{
+" Plug: go | deoplete-go [*.go] {{{
 if executable('go')
     Plug 'fatih/vim-go', { 'for': 'go' }
     let g:go_highlight_trailing_whitespace_error = 0
@@ -325,12 +568,12 @@ if executable('go')
 endif
 " }}}
 
-" Fileytpe: python {{{
+" Plug: deoplete-jedi | requirements.txt [*.py] {{{
 Plug 'zchee/deoplete-jedi'
 Plug 'raimon49/requirements.txt.vim'
 " }}}
 
-" Filetype: rust {{{
+" Plug: rust | deoplete-rust [*.rs] {{{
 Plug 'rust-lang/rust.vim'
 if executable('rustfmt')
     let g:rustfmt_autosave = 1
@@ -343,14 +586,15 @@ if executable('racer')
 endif
 " }}}
 
-" Filetype: capnp
+" Plug: capnp | bats [*.capnp, *.bats] {{{
 Plug 'cstrahan/vim-capnp'
-
-" Filetype: bats
 Plug 'aliou/bats.vim'
+" }}}
 
+" Plug: polyglot [*] {{{
 Plug 'sheerun/vim-polyglot'
 let g:polyglot_disabled = ['go', 'rust']
+" }}}
 
 " Colorschemes: {{{
 Plug 'altercation/vim-colors-solarized'
@@ -400,10 +644,6 @@ cnoremap w!! execute 'silent! write !sudo /usr/bin/tee % >/dev/null' <bar> edit!
 
 " Close the quicklist and location list
 nnoremap <silent> <leader>c :cclose<cr>:lclose<cr>
-
-" Make moving between issues faster using whatever [q and ]q are mapped to
-nmap <m-,> [q
-nmap <m-.> ]q
 
 " Easier yanking and pasting from the clipboard
 xnoremap <leader>y "+y
