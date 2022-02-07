@@ -259,15 +259,12 @@ nmap <m-,> [q
 nmap <m-.> ]q
 " }}}
 
-" Plug: sneak {{{
-" About: Jump to any location specified by two characters.
+" Plug: lightspeed {{{
+" About: Jump to any location with 2-4 characters.
 " Usage:
-"   s{char}{char}       | Go to next occurrence of {char}{char}
-"   S{char}{char}       | Go to previous occurrence of {char}{char}
-"   ;                   | Go to the [count]th next match
-"   ,                   | Go to the [count]th previous match
-" Help: sneak.txt
-Plug 'justinmk/vim-sneak'
+"   s{char}...
+" Help: lightspeed.txt
+Plug 'ggandor/lightspeed.nvim'
 " }}}
 
 " Manipulation:
