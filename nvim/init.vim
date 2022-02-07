@@ -59,6 +59,7 @@ set tabstop=4           " a tab is four spaces
 set shiftwidth=4        " number of spaces to use for auto-indenting
 set softtabstop=4       " number of spaces to remove on backspace
 set shiftround          " use multlple of shiftwidth when indenting with < and >
+set completeopt=menu,menuone,preview,noselect
 
 " Formatting
 set formatoptions+=1    " don't end wrapping paragraphs' lines with 1-letter
@@ -107,12 +108,25 @@ Plug 'radenling/vim-dispatch-neovim'
 " Help: deoplete.txt neoinclude.txt
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neoinclude.vim'
-let g:deoplete#enable_at_startup = 0
-let g:deoplete#max_menu_width = 50
-let g:deoplete#auto_complete_delay = 100
-let g:deoplete#auto_complete = 0
-let g:deoplete#auto_refresh_delay = 50
-let g:deoplete#skip_chars = [';']
+let g:deoplete#enable_at_startup = 1
+function s:deoplete_configure()
+  if exists('deoplete#custom#option')
+    call deoplete#custom#option({
+    \  'auto_complete_delay': 100,
+    \  'max_menu_width': 50,
+    \  'skip_chars': [';'],
+    \  'sources': {
+    \    '_': ['ale'],
+    \   },
+    \ })
+  endif
+endfunction
+augroup deoplete_user
+  au!
+  au VimEnter * call s:deoplete_configure()
+  au User visual_multi_start call deoplete#disable()
+  au User visual_multi_exit call deoplete#enable()
+augroup END
 " }}}
 
 " Plug: fugitive | signify | gv {{{
@@ -577,12 +591,6 @@ Plug 'raimon49/requirements.txt.vim'
 Plug 'rust-lang/rust.vim'
 if executable('rustfmt')
     let g:rustfmt_autosave = 1
-endif
-
-if executable('racer')
-    Plug 'sebastianmarkow/deoplete-rust'
-    let g:deoplete#sources#rust#racer_binary = system('which racer')
-    let g:deoplete#sources#rust#rust_source_path = $RUST_SRC_PATH
 endif
 " }}}
 
