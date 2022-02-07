@@ -645,6 +645,10 @@ let g:netrw_preview=1
 
 autocmd FileType help wincmd L
 
+" Neovide
+set guifont=FuraMono\ Nerd\ Font:h8"
+let g:neovide_cursor_animation_length=0.02
+
 " ============================================================================= MAPPINGS
 
 " Write the file with sudo
