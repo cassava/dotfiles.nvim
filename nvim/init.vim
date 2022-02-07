@@ -437,7 +437,7 @@ nnoremap <leader>* :Ack! --fixed-strings "<cword>"<cr>
 vnoremap <silent> <leader>* :<c-u>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<cr>
   \gvy:Ack! '<c-r><c-r>=substitute(
-  \escape(@", '/\.*$^~['), '\_s\+', '\\s+', 'g')<cr>'<cr>
+  \escape(@", '\.*+$^~[({'), '\_s\+', '\\s+', 'g')<cr>'<cr>
   \gV:call setreg('"', old_reg, old_regtype)<cr>
 " }}}
 
