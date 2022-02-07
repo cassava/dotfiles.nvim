@@ -605,6 +605,7 @@ let g:polyglot_disabled = ['go', 'rust']
 " }}}
 
 " Colorschemes: {{{
+Plug 'arcticicestudio/nord-vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'endel/vim-github-colorscheme'
@@ -637,7 +638,7 @@ call plug#end()
 
 " ============================================================================= POST-PLUGIN CONFIGURATION
 
-colorscheme gruvbox
+colorscheme nord
 set background=dark
 
 " netrw preview opens on the left
