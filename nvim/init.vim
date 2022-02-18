@@ -49,6 +49,7 @@ endif
 
 " If your terminal supports it, you can try uncommenting the following.
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+set guifont=FuraMono\ Nerd\ Font:h8"
 
 " Text options
 set autoindent          " automatically adjust indentation
@@ -657,7 +658,6 @@ let g:netrw_preview=1
 autocmd FileType help wincmd L
 
 " Neovide
-set guifont=FuraMono\ Nerd\ Font:h8"
 let g:neovide_cursor_animation_length=0.02
 
 " ============================================================================= MAPPINGS
