@@ -268,6 +268,15 @@ Plug 'ggandor/lightspeed.nvim'
 
 " Manipulation:
 
+" Plug: vim-move {{{
+" About: Move lines up/down/left/right
+" Mappings:
+"   [motion]<C-k>  | Move current line/selections up
+"   [motion]<C-j>  | Move current line/selections down
+Plug 'matze/vim-move'
+let g:move_key_modifier = 'C'
+" }}}
+
 " Plug: tcomment {{{
 " About: Provide mappings for commenting and uncommenting code.
 " Mappings:
