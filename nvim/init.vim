@@ -169,15 +169,13 @@ if executable('gtm')
 endif
 " }}}
 
-" Plug: airline | airline-themes {{{
-" About: vim-airline provides the informative bar at the bottom of your vim.
-" The themes are necessary to be compatible with multiple colorschemes.
-" For best viewing experience, it is recommended to use a NERDfont.
+" Plug: lualine | nvim-web-devicons {{{
+" About: lualine provides the fancy statusbar. For best viewing experience,
+" it is recommeneded to use a NERDfont.
 "
-" Help: airline.txt
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-let g:airline_powerline_fonts=1     " use the available powerline font
+" Help: lualine.txt
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 " }}}
 
 " Plug: repeat {{{
@@ -492,7 +490,6 @@ endif
 "   :ALEToggle
 " Help: ale.txt
 Plug 'dense-analysis/ale'
-let g:airline#extensions#ale#enabled = 1
 let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
 let g:ale_lint_delay = 1000
 let g:ale_fix_on_save = 1
@@ -648,6 +645,10 @@ set guifont=FuraMono\ Nerd\ Font:h8"
 let g:neovide_cursor_animation_length=0.02
 
 " ============================================================================= MAPPINGS
+
+lua << END
+require('lualine').setup()
+END
 
 " Write the file with sudo
 cnoremap w!! execute 'silent! write !sudo /usr/bin/tee % >/dev/null' <bar> edit!
