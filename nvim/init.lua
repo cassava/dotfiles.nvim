@@ -11,6 +11,14 @@ require("packer").startup {
   function(use)
     use { "wbthomason/packer.nvim",
       -- ABOUT: Plugin manager should manage itself.
+      config = function()
+        vim.cmd [[
+          augroup packer_user_config
+            autocmd!
+            autocmd BufWritePost $MYVIMRC source <afile> | PackerCompile
+          augroup end
+        ]]
+      end
     }
 
     use { "lewis6991/impatient.nvim",
