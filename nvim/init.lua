@@ -431,16 +431,22 @@ require("packer").startup {
     --]]
 
     use { "nvim-telescope/telescope.nvim",
-      -- Fuzzy finder
-      cmd = "Telescope",
+      -- ABOUT: Universal fuzzy finder.
+      -- USAGE: Run :Telescope and check out the auto-complete.
       config = function()
-        -- require("configs.telescope").config()
+        vim.cmd [[
+          nnoremap <space>/<space> :Telescope<cr>
+        ]]
+        require("telescope").load_extension("fzf")
+        require("telescope").load_extension("packer")
       end,
       requires = {
         {
           "nvim-telescope/telescope-fzf-native.nvim",
-          after = "telescope.nvim",
           run = "make",
+        },
+        {
+          "nvim-telescope/telescope-packer.nvim",
         }
       }
     }
