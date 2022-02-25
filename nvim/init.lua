@@ -443,9 +443,9 @@ require("packer").startup {
       -- ABOUT: Universal fuzzy finder.
       -- USAGE: Run :Telescope and check out the auto-complete.
       config = function()
-        vim.cmd [[
-          nnoremap <space>/<space> :Telescope<cr>
-        ]]
+        vim.keymap.set({"n"}, "<leader>/<space>", ":Telescope<cr>")
+        vim.keymap.set({"n"}, "<leader>/h", ":Telescope help_tags<cr>")
+
         require("telescope").load_extension("fzf")
         require("telescope").load_extension("packer")
       end,
@@ -655,7 +655,7 @@ require("packer").startup {
       --   ?               | Show quick help in undotree window
       -- HELP: undotree.txt
       setup = function()
-        vim.cmd "nnoremap <leader>u :UndotreeToggle<cr>"
+        vim.keymap.set("n", "<leader>u", ":UndotreeToggle<cr>")
       end,
     }
 

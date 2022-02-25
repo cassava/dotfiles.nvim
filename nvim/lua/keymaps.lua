@@ -1,30 +1,30 @@
-vim.cmd [[
-  " Write the file with sudo
-  cnoremap w!! execute 'silent! write !sudo /usr/bin/tee % >/dev/null' <bar> edit!
+local map = vim.keymap.set
 
-  " Close the quicklist and location list
-  nnoremap <silent> <leader>c :cclose<cr>:lclose<cr>
+-- Write the file with sudo
+map("c", "w!!", "execute 'silent! write !sudo /usr/bin/tee % >/dev/null' <bar> edit!")
 
-  " Easier yanking and pasting from the clipboard
-  xnoremap <leader>y "+y
-  xnoremap <leader>Y "+Y
-  nnoremap <leader>p "+p
-  nnoremap <leader>P "+P
+-- Close the quicklist and location list
+map("n", "<silent>", "<leader>c :cclose<cr>:lclose<cr>")
 
-  " Saner Ctrl+L
-  nnoremap <leader>l :nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>
+-- Easier yanking and pasting from the clipboard
+map("x", "<leader>y", "\"+y")
+map("x", "<leader>Y", "\"+Y")
+map("n", "<leader>p", "\"+p")
+map("n", "<leader>P", "\"+P")
 
-  " Open help in a vertical split
-  nnoremap <leader>h :vert h<space>
+-- Saner Ctrl+L
+map("n", "<leader>l", ":nohlsearch<cr>:diffupdate<cr>:syntax sync fromstart<cr><c-l>")
 
-  " Don't lose selection when shifting sideways
-  xnoremap < <gv
-  xnoremap > >gv
+-- Open help in a vertical split
+map("n", "<leader>h", ":vert h<space>")
 
-  " Allow me to quickly edit and source my Vimrc.
-  nnoremap <leader>ve :vsplit $MYVIMRC<cr>
-  nnoremap <leader>vs :source $MYVIMRC<cr>
+-- Don't lose selection when shifting sideways
+map("x", "<", "<gv")
+map("x", ">", ">gv")
 
-  " Quickly format current paragraph
-  nnoremap <leader>f gqip
-]]
+-- Allow me to quickly edit and source my Vimrc.
+map("n", "<leader>ve", ":vsplit $MYVIMRC<cr>")
+map("n", "<leader>vs", ":source $MYVIMRC<cr>")
+
+-- Quickly format current paragraph
+map("n", "<leader>f", "gqip")
