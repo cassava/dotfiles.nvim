@@ -242,18 +242,46 @@ require("packer").startup {
     }
 
     use { "L3MON4D3/LuaSnip",
-      -- Snippet engine
+      -- ABOUT: Snippet engine
+      -- HELP: luasnip.txt
       config = function()
-        -- local settings = require("core.utils").user_settings()
-        -- local loader = require "luasnip/loaders/from_vscode"
-        -- loader.lazy_load { paths = settings.overrides.luasnip.vscode_snippets_paths }
-        -- loader.lazy_load()
+        ls = require "luasnip"
+        ls.config.set_config {
+            history = true,
+            updateevents = "TextChanged,TextChangedI",
+        }
+
+        -- <c-k> is my expansion key
+        -- this will expand the current item or jump to the next item within the snippet.
+        vim.keymap.set({"i", "s"}, "<c-k>", function()
+            if ls.expand_or_jumpable() then
+                ls.expand_or_jump()
+            end
+        end)
+
+        -- <c-j> is my jump backwards key
+        -- this will always move to the previous item within the snippet.
+        vim.keymap.set({"i", "s"}, "<c-j>", function()
+            if ls.jumpable(-1) then
+                ls.jump(-1)
+            end
+        end)
+
+        vim.keymap.set("i", "<c-l>", function()
+            if ls.choice_active() then
+                ls.change_choice(1)
+            end
+        end)
+
+        vim.keymap.set({"n"}, "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<cr>")
       end,
       requires = {
         -- Snippet collections
         "rafamadriz/friendly-snippets",
       },
     }
+
+    use { "saadparwaiz1/cmp_luasnip" }
 
     use { "hrsh7th/nvim-cmp",
       config = function()
@@ -290,28 +318,10 @@ require("packer").startup {
             ['<C-f>'] = cmp.mapping.scroll_docs(4),
             ['<C-Space>'] = cmp.mapping.complete(),
             ['<C-e>'] = cmp.mapping.close(),
-            ['<CR>'] = cmp.mapping.confirm {
+            ['<c-y>'] = cmp.mapping.confirm {
               behavior = cmp.ConfirmBehavior.Replace,
               select = true,
             },
-            ['<Tab>'] = function(fallback)
-              if cmp.visible() then
-                cmp.select_next_item()
-              elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
-              else
-                fallback()
-              end
-            end,
-            ['<S-Tab>'] = function(fallback)
-              if cmp.visible() then
-                cmp.select_prev_item()
-              elseif luasnip.jumpable(-1) then
-                luasnip.jump(-1)
-              else
-                fallback()
-              end
-            end,
           },
           sources = {
             { name = "nvim_lsp" },
@@ -347,7 +357,6 @@ require("packer").startup {
         { "hrsh7th/cmp-calc" },
         { "hrsh7th/cmp-nvim-lsp-signature-help" },
         { "onsails/lspkind-nvim" },
-        { "saadparwaiz1/cmp_luasnip" }
       }
     }
 
