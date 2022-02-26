@@ -1,7 +1,11 @@
 -- vim: set ts=2 sw=2:
 --
 
-local ls = require "luasnip"
+local ok, ls = pcall(require, "luasnip")
+if not ok then
+  return
+end
+
 local s = ls.snippet
 local f = ls.function_node
 local i = ls.insert_node

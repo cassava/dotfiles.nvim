@@ -705,6 +705,7 @@ require("packer").startup {
       -- You may have to create the directory below.
       -- USAGE: Automatic.
       -- HELP: gutentags.txt
+      disable = vim.fn.executable("ctags") ~= 1,
       setup = function()
         vim.g.gutentags_cache_dir = "~/.cache/tags"
       end,
