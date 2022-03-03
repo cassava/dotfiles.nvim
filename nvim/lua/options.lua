@@ -43,8 +43,9 @@ set.inccommand = "split" -- show substitution results incrementally (in a split)
 set.undolevels = 10000   -- support 10000 instead of 1000 undos
 
 -- Folding:
-set.foldlevelstart = 1   -- show all folds open initially
-set.foldmethod = "manual"
+set.foldlevelstart = -1  -- show all folds open initially
+set.foldmethod = "expr"  -- use whatever foldexpr says, e.g. treesitter
+set.foldnestmax = 5      -- don't fold forever
 
 -- Text options:
 set.autoindent = true   -- automatically adjust indentation
