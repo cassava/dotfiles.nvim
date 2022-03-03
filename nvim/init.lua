@@ -427,6 +427,8 @@ require("packer").startup {
       end,
     }
 
+    use { "sheerun/vim-polyglot" }
+
     --[[
 
     use { "tami5/lspsaga.nvim",
