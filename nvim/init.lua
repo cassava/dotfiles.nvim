@@ -12,6 +12,8 @@ require("packer").startup {
     use { "wbthomason/packer.nvim",
       -- ABOUT: Plugin manager should manage itself.
       config = function()
+        -- Whenever we edit this file, update the packer_compiled.lua file
+        -- so that the changes take effect next time we run nvim.
         vim.cmd [[
           augroup packer_user_config
             autocmd!
@@ -108,6 +110,9 @@ require("packer").startup {
             enable = true,
             disable = {},
             additional_vim_regex_highlighting = false,
+          },
+          indent = {
+            enable = true,
           },
           pairs = {
             enable = true,
@@ -327,10 +332,21 @@ require("packer").startup {
             { name = "nvim_lsp" },
             { name = "nvim_lsp_signature_help" },
             { name = "luasnip" },
-            { name = "buffer" },
             { name = "path" },
             { name = "calc" },
+            { name = "buffer", keyword_length = 5 },
           },
+          enabled = function()
+            -- While this function will cause it to be disabled in many cases,
+            -- you can always still get completion by using <c-space>.
+            local in_prompt = vim.api.nvim_buf_get_option(0, "buftype") == "prompt"
+            if in_prompt then  
+              -- this will disable cmp in the Telescope window
+              return false
+            end
+            local context = require("cmp.config.context")
+            return not(context.in_treesitter_capture("comment") == true or context.in_syntax_group("Comment"))
+          end
         }
 
         -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
