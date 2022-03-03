@@ -459,9 +459,6 @@ require("packer").startup {
       -- ABOUT: Universal fuzzy finder.
       -- USAGE: Run :Telescope and check out the auto-complete.
       config = function()
-        vim.keymap.set({"n"}, "<leader>/<space>", ":Telescope<cr>")
-        vim.keymap.set({"n"}, "<leader>/h", ":Telescope help_tags<cr>")
-
         require("telescope").load_extension("fzf")
         require("telescope").load_extension("packer")
       end,
