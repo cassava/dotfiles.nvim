@@ -39,9 +39,9 @@ install_arch_deps() {
 }
 
 build_neovim() {
-    local srcdir="~/.local/src/neovim"
+    local srcdir="${HOME}/.local/src/neovim"
     mkdir -p $(dirname $srcdir)
-    git clone https://github.com/neovim/neovim $srcdir
+    git clone "https://github.com/neovim/neovim" $srcdir
     cd $srcdir
     make CMAKE_BUILD_TYPE=Release
     sudo make install
