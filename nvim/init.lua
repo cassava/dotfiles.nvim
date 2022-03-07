@@ -532,7 +532,7 @@ require("packer").startup {
     -------------------------------------------------------------------------------------
 
     use { "altercation/vim-colors-solarized" }
-    use { "arcticicestudio/nord-vim" }
+    use { "EdenEast/nightfox.nvim" }
     use { "ayu-theme/ayu-vim",
       setup = function()
         vim.g.ayucolor = "light"
@@ -793,6 +793,6 @@ require("packer").startup {
   },
 }
 
-core.colorscheme("nord", "slate")
+core.colorscheme("nordfox", "slate")
 core.keymaps()
 core.user()
