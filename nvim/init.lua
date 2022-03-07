@@ -216,28 +216,6 @@ require("packer").startup {
       end
     }
 
-    use { "junegunn/vim-peekaboo",
-      -- ABOUT:
-      -- Peekaboo will show you the contents of the registers on the sidebar when you
-      -- hit " or @ in normal mode or <CTRL-R> in insert mode. The sidebar is
-      -- automatically closed on subsequent key strokes.
-      --
-      -- USAGE:
-      -- You can toggle fullscreen mode by pressing spacebar.
-      --
-      -- Config                 Default         Description
-      -- ---------------------  --------------  --------------------------------------
-      -- g:peekaboo_window      vert bo 30new   Command for creating Peekaboo window
-      -- g:peekaboo_delay       0 (ms)          Delay opening of Peekaboo window
-      -- g:peekaboo_compact     0 (boolean)     Compact display
-      -- g:peekaboo_prefix      Empty (string)  Prefix for key mapping (e.g. <leader>)
-      -- g:peekaboo_ins_prefix  Empty (string)  Prefix for insert mode key mapping
-      --                                        (e.g. <c-x>)
-      setup = function()
-        vim.g.peekaboo_delay = 500
-      end
-    }
-
     use { "editorconfig/editorconfig-vim",
       -- ABOUT: Support editorconfig.org configurations
       -- HELP: editorconfig.txt
@@ -457,6 +435,77 @@ require("packer").startup {
 
     --]]
 
+    use { "folke/which-key.nvim",
+      -- ABOUT: Provides popup reference for your keybindings.
+      config = function()
+        require("which-key").setup {
+          plugins = {
+            marks = true, -- shows a list of your marks on ' and `
+            registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+            spelling = {
+              enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+              suggestions = 20, -- how many suggestions should be shown in the list?
+            },
+            -- the presets plugin, adds help for a bunch of default keybindings in Neovim
+            -- No actual key bindings are created
+            presets = {
+              operators = true, -- adds help for operators like d, y, ... and registers them for motion / text object completion
+              motions = true, -- adds help for motions
+              text_objects = true, -- help for text objects triggered after entering an operator
+              windows = true, -- default bindings on <c-w>
+              nav = true, -- misc bindings to work with windows
+              z = true, -- bindings for folds, spelling and others prefixed with z
+              g = true, -- bindings for prefixed with g
+            },
+          },
+          -- add operators that will trigger motion and text object completion
+          -- to enable all native operators, set the preset / operators plugin above
+          operators = { gc = "Comments" },
+          key_labels = {
+            -- override the label used to display some keys. It doesn't effect WK in any other way.
+            -- For example:
+            -- ["<space>"] = "SPC",
+            -- ["<cr>"] = "RET",
+            -- ["<tab>"] = "TAB",
+          },
+          icons = {
+            breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
+            separator = "➜", -- symbol used between a key and it's label
+            group = "+", -- symbol prepended to a group
+          },
+          popup_mappings = {
+            scroll_down = '<c-d>', -- binding to scroll down inside the popup
+            scroll_up = '<c-u>', -- binding to scroll up inside the popup
+          },
+          window = {
+            border = "none", -- none, single, double, shadow
+            position = "top", -- bottom, top
+            margin = { 0, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
+            padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
+            winblend = 0
+          },
+          layout = {
+            height = { min = 4, max = 25 }, -- min and max height of the columns
+            width = { min = 20, max = 50 }, -- min and max width of the columns
+            spacing = 3, -- spacing between columns
+            align = "left", -- align columns left, center or right
+          },
+          ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
+          hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
+          show_help = true, -- show help message on the command line when the popup is visible
+          triggers = "auto", -- automatically setup triggers
+          -- triggers = {"<leader>"} -- or specify a list manually
+          triggers_blacklist = {
+            -- list of mode / prefixes that should never be hooked by WhichKey
+            -- this is mostly relevant for key maps that start with a native binding
+            -- most people should not need to change this
+            i = { "j", "k" },
+            v = { "j", "k" },
+          },
+        }
+      end,
+    }
+
     use { "nvim-telescope/telescope.nvim",
       -- ABOUT: Universal fuzzy finder.
       -- USAGE: Run :Telescope and check out the auto-complete.
@@ -570,6 +619,26 @@ require("packer").startup {
       --   q       | to close
     }
 
+    use { "tpope/vim-eunuch",
+      cmd = {
+        "Delete",
+        "Delete!",
+        "Unlink",
+        "Unlink!",
+        "Remove",
+        "Remove!",
+        "Move",
+        "Move!",
+        "Rename",
+        "Rename!",
+        "Chmod",
+        "Mkdir",
+        "Mkdir!",
+        "SudoEdit",
+        "SudoWrite",
+      }
+    }
+
     use { "justinmk/vim-dirvish",
       -- ABOUT: Minimalist directory viewer.
       --
@@ -681,32 +750,6 @@ require("packer").startup {
       --
       -- USAGE: Use :LineDiff with multiple selections of lines.
       -- HELP: linediff.txt
-    }
-
-    use { "mileszs/ack.vim",
-      -- ABOUT: Provide search functionality for the entire project (i.e. recursive grep
-      -- starting from the current directory), and add a few useful mappings.
-      --
-      -- USAGE: Pass :Ack search arguments for &grepprg command.
-      -- HELP: ack.txt
-      -- NOTE: Consider using mhinz/vim-grepper
-      setup = function()
-        vim.cmd [[
-          let g:ackprg=&grepprg
-          nnoremap <leader>a :Ack<space>
-          nnoremap <leader>A :Ack --fixed-strings<space>
-
-          " About: Extend <leader>* to use Ack to search across the entire project.
-          " Note that strings that can be interpreted as regular expressions can have
-          " cause some problems.
-          nnoremap <leader>* :Ack! --fixed-strings "<cword>"<cr>
-          vnoremap <silent> <leader>* :<c-u>
-            \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<cr>
-            \gvy:Ack! '<c-r><c-r>=substitute(
-            \escape(@", '\.*+$^~[({'), '\_s\+', '\\s+', 'g')<cr>'<cr>
-            \gV:call setreg('"', old_reg, old_regtype)<cr>
-        ]]
-      end,
     }
 
     use { "thinca/vim-visualstar",

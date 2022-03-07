@@ -32,7 +32,7 @@ function M.impatient()
 end
 
 function M.options()
-    require "options"
+    require "core.options"
 end
 
 function M.colorscheme(target, backup)
@@ -45,7 +45,7 @@ function M.colorscheme(target, backup)
 end
 
 function M.keymaps()
-    require "keymaps"
+    require "core.keymaps"
 end
 
 function M.user()

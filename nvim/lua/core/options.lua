@@ -3,9 +3,6 @@ local M = {}
 local set = vim.opt
 local fn = vim.fn
 
-vim.g.mapleader = ' '
-vim.g.localmapleader = '\\'
-
 set.fileencoding = "utf-8"
 
 set.undofile = true     -- support persistent undo via undodir=~/.local/share/nvim/undo
@@ -79,5 +76,7 @@ elseif fn.executable('ag') > 0 then
     set.grepprg = "ag --nogroup --nocolor --ignore-case --column"
     set.grepformat = { "%f:%l:%c:%m", "%f:%l:%m" }
 end
+
+set.timeoutlen = 500
 
 return M
