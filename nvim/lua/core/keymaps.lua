@@ -57,7 +57,12 @@ key.register({
     l = { ":Telescope git_commits<cr>", "Search commits" },
     s = { ":Telescope git_status<cr>", "View status" },
     t = { ":Telescope git_stash<cr>", "View stash" },
-    C = { ":Git commit<cr>", "Commit" },
+
+    -- Actions
+    A = { ":Git commit --amend", "Amend commit" },
+    C = { ":Git commit<cr>", "Create commit" },
+    F = { ":Git commit --fixup", "Create fixup! commit" },
+    R = { ":Git rebase -i ", "Rebase (interactive)" },
   }
 })
 
@@ -65,7 +70,6 @@ key.register({
 key.register({
   ["<leader>"] = {
     c = { "<cmd>cclose<cr><cmd>lclose<cr>", "Close quicklist" },
-    l = { "<cmd>nolhsearch<cr><cmd>diffupdate<cr><cmd>syntax sync fromstart<cr><c-l>", "Redraw screen" },
     f = { "gqip", "Format paragraph" },
   }
 })
