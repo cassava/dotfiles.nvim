@@ -113,6 +113,7 @@ require("packer").startup {
           },
           indent = {
             enable = true,
+            disable = { "yaml" },
           },
           pairs = {
             enable = true,
