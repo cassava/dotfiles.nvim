@@ -66,6 +66,16 @@ key.register({
   }
 })
 
+-- Options [o] ---------------------------------------------------------------
+key.register({
+  ["<leader>o"] = {
+    name = "editor",
+    w = { function() vim.opt.wrap = not vim.opt.wrap end, "Toggle wrap" },
+    n = { function() vim.opt.number = not vim.opt.number end, "Toggle number" },
+    t = { function() vim.opt.expandtab = not vim.opt.expandtab end, "Toggle expandtab" },
+  }
+})
+
 -- Miscellaneous -------------------------------------------------------------
 key.register({
   ["<leader>"] = {
