@@ -70,9 +70,42 @@ key.register({
 key.register({
   ["<leader>o"] = {
     name = "editor",
-    w = { function() vim.opt.wrap = not vim.opt.wrap end, "Toggle wrap" },
-    n = { function() vim.opt.number = not vim.opt.number end, "Toggle number" },
-    t = { function() vim.opt.expandtab = not vim.opt.expandtab end, "Toggle expandtab" },
+    c = {
+      function()
+        local def_width = 80
+        if vim.o.colorcolumn == "" then
+          if vim.o.textwidth ~= 0 then
+            vim.opt.colorcolumn = { vim.o.textwidth }
+          else
+            vim.opt.colorcolumn = { def_width }
+            vim.opt.textwidth = def_width
+          end
+        else
+          vim.opt.colorcolumn = {}
+        end
+      end,
+      "Toggle colorcolumn"
+    },
+    w = { function() vim.opt.wrap = not vim.o.wrap end, "Toggle wrap" },
+    n = { function() vim.opt.number = not vim.o.number end, "Toggle number" },
+    r = { function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relativenumber" },
+    t = { function() vim.opt.expandtab = not vim.o.expandtab end, "Toggle expandtab" },
+    ["<char-62>"] = {
+      function()
+        vim.opt.tabstop = vim.o.tabstop + 2
+        vim.opt.shiftwidth = vim.o.tabstop
+      end,
+      "Increase tab width by 2"
+    },
+    ["<char-60>"] = {
+      function()
+        if vim.o.tabstop >= 2 then
+          vim.opt.tabstop = vim.o.tabstop - 2
+          vim.opt.shiftwidth = vim.o.tabstop
+        end
+      end,
+      "Reduce tab width by 2",
+    },
   }
 })
 

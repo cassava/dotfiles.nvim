@@ -2,7 +2,6 @@
 " differently
 "
 
-highlight CursorLine ctermbg=235
 augroup cassava_highlight_insertenter
   autocmd!
   au InsertEnter * set cursorline
