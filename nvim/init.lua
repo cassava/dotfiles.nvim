@@ -4,8 +4,8 @@
 local core = require "core"
 
 core.bootstrap()
-core.impatient()
-core.options()
+core.init_impatient()
+core.init_options()
 
 require("packer").startup {
   function(use)
@@ -36,7 +36,7 @@ require("packer").startup {
     }
 
     use { "nathom/filetype.nvim",
-      -- ABOUT: Boost startup time 
+      -- ABOUT: Boost startup time
       config = function()
         vim.g.did_load_filetypes = 1
       end,
@@ -60,6 +60,17 @@ require("packer").startup {
       config = function()
         require("lualine").setup()
       end,
+    }
+
+    use { "karb94/neoscroll.nvim",
+      -- ABOUT: Scroll smoothly when using keyboard shortcuts that move the
+      -- screen.
+      --
+      -- This can be problematic when connected via SSH, so maybe we should
+      -- consider diabling it then.
+      config = function()
+        require("neoscroll").setup()
+      end
     }
 
     use { "akinsho/bufferline.nvim",
@@ -229,7 +240,7 @@ require("packer").startup {
       -- ABOUT: Snippet engine
       -- HELP: luasnip.txt
       config = function()
-        ls = require "luasnip"
+        local ls = require "luasnip"
         ls.config.set_config {
             history = true,
             updateevents = "TextChanged,TextChangedI",
@@ -265,9 +276,12 @@ require("packer").startup {
       },
     }
 
-    use { "saadparwaiz1/cmp_luasnip" }
+    use { "saadparwaiz1/cmp_luasnip",
+      -- ABOUT: Integrate luasnip with nvim-cmp.
+    }
 
     use { "hrsh7th/nvim-cmp",
+      event = "BufRead",
       config = function()
         local cmp = require "cmp"
         local lspkind = require "lspkind"
@@ -319,7 +333,7 @@ require("packer").startup {
             -- While this function will cause it to be disabled in many cases,
             -- you can always still get completion by using <c-space>.
             local in_prompt = vim.api.nvim_buf_get_option(0, "buftype") == "prompt"
-            if in_prompt then  
+            if in_prompt then
               -- this will disable cmp in the Telescope window
               return false
             end
@@ -345,18 +359,23 @@ require("packer").startup {
         })
       end,
       requires = {
-        { "hrsh7th/cmp-nvim-lsp" },
-        { "hrsh7th/cmp-cmdline" },
-        { "hrsh7th/cmp-buffer" },
-        { "hrsh7th/cmp-path" },
-        { "hrsh7th/cmp-calc" },
-        { "hrsh7th/cmp-nvim-lsp-signature-help" },
-        { "onsails/lspkind-nvim" },
+        { "hrsh7th/cmp-nvim-lsp", after = "nvim-cmp" },
+        { "hrsh7th/cmp-cmdline", after = "nvim-cmp" },
+        { "hrsh7th/cmp-buffer", after = "nvim-cmp" },
+        { "hrsh7th/cmp-path", after = "nvim-cmp" },
+        { "hrsh7th/cmp-calc", after = "nvim-cmp" },
+        { "hrsh7th/cmp-nvim-lsp-signature-help", after = "nvim-cmp" },
       }
     }
 
+    use { "neovim/nvim-lspconfig",
+      -- ABOUT: Built-in LSP configuration mechanism.
+      -- NOTE: We can configure this, or we can use nvim-lsp-installer.
+      event = "BufRead",
+    }
+
     use { "williamboman/nvim-lsp-installer",
-      -- LSP manager
+      -- ABOUT: LSP manager, so you don't have to do it yourself with nvim-lspconfig.
       event = "BufRead",
       cmd = {
         "LspInstall",
@@ -368,73 +387,121 @@ require("packer").startup {
         "LspUninstall",
         "LspUninstallAll",
       },
-    }
-
-    use { "neovim/nvim-lspconfig",
-      -- Built-in LSP
       config = function()
-        -- nvim-cmp supports additional completion capabilities
+        local lsp_installer = require("nvim-lsp-installer")
+        local on_attach = function(_, bufnr)
+          -- Enable completion triggered by <c-x><c-o>
+          vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+          require("core").keymapper().register({
+            -- Replace Vim standard keybindings to use LSP:
+            ["gD"] = { "<cmd>lua vim.lsp.buf.declaration()<cr>", "Goto declaration [lsp]" },
+            ["gd"] = { "<cmd>lua vim.lsp.buf.definition()<cr>", "Goto definition [lsp]" },
+            ["gi"] = { "<cmd>lua vim.lsp.buf.implementation()<cr>", "Goto implementation [lsp]" },
+            ["gr"] = { "<cmd>lua vim.lsp.buf.references()<cr>", "Show references [lsp]" },
+            ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "Hover entity [lsp]" },
+            ["<C-k>"] = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Show signature help [lsp]" },
+            ["[d"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Previous diagnostic [lsp]" },
+            ["]d"] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next diagnostic [lsp]" },
+
+            ["<leader>e"] = { "<cmd>lua vim.diagnostic.open_float()<cr>", "Open diagnostics [lsp]" },
+            ["<leader>q"] = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Send diagnostics to QuickList [lsp]" },
+            ["<leader>wa"] = { "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>", "Add workspace folder [lsp]" },
+            ["<leader>wr"] = { "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>", "Remove workspace folder [lsp]" },
+            ["<leader>wl"] = { "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", "Show workspace folders [lsp]" },
+            ["<leader>D"] = { "<cmd>lua vim.lsp.buf.type_definition()<cr>", "Goto type definition [lsp]" },
+            ["<leader>rn"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename entity [lsp]" },
+            ["<leader>ca"] = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code actions [lsp]" },
+            ["<leader>so"] = { "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", "Search symbols [lsp]" },
+          })
+
+          vim.cmd [[ command! LspFormat execute 'lua vim.lsp.buf.formatting()' ]]
+        end
+
         local capabilities = vim.lsp.protocol.make_client_capabilities()
         capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
-        local lspconfig = require "lspconfig"
-        local on_attach = function(_, bufnr)
-          local opts = { noremap = true, silent = true }
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-          vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>so', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts)
-          vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
-        end
-
-        local servers = { 'clangd', 'rust_analyzer', 'pyright', }
-        for _, lsp in ipairs(servers) do
-          lspconfig[lsp].setup {
-            on_attach = on_attach,
-            capabilities = capabilities,
+          -- Define :Format command to use LSP formatter.
+        lsp_installer.on_server_ready(function(server)
+          local opts = server:get_default_options()
+          opts.on_attach = on_attach
+          opts.capabilities = capabilities
+          opts.flags = {
+            debounce_text_changes = 150,
           }
-        end
+
+          if server.name == "rust_analyzer" then
+            -- Initialize the LSP via rust-tools instead
+            require("rust-tools").setup {
+              -- The "server" property provided in rust-tools setup function are the
+              -- settings rust-tools will provide to lspconfig during init.
+              -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
+              -- with the user's own settings (opts).
+              tools = { -- rust-tools options
+                autoSetHints = true,
+                hover_with_actions = true,
+                inlay_hints = {
+                  show_parameter_hints = false,
+                  parameter_hints_prefix = "",
+                  other_hints_prefix = "",
+                },
+              },
+              server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+            }
+            server:attach_buffers()
+            -- Only if standalone support is needed
+            require("rust-tools").start_standalone_if_required()
+          elseif server.name == "sumneko_lua" then
+            opts.settings = {
+              Lua = {
+                diagnostics = {
+                  -- Get the language server to recognize the `vim` global
+                  globals = {'vim'},
+                },
+                workspace = {
+                  -- Make the server aware of Neovim runtime files
+                  library = vim.api.nvim_get_runtime_file("", true),
+                },
+                telemetry = {
+                  enable = false,
+                },
+              }
+            }
+            server:setup(opts)
+          else
+            server:setup(opts)
+          end
+        end)
       end,
     }
 
-    use { "sheerun/vim-polyglot" }
-
-    --[[
+    use { "onsails/lspkind-nvim",
+      -- ABOUT: Provide fancy icons for LSP information, in particular for nvim-cmp.
+    }
 
     use { "tami5/lspsaga.nvim",
       -- LSP enhancer
+      disable = true,
       event = "BufRead",
       config = function()
-        -- require("configs.lsp.lspsaga").config()
-      end,
-    }
-
-    use { "simrat39/symbols-outline.nvim",
-      -- LSP symbols
-      cmd = "SymbolsOutline",
-      setup = function()
-        -- require("configs.symbols-outline").setup()
+        require("lspsaga").setup()
       end,
     }
 
     use { "jose-elias-alvarez/null-ls.nvim",
-      -- Formatting and linting
+      -- ABOUT: Provide LSP diagnostics, formatting, and other code actions via
+      -- nvim lua plugins.
       event = "BufRead",
       config = function()
-        -- require("user.null-ls").config()
+        local null_ls = require "null-ls"
+        null_ls.setup{
+          sources = {
+            -- YAML
+            null_ls.builtins.diagnostics.actionlint,
+          }
+        }
       end,
     }
-
-    --]]
 
     use { "folke/which-key.nvim",
       -- ABOUT: Provides popup reference for your keybindings.
@@ -463,11 +530,9 @@ require("packer").startup {
           -- to enable all native operators, set the preset / operators plugin above
           operators = { gc = "Comments" },
           key_labels = {
-            -- override the label used to display some keys. It doesn't effect WK in any other way.
-            -- For example:
-            -- ["<space>"] = "SPC",
-            -- ["<cr>"] = "RET",
-            -- ["<tab>"] = "TAB",
+            ["<space>"] = "SPC",
+            ["<cr>"] = "RET",
+            ["<tab>"] = "TAB",
           },
           icons = {
             breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
@@ -492,7 +557,7 @@ require("packer").startup {
             align = "left", -- align columns left, center or right
           },
           ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-          hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
+          hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "<cr>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
           show_help = true, -- show help message on the command line when the popup is visible
           triggers = "auto", -- automatically setup triggers
           -- triggers = {"<leader>"} -- or specify a list manually
@@ -505,6 +570,97 @@ require("packer").startup {
           },
         }
       end,
+    }
+
+    use { "tpope/vim-unimpaired",
+      -- ABOUT: Pairs of handy bracket mappings
+      config = function()
+        local key = require("core").keymapper()
+
+        -- Next and Previous builtins
+        key.register({
+          ["[a"]     = ":previous",
+          ["]a"]     = ":next",
+          ["[A"]     = ":first",
+          ["]A"]     = ":last",
+          ["[b"]     = ":bprevious",
+          ["]b"]     = ":bnext",
+          ["[B"]     = ":bfirst",
+          ["]B"]     = ":blast",
+          ["[l"]     = ":lprevious",
+          ["]l"]     = ":lnext",
+          ["[L"]     = ":lfirst",
+          ["]L"]     = ":llast",
+          ["[<C-L>"] = ":lpfile",
+          ["]<C-L>"] = ":lnfile",
+          ["[q"]     = ":cprevious",
+          ["]q"]     = ":cnext",
+          ["[Q"]     = ":cfirst",
+          ["]Q"]     = ":clast",
+          ["[t"]     = ":tprevious",
+          ["]t"]     = ":tnext",
+          ["[T"]     = ":tfirst",
+          ["]T"]     = ":tlast",
+          ["[<C-T>"] = ":ptprevious",
+          ["]<C-T>"] = ":ptnext",
+        }, { preset = true })
+
+        key.register({
+          ["[f"] = "Previous file",
+          ["]f"] = "Next file",
+          ["[n"] = "Previous SCM conflict",
+          ["]n"] = "Next SCM conflict",
+        }, { preset = true })
+
+        -- Line operations:
+        key.register({
+          ["[<space>"] = "Add [count] blank lines above",
+          ["]<space>"] = "Add [count] blank lines below",
+
+          ["[e"] = "Exchange line with [count] lines above",
+          ["]e"] = "Exchange line with [count] lines below",
+        }, { preset = true })
+
+        -- Option toggling:
+        key.register({
+          ["yo"] = {
+            name = "toggle options",
+            b = "Toggle background",
+            c = "Toggle cursorline",
+            d = "Toggle diff",
+            h = "Toggle hlsearch",
+            i = "Toggle ignorecase",
+            l = "Toggle list",
+            n = "Toggle number",
+            r = "Toggle relativenumber",
+            p = "Toggle paste",
+            u = "Toggle cursorcolumn",
+            v = "Toggle virtualedit",
+            w = "Toggle wrap",
+            x = "Toggle cursorline + cursorcolumn",
+          }
+        }, { preset = true })
+
+        -- Encoding and decoding:
+        local encoding_maps = {
+          ["[x"] = "XML encode",
+          ["]x"] = "XML decode",
+          ["[u"] = "URL encode",
+          ["]u"] = "URL decode",
+          ["[y"] = "C-String encode",
+          ["]y"] = "C-String decode",
+          ["[C"] = "C-String encode",
+          ["]C"] = "C-String decode",
+        }
+        key.register(encoding_maps, { mode = "n", preset = true })
+        key.register(encoding_maps, { mode = "x", preset = true })
+
+        -- Personal
+        key.register({
+          ["<m-,>"] = { "[q", "Previous issue" },
+          ["<m-.>"] = { "]q", "Next issue" },
+        })
+      end
     }
 
     use { "nvim-telescope/telescope.nvim",
@@ -531,9 +687,12 @@ require("packer").startup {
     }
 
     -------------------------------------------------------------------------------------
+    -- Colorschemes {{{
 
-    use { "altercation/vim-colors-solarized" }
     use { "EdenEast/nightfox.nvim" }
+
+    --[[
+    use { "altercation/vim-colors-solarized" }
     use { "ayu-theme/ayu-vim",
       setup = function()
         vim.g.ayucolor = "light"
@@ -555,6 +714,7 @@ require("packer").startup {
     use { "nanotech/jellybeans.vim" }
     use { "sjl/badwolf" }
     use { "tomasr/molokai" }
+    --]]
 
     -------------------------------------------------------------------------------------
 
@@ -621,22 +781,23 @@ require("packer").startup {
     }
 
     use { "tpope/vim-eunuch",
+      -- ABOUT: Sugar for the UNIX shell commands that need it most.
       cmd = {
-        "Delete",
+        "Delete",    -- Delete current file from disk
         "Delete!",
-        "Unlink",
+        "Unlink",    -- Delete current file from disk and reload buffer
         "Unlink!",
-        "Remove",
+        "Remove",    -- Alias for :Unlink
         "Remove!",
-        "Move",
+        "Move",      -- Like :saveas, but delete the old file afterwards
         "Move!",
-        "Rename",
+        "Rename",    -- Like :Move, but relative to current file directory
         "Rename!",
-        "Chmod",
-        "Mkdir",
+        "Chmod",     -- Change permissions of current file
+        "Mkdir",     -- Create directory [with -p]
         "Mkdir!",
-        "SudoEdit",
-        "SudoWrite",
+        "SudoEdit",  -- Edit a file using sudo
+        "SudoWrite", -- Write current file using sudo, uses :SudoEdit
       }
     }
 
@@ -774,7 +935,53 @@ require("packer").startup {
       -- ABOUT: View and search LSP symbols, tags in Vim/NeoVim.
     }
 
-    core.initialize()
+    use { "raghur/vim-ghost",
+      -- ABOUT: Bi-directionally edit text content in the browser with Vim.
+      -- You will need to install the browser plugin for this to work, of course.
+      -- USAGE:
+      --   :GhostStart     | Start the server.
+      -- HELP: ghost.txt
+      run = ":GhostInstall",
+      setup = function()
+        vim.g.ghost_autostart = 0
+      end
+    }
+
+    ----------------------------------------------------------------------------------
+
+    use { "sheerun/vim-polyglot",
+      -- ABOUT: Collection of extra file-type plugins.
+      setup = function()
+        vim.g.polyglot_disabled = {
+          "go",
+          "rust",
+        }
+      end
+    }
+
+    use { "rust-lang/rust.vim",
+      event = "BufRead",
+      setup = function()
+        if vim.fn.executable("rustfmt") then
+          vim.g.rustfmt_autosave = 0
+        end
+      end
+    }
+
+    use { "simrat39/rust-tools.nvim",
+      event = "BufRead",
+    }
+
+    use { "fatih/vim-go",
+      setup = function()
+        vim.g.go_highlight_trailing_whitespace_error = 0
+        vim.g.go_auto_type_info = 1
+        vim.g.go_fmt_command = "goimports"
+        vim.g.go_fmt_experimental = 1
+      end
+    }
+
+    core.init_packer()
   end,
   config = {
     display = {
@@ -794,6 +1001,6 @@ require("packer").startup {
   },
 }
 
-core.colorscheme("nordfox", "slate")
-core.keymaps()
-core.user()
+core.init_colorscheme("nordfox", "slate")
+core.init_keymaps()
+core.init_user()

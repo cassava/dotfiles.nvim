@@ -1,9 +1,4 @@
-local ok, key = pcall(require, "which-key")
-if not ok then
-  print("Warning: user mappings require which-key plugin.")
-  return false
-end
-
+local key = require("core").keymapper()
 local map = vim.keymap.set
 
 vim.g.mapleader = " "
@@ -28,35 +23,57 @@ key.register({
   },
 })
 
+-- Vim Windows [c-w] ---------------------------------------------------------
+key.register({
+  ["<c-w>"] = {
+    -- Add to help
+    ["_"] = { "<c-w>_", "Max out height" },
+    ["*"] = { "<c-w>_<c-w>|", "Max out width & height" },
+  }
+})
+
 -- Search [/] ----------------------------------------------------------------
 map("n", "<leader>/<space>", ":Telescope<cr>")
 map("n", "<leader>/g", ":Telescope git_files<cr>")
-map("n", "<leader>*", function()
-  require("telescope.builtin").grep_string({ 
-    cwd = require"core.utils".project_dir()
-  })
-end)
-map("v", "<leader>*", function()
-  require("telescope.builtin").grep_string({
-    search = require"core.utils".get_visual_selection(),
-    cwd = require"core.utils".project_dir(),
-  })
-end)
-map("n", "<leader>a", function()
-  require("telescope.builtin").live_grep({
-    cwd = require"core.utils".project_dir()
-  })
-end)
+key.register({
+  ["<leader>*"] = {
+    function()
+      require("telescope.builtin").grep_string({
+        cwd = require"core.utils".project_dir()
+      })
+    end,
+    "Search project for <CWORD>"
+  },
+  ["<leader>a"] = {
+    function()
+      require("telescope.builtin").live_grep({
+        cwd = require"core.utils".project_dir()
+      })
+    end,
+    "Search project"
+  },
+})
+key.register({
+  ["<leader>*"] = {
+    function()
+      require("telescope.builtin").grep_string({
+        search = require"core.utils".get_visual_selection(),
+        cwd = require"core.utils".project_dir(),
+      })
+    end,
+    "Search project for selection"
+  },
+}, { mode = "v" })
 
 -- Git [g] -------------------------------------------------------------------
 key.register({
   ["<leader>g"] = {
     name = "git",
-    f = { ":Telescope git_files<cr>", "Search files" },
-    b = { ":Telescope git_branches<cr>", "Search branches" },
-    l = { ":Telescope git_commits<cr>", "Search commits" },
-    s = { ":Telescope git_status<cr>", "View status" },
-    t = { ":Telescope git_stash<cr>", "View stash" },
+    f = { "<cmd>Telescope git_files<cr>", "Search files" },
+    b = { "<cmd>Telescope git_branches<cr>", "Search branches" },
+    l = { "<cmd>Telescope git_commits<cr>", "Search commits" },
+    s = { "<cmd>Telescope git_status<cr>", "View status" },
+    t = { "<cmd>Telescope git_stash<cr>", "View stash" },
 
     -- Actions
     A = { ":Git commit --amend", "Amend commit" },

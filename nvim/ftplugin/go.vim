@@ -7,15 +7,7 @@ setl expandtab
 " contain tabs.
 setl nolist
 
-" Use markers {{{ and }}} to control folding in Go.
-setl fdm=marker
-
 let g:go_auto_type_info = 0
-
-" Map S-k to an equivalent command
-nnoremap <buffer> <S-k> <Plug>(go-doc-vertical)
-nnoremap <buffer> <Leader>gi <Plug>(go-info)
-nnoremap <buffer> <Leader>gd <Plug>(go-def-vertical)
 
 " Set up omnicompletion
 call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
