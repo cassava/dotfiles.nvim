@@ -276,10 +276,6 @@ require("packer").startup {
       },
     }
 
-    use { "saadparwaiz1/cmp_luasnip",
-      -- ABOUT: Integrate luasnip with nvim-cmp.
-    }
-
     use { "hrsh7th/nvim-cmp",
       event = "BufRead",
       config = function()
@@ -365,6 +361,7 @@ require("packer").startup {
         { "hrsh7th/cmp-path", after = "nvim-cmp" },
         { "hrsh7th/cmp-calc", after = "nvim-cmp" },
         { "hrsh7th/cmp-nvim-lsp-signature-help", after = "nvim-cmp" },
+        { "saadparwaiz1/cmp_luasnip", after = "nvim-cmp" },
       }
     }
 
@@ -419,9 +416,14 @@ require("packer").startup {
         end
 
         local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+        local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+        if ok then
+          capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+        else
+          print("Warning: cannot load cmp_nvim_lsp, reduced completion capabilities")
+        end
 
-          -- Define :Format command to use LSP formatter.
+        -- Define :Format command to use LSP formatter.
         lsp_installer.on_server_ready(function(server)
           local opts = server:get_default_options()
           opts.on_attach = on_attach
@@ -937,11 +939,18 @@ require("packer").startup {
 
     use { "raghur/vim-ghost",
       -- ABOUT: Bi-directionally edit text content in the browser with Vim.
-      -- You will need to install the browser plugin for this to work, of course.
-      -- USAGE:
-      --   :GhostStart     | Start the server.
+      -- REQUIREMENTS:
+      --  * python3 neovim API
+      --  * browser addon
       -- HELP: ghost.txt
-      run = ":GhostInstall",
+      run = function()
+        vim.fn.system "python3 -m pip install --user --upgrade neovim"
+        vim.cmd "GhostInstall"
+      end,
+      cmd = {
+        "GhostStart",
+        "GhostInstall",
+      },
       setup = function()
         vim.g.ghost_autostart = 0
       end
