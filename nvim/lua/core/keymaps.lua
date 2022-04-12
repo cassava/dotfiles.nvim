@@ -80,6 +80,16 @@ key.register({
     C = { ":Git commit<cr>", "Create commit" },
     F = { ":Git commit --fixup", "Create fixup! commit" },
     R = { ":Git rebase -i ", "Rebase (interactive)" },
+
+    -- Misc
+    d = {
+      function()
+        local fid = vim.fn.expand("%:p:h")
+        local cwd = require"core.utils".project_dir(fid)
+        vim.cmd("lcd "..cwd.."")
+      end,
+      "Cd to project directory"
+    },
   }
 })
 
@@ -129,9 +139,11 @@ key.register({
 -- Miscellaneous -------------------------------------------------------------
 key.register({
   ["<leader>"] = {
+    b = { "<cmd>Telescope buffers<cr>", "Search buffers" },
     c = { "<cmd>cclose<cr><cmd>lclose<cr>", "Close quicklist" },
+    d = { "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", "Cd to file directory" },
     f = { "gqip", "Format paragraph" },
   }
-})
+}, { silent = false })
 
 return true

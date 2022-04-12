@@ -2,8 +2,9 @@ local utils = {}
 
 -- @brief Return the current project directory, which is the toplevel of a Git
 -- project if we are in a git project, or the CWD if not in a git project.
-utils.project_dir = function()
-  local stdout, ret, stderr = require("telescope.utils").get_os_command_output({"git", "rev-parse", "--show-toplevel"})
+-- @param cwd Optional directory to start from.
+utils.project_dir = function(cwd)
+  local stdout, ret, _ = require("telescope.utils").get_os_command_output({"git", "rev-parse", "--show-toplevel"}, cwd)
   if ret == 0 then
     print(stdout[1])
     return stdout[1]
@@ -14,7 +15,6 @@ utils.project_dir = function()
 end
 
 utils.get_visual_selection = function()
-  print("hey there!")
   local mode = vim.fn.mode()
   if mode ~= "v" or mode ~= "V" or mode ~= "CTRL-V" then
     return nil
