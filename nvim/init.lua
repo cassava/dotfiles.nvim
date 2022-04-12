@@ -269,6 +269,11 @@ require("packer").startup {
         end)
 
         vim.keymap.set({"n"}, "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<cr>")
+
+        require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/snippets"})
+        vim.cmd [[
+          command! LuaSnipEdit :lua require("luasnip.loaders.from_lua").edit_snippet_files()
+        ]]
       end,
       requires = {
         -- Snippet collections
