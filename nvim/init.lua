@@ -579,6 +579,17 @@ require("packer").startup {
       end,
     }
 
+    use { "natecraddock/sessions.nvim",
+      -- ABOUT: Makes using sesions easier
+      -- USAGE:
+      --    :SaveSession .session
+      --    :LoadSession .session
+      -- HELP: sessions.txt
+      config = function()
+        require("sessions").setup()
+      end
+    }
+
     use { "tpope/vim-unimpaired",
       -- ABOUT: Pairs of handy bracket mappings
       config = function()
