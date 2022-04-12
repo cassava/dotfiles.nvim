@@ -45,7 +45,6 @@ require("packer").startup {
     use { "antoinemadec/FixCursorHold.nvim",
       -- ABOUT: Cursorhold performance fix until merged into neovim.
       -- ISSUE: https://github.com/neovim/neovim/issues/12587
-      event = "BufRead",
       config = function()
         vim.g.cursorhold_updatetime = 100
       end,
@@ -97,18 +96,8 @@ require("packer").startup {
     use { "nvim-treesitter/nvim-treesitter",
       -- ABOUT: Provide fast and accurate language parsing.
       --        This can be used for syntax highlighting among other things.
-      run = ":TSUpdate",
       event = "BufRead",
-      cmd = {
-        "TSInstall",
-        "TSInstallInfo",
-        "TSInstallSync",
-        "TSUninstall",
-        "TSUpdate",
-        "TSUpdateSync",
-        "TSDisableAll",
-        "TSEnableAll",
-      },
+      run = ":TSUpdate",
       config = function()
         require("nvim-treesitter.configs").setup {
           ensure_installed = "maintained",
@@ -202,7 +191,6 @@ require("packer").startup {
 
     use { "lewis6991/gitsigns.nvim",
       -- ABOUT: Git integration.
-      event = "BufRead",
       config = function()
         require("gitsigns").setup {
           signs = {
@@ -282,7 +270,6 @@ require("packer").startup {
     }
 
     use { "hrsh7th/nvim-cmp",
-      event = "BufRead",
       config = function()
         local cmp = require "cmp"
         local lspkind = require "lspkind"
@@ -373,22 +360,10 @@ require("packer").startup {
     use { "neovim/nvim-lspconfig",
       -- ABOUT: Built-in LSP configuration mechanism.
       -- NOTE: We can configure this, or we can use nvim-lsp-installer.
-      event = "BufRead",
     }
 
     use { "williamboman/nvim-lsp-installer",
       -- ABOUT: LSP manager, so you don't have to do it yourself with nvim-lspconfig.
-      event = "BufRead",
-      cmd = {
-        "LspInstall",
-        "LspInstallInfo",
-        "LspPrintInstalled",
-        "LspRestart",
-        "LspStart",
-        "LspStop",
-        "LspUninstall",
-        "LspUninstallAll",
-      },
       config = function()
         local lsp_installer = require("nvim-lsp-installer")
         local on_attach = function(_, bufnr)
@@ -439,28 +414,41 @@ require("packer").startup {
 
           if server.name == "rust_analyzer" then
             -- Initialize the LSP via rust-tools instead
-            require("rust-tools").setup {
-              -- The "server" property provided in rust-tools setup function are the
-              -- settings rust-tools will provide to lspconfig during init.
-              -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
-              -- with the user's own settings (opts).
-              tools = { -- rust-tools options
-                autoSetHints = true,
-                hover_with_actions = true,
-                inlay_hints = {
-                  show_parameter_hints = false,
-                  parameter_hints_prefix = "",
-                  other_hints_prefix = "",
+            local ok, rust_tools = pcall(require, "rust-tools")
+            if ok then
+              rust_tools.setup {
+                -- The "server" property provided in rust-tools setup function are the
+                -- settings rust-tools will provide to lspconfig during init.
+                -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
+                -- with the user's own settings (opts).
+                tools = { -- rust-tools options
+                  autoSetHints = true,
+                  hover_with_actions = true,
+                  inlay_hints = {
+                    show_parameter_hints = false,
+                    parameter_hints_prefix = "",
+                    other_hints_prefix = "",
+                  },
                 },
-              },
-              server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
-            }
-            server:attach_buffers()
-            -- Only if standalone support is needed
-            require("rust-tools").start_standalone_if_required()
+                server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+              }
+              server:attach_buffers()
+              -- Only if standalone support is needed
+              rust_tools.start_standalone_if_required()
+            else
+              server:setup(opts)
+            end
           elseif server.name == "sumneko_lua" then
+            local runtime_path = vim.split(package.path, ';')
+            table.insert(runtime_path, "lua/?.lua")
+            table.insert(runtime_path, "lua/?/init.lua")
+
             opts.settings = {
               Lua = {
+                runtime = {
+                  version = 'LuaJIT',
+                  path = runtime_path,
+                },
                 diagnostics = {
                   -- Get the language server to recognize the `vim` global
                   globals = {'vim'},
@@ -489,7 +477,6 @@ require("packer").startup {
     use { "tami5/lspsaga.nvim",
       -- LSP enhancer
       disable = true,
-      event = "BufRead",
       config = function()
         require("lspsaga").setup()
       end,
@@ -498,7 +485,6 @@ require("packer").startup {
     use { "jose-elias-alvarez/null-ls.nvim",
       -- ABOUT: Provide LSP diagnostics, formatting, and other code actions via
       -- nvim lua plugins.
-      event = "BufRead",
       config = function()
         local null_ls = require "null-ls"
         null_ls.setup{
@@ -985,16 +971,14 @@ require("packer").startup {
     }
 
     use { "rust-lang/rust.vim",
-      event = "BufRead",
       setup = function()
-        if vim.fn.executable("rustfmt") then
-          vim.g.rustfmt_autosave = 0
-        end
+        vim.g.rustfmt_autosave = 0
       end
     }
 
     use { "simrat39/rust-tools.nvim",
-      event = "BufRead",
+      -- ABOUT: Advanced rust tooling.
+      after = "rust.vim",
     }
 
     use { "fatih/vim-go",
