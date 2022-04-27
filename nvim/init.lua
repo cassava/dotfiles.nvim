@@ -970,6 +970,7 @@ require("packer").startup {
     }
 
     use { "rust-lang/rust.vim",
+      disable = true,
       setup = function()
         vim.g.rustfmt_autosave = 0
       end
