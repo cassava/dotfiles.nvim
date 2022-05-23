@@ -100,7 +100,7 @@ require("packer").startup {
       run = ":TSUpdate",
       config = function()
         require("nvim-treesitter.configs").setup {
-          ensure_installed = "maintained",
+          ensure_installed = "all",
           sync_install = false,
           ignore_install = { "javascript" },
           context_commentstring = {
@@ -213,7 +213,10 @@ require("packer").startup {
       config = function()
         require("pretty-fold").setup{}
         require("pretty-fold.preview").setup()
-      end
+      end,
+      requires = {
+        "anuvyklack/nvim-keymap-amend",
+      }
     }
 
     use { "editorconfig/editorconfig-vim",
