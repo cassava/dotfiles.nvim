@@ -61,17 +61,6 @@ require("packer").startup {
       end,
     }
 
-    use { "karb94/neoscroll.nvim",
-      -- ABOUT: Scroll smoothly when using keyboard shortcuts that move the
-      -- screen.
-      --
-      -- This can be problematic when connected via SSH, so maybe we should
-      -- consider diabling it then.
-      config = function()
-        require("neoscroll").setup()
-      end
-    }
-
     use { "akinsho/bufferline.nvim",
       -- ABOUT: Show buffers on the top as tabs.
       -- HELP: bufferline.txt
@@ -203,7 +192,7 @@ require("packer").startup {
         }
       end,
       requires = {
-        "nvim-lua/plenary.nvim"
+        "nvim-lua/plenary.nvim",
       },
     }
 
@@ -491,11 +480,28 @@ require("packer").startup {
         local null_ls = require "null-ls"
         null_ls.setup{
           sources = {
+            -- JSON
+            null_ls.builtins.formatting.jq,
+
             -- YAML
             null_ls.builtins.diagnostics.actionlint,
+            null_ls.builtins.diagnostics.yamllint,
+
+            -- Python
+            null_ls.builtins.diagnostics.pylint,
+            null_ls.builtins.diagnostics.mypy,
+
+            -- Git
+            null_ls.builtins.code_actions.gitsigns,
+
+            -- C++
+            null_ls.builtins.formatting.clang_format,
           }
         }
       end,
+      requires = {
+        "nvim-lua/plenary.nvim",
+      },
     }
 
     use { "folke/which-key.nvim",
@@ -981,7 +987,10 @@ require("packer").startup {
 
     use { "simrat39/rust-tools.nvim",
       -- ABOUT: Advanced rust tooling.
-      -- after = "rust.vim",
+    }
+
+    use { "neomake/neomake",
+      -- ABOUT: Asyncronous make and friends.
     }
 
     use { "fatih/vim-go",
