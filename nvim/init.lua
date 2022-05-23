@@ -981,7 +981,7 @@ require("packer").startup {
 
     use { "simrat39/rust-tools.nvim",
       -- ABOUT: Advanced rust tooling.
-      after = "rust.vim",
+      -- after = "rust.vim",
     }
 
     use { "fatih/vim-go",
