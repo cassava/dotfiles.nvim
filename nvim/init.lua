@@ -400,7 +400,7 @@ require("packer").startup {
           opts.on_attach = on_attach
           opts.capabilities = capabilities
           opts.flags = {
-            debounce_text_changes = 150,
+            debounce_text_changes = 250,
           }
 
           if server.name == "rust_analyzer" then
