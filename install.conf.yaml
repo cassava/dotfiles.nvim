@@ -8,6 +8,10 @@
 
 - link:
     ~/.config/nvim: nvim
+    ~/.zdir/:
+      path: _zdir/*
+      glob: true
+      create: true
 
 - shell:
   - description: Install neovim if necessary (to /usr/local/)
