@@ -1,18 +1,18 @@
-- link:
-    ~/.config/nvim:
-      path: nvim
+- defaults:
+    link:
       relink: true
+    shell:
+      stdin: true
+      stdout: true
+      stderr: true
+
+- link:
+    ~/.config/nvim: nvim
 
 - shell:
   - description: Install neovim if necessary (to /usr/local/)
     command: ./check-version.sh 0.7.0 || ./build-neovim.sh
-    stdin: true
-    stdout: true
-    stderr: true
 
 - shell:
   - description: Initialize neovim configuration
     command: nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
-    stdin: true
-    stdout: true
-    stderr: true
