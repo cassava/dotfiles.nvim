@@ -77,8 +77,6 @@ require("packer").startup {
     use { "nvim-treesitter/nvim-treesitter",
       -- ABOUT: Provide fast and accurate language parsing.
       --        This can be used for syntax highlighting among other things.
-      event = "BufRead",
-      run = ":TSUpdate",
       config = function()
         require("nvim-treesitter.configs").setup {
           ensure_installed = "all",
