@@ -6,6 +6,7 @@ local core = require "core"
 core.bootstrap()
 core.init_impatient()
 core.init_options()
+core.init_colorscheme("nordfox", "slate")
 
 require("packer").startup {
   function(use)
@@ -701,7 +702,31 @@ require("packer").startup {
     -------------------------------------------------------------------------------------
     -- Colorschemes {{{
 
-    use { "EdenEast/nightfox.nvim" }
+    use { "EdenEast/nightfox.nvim",
+      config = function()
+        require("nightfox").setup({
+          options = {
+            dim_inactive = true,
+            styles = {
+              comments = "italic",
+            }
+          },
+          palettes = {
+            nordfox = {
+              bg05 = "#292d38", -- Halfway between bg0 and bg1
+              comment = "#8092aa", -- Lighter than original (#60728a)
+              original_comment = "#60728a",
+            }
+          },
+          groups = {
+            nordfox = {
+              CursorLine = { bg = "palette.bg05" },
+              Folded = { fg = "palette.original_comment", bg = "palette.bg0" }
+            }
+          },
+        })
+      end
+    }
 
     --[[
     use { "altercation/vim-colors-solarized" }
@@ -1022,6 +1047,5 @@ require("packer").startup {
   },
 }
 
-core.init_colorscheme("nordfox", "slate")
 core.init_keymaps()
 core.init_user()
