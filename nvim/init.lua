@@ -36,21 +36,6 @@ require("packer").startup {
       -- ABOUT: Popup API implementation is a plugin until merged into neovim.
     }
 
-    use { "nathom/filetype.nvim",
-      -- ABOUT: Boost startup time
-      config = function()
-        vim.g.did_load_filetypes = 1
-      end,
-    }
-
-    use { "antoinemadec/FixCursorHold.nvim",
-      -- ABOUT: Cursorhold performance fix until merged into neovim.
-      -- ISSUE: https://github.com/neovim/neovim/issues/12587
-      config = function()
-        vim.g.cursorhold_updatetime = 100
-      end,
-    }
-
     use { "kyazdani42/nvim-web-devicons",
       -- ABOUT: Fancy developer icons used in many other plugins.
     }
@@ -949,12 +934,6 @@ require("packer").startup {
       --
       -- USAGE: Use :LineDiff with multiple selections of lines.
       -- HELP: linediff.txt
-    }
-
-    use { "thinca/vim-visualstar",
-      -- ABOUT: Extend * and # to also work with visual selections.
-      -- USAGE: automatic
-      -- HELP: visualstar.txt
     }
 
     use { "ludovicchabant/vim-gutentags",
