@@ -43,7 +43,13 @@ require("packer").startup {
     use { "nvim-lualine/lualine.nvim",
       -- About: Fancy status line with information from various sources.
       config = function()
-        require("lualine").setup()
+        require("lualine").setup({
+          sections = {
+            lualine_c = {
+              { 'filename', path=1 }
+            }
+          }
+        })
       end,
     }
 
