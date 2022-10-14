@@ -187,10 +187,19 @@ require("packer").startup {
       -- HELP: https://github.com/anuvyklack/pretty-fold.nvim
       config = function()
         require("pretty-fold").setup{}
-        require("pretty-fold.preview").setup()
       end,
       requires = {
         "anuvyklack/nvim-keymap-amend",
+      }
+    }
+
+    use { "anuvyklack/fold-preview.nvim",
+      -- ABOUT: Preview folds.
+      config = function()
+        require("fold-preview").setup()
+      end,
+      requires = {
+        "anuvyklack/keymap-amend.nvim",
       }
     }
 
