@@ -619,6 +619,15 @@ require("packer").startup {
       end,
     }
 
+    use { "f-person/git-blame.nvim",
+      setup = function()
+        vim.g.gitblame_enabled = 0
+        vim.g.gitblame_set_extmark_options = {
+          virt_text_pos = "right_align",
+        }
+      end,
+    }
+
     use { "natecraddock/sessions.nvim",
       -- ABOUT: Makes using sesions easier
       -- USAGE:

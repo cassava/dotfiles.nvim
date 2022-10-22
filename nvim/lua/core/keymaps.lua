@@ -77,6 +77,7 @@ key.register({
 
     -- Actions
     A = { ":Git commit --amend", "Amend commit" },
+    B = { ":GitBlameToggle<cr>", "Show blame information" },
     C = { ":Git commit<cr>", "Create commit" },
     F = { ":Git commit --fixup", "Create fixup! commit" },
     R = { ":Git rebase -i ", "Rebase (interactive)" },
