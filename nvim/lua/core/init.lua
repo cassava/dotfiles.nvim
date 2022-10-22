@@ -43,6 +43,8 @@ end
 -- This exists because the default-default colorscheme is maybe not your
 -- cup of tea.
 function core.init_colorscheme(target, backup)
+    -- Configuration of colorscheme needs to occur before call to colorscheme.
+    pcall(require, "core.configs."..target)
     local ok, _ = pcall(vim.cmd, "colorscheme "..target)
     if not ok then
         core.target_colorscheme = target
