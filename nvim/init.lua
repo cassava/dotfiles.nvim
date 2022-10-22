@@ -756,9 +756,10 @@ require("packer").startup {
       }
     }
 
-    use { "mhinz/vim-startify",
-      -- ABOUT: Start screen to show when no file is opened.
-      -- HELP: startify.txt
+    use { "goolord/alpha-nvim",
+      config = function()
+        require("alpha").setup(require("alpha.themes.startify").config)
+      end
     }
 
     -------------------------------------------------------------------------------------
