@@ -143,6 +143,7 @@ key.register({
     c = { "<cmd>cclose<cr><cmd>lclose<cr>", "Close quicklist" },
     d = { "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", "Cd to file directory" },
     f = { "gqip", "Format paragraph" },
+    h = { "<cmd>Telescope help_tags<cr>", "Search Vim help tags" },
   }
 }, { silent = false })
 
