@@ -619,6 +619,14 @@ require("packer").startup {
       end,
     }
 
+    use { "folke/todo-comments.nvim",
+      requires = "nvim-lua/plenary.nvim",
+      config = function()
+        require("todo-comments").setup {
+        }
+      end
+    }
+
     use { "f-person/git-blame.nvim",
       setup = function()
         vim.g.gitblame_enabled = 0
