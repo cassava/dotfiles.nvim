@@ -15,12 +15,13 @@ require("packer").startup {
       config = function()
         -- Whenever we edit this file, update the packer_compiled.lua file
         -- so that the changes take effect next time we run nvim.
-        vim.cmd [[
-          augroup packer_user_config
-            autocmd!
-            autocmd BufWritePost $MYVIMRC source <afile> | PackerCompile
-          augroup end
-        ]]
+
+        vim.api.nvim_create_augroup("packer_user_config", { clear = true })
+        vim.api.nvim_create_autocmd({"BufWritePost"}, {
+          pattern = {vim.env.MYVIMRC},
+          group = "packer_user_config",
+          command = "source <afile> | PackerCompile",
+        })
       end
     }
 
@@ -81,10 +82,7 @@ require("packer").startup {
         require("nvim-treesitter.configs").setup {
           ensure_installed = "all",
           sync_install = false,
-          ignore_install = { "javascript" },
-          context_commentstring = {
-            enable = true
-          },
+          ignore_install = {},
           highlight = {
             enable = true,
             disable = {},
@@ -94,6 +92,79 @@ require("packer").startup {
             enable = true,
             disable = { "yaml" },
           },
+        }
+        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+      end,
+    }
+
+    use { "nvim-treesitter/nvim-treesitter-textobjects",
+      -- Manipulate text objects
+      after = "nvim-treesitter",
+      config = function()
+        require("nvim-treesitter.configs").setup {
+          textobjects = {
+            swap = {
+              enable = true,
+              swap_next = {
+                ["g>"] = "@parameter.inner",
+              },
+              swap_previous = {
+                ["g<"] = "@parameter.inner",
+              },
+            },
+          },
+        }
+      end,
+    }
+
+    use { "nvim-treesitter/nvim-treesitter-refactor",
+      after = "nvim-treesitter",
+      config = function()
+        require("nvim-treesitter.configs").setup {
+          refactor = {
+            highlight_definitions = {
+              enable = true,
+              clear_on_cursor_move = true, -- Set to false if you have an `updatetime` of ~100.
+            },
+          },
+        }
+      end,
+    }
+
+    use { "p00f/nvim-ts-rainbow",
+      -- ABOUT: Parenthesis highlighting
+      after = "nvim-treesitter",
+      config = function()
+        require("nvim-treesitter.configs").setup {
+          rainbow = {
+            enable = true,
+            -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+            extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+            max_file_lines = nil, -- Do not enable for files with more than n lines, int
+            -- colors = {}, -- table of hex strings
+            -- termcolors = {} -- table of colour name strings
+          },
+        }
+      end,
+    }
+
+    use { "JoosepAlviste/nvim-ts-context-commentstring",
+      -- ABOUT: Context based commenting
+      after = "nvim-treesitter",
+      config = function()
+        require("nvim-treesitter.configs").setup {
+          context_commentstring = {
+            enable = true
+          },
+        }
+      end,
+    }
+
+    use { "theHamsta/nvim-treesitter-pairs",
+      -- ABOUT: Provide language-specific % pairs
+      after = "nvim-treesitter",
+      config = function()
+        require("nvim-treesitter.configs").setup {
           pairs = {
             enable = true,
             disable = {},
@@ -112,60 +183,35 @@ require("packer").startup {
                                       -- E.g. whether to delete the angle bracket or whole tag in  <pair> </pair>
             }
           },
-          rainbow = {
-            enable = true,
-            -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-            extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-            max_file_lines = nil, -- Do not enable for files with more than n lines, int
-            -- colors = {}, -- table of hex strings
-            -- termcolors = {} -- table of colour name strings
-          },
-          refactor = {
-            highlight_definitions = {
-              enable = true,
-              clear_on_cursor_move = true, -- Set to false if you have an `updatetime` of ~100.
-            },
-          },
-          textobjects = {
-            swap = {
-              enable = true,
-              swap_next = {
-                ["g>"] = "@parameter.inner",
-              },
-              swap_previous = {
-                ["g<"] = "@parameter.inner",
-              },
-            },
-          },
         }
-        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
       end,
-      requires = {
-        {
-          -- Manipulate text objects
-          "nvim-treesitter/nvim-treesitter-textobjects",
-          after = "nvim-treesitter",
-        },
-        {
-          "nvim-treesitter/nvim-treesitter-refactor",
-          after = "nvim-treesitter",
-        },
-        {
-          -- Parenthesis highlighting
-          "p00f/nvim-ts-rainbow",
-          after = "nvim-treesitter",
-        },
-        {
-          -- Context based commenting
-          "JoosepAlviste/nvim-ts-context-commentstring",
-          after = "nvim-treesitter",
-        },
-        {
-          -- Provide language-specific % pairs
-          "theHamsta/nvim-treesitter-pairs",
-          after = "nvim-treesitter",
-        },
-      }
+    }
+
+    use { "nvim-treesitter/playground",
+      -- ABOUT: Provide a playground, accessible via :TSPlaygroundToggle
+      after = "nvim-treesitter",
+      config = function()
+        require "nvim-treesitter.configs".setup {
+          playground = {
+            enable = true,
+            disable = {},
+            updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+            persist_queries = false, -- Whether the query persists across vim sessions
+            keybindings = {
+              toggle_query_editor = 'o',
+              toggle_hl_groups = 'i',
+              toggle_injected_languages = 't',
+              toggle_anonymous_nodes = 'a',
+              toggle_language_display = 'I',
+              focus_language = 'f',
+              unfocus_language = 'F',
+              update = 'R',
+              goto_node = '<cr>',
+              show_help = '?',
+            },
+          }
+        }
+      end,
     }
 
     use { "lewis6991/gitsigns.nvim",
