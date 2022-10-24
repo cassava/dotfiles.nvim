@@ -33,6 +33,8 @@ require("packer").startup {
       -- ABOUT: Lua functions that you and other plugins may need.
     }
 
+    -- UI Plugins:
+
     use { "nvim-lua/popup.nvim",
       -- ABOUT: Popup API implementation is a plugin until merged into neovim.
     }
@@ -63,6 +65,24 @@ require("packer").startup {
       end,
     }
 
+    use { "nvim-telescope/telescope.nvim",
+      -- ABOUT: Universal fuzzy finder.
+      -- USAGE: Run :Telescope and check out the auto-complete.
+      config = function()
+        require("telescope").load_extension("fzf")
+        require("telescope").load_extension("packer")
+      end,
+      requires = {
+        {
+          "nvim-telescope/telescope-fzf-native.nvim",
+          run = "make",
+        },
+        {
+          "nvim-telescope/telescope-packer.nvim",
+        }
+      }
+    }
+
     use { "folke/trouble.nvim",
       -- ABOUT: Error and warnings list.
       after = "nvim-web-devicons",
@@ -74,6 +94,169 @@ require("packer").startup {
         }
       end
     }
+
+    use { "folke/which-key.nvim",
+      -- ABOUT: Provides popup reference for your keybindings.
+      config = function()
+        require("which-key").setup {
+          plugins = {
+            marks = true, -- shows a list of your marks on ' and `
+            registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+            spelling = {
+              enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+              suggestions = 20, -- how many suggestions should be shown in the list?
+            },
+            -- the presets plugin, adds help for a bunch of default keybindings in Neovim
+            -- No actual key bindings are created
+            presets = {
+              operators = true, -- adds help for operators like d, y, ... and registers them for motion / text object completion
+              motions = true, -- adds help for motions
+              text_objects = true, -- help for text objects triggered after entering an operator
+              windows = true, -- default bindings on <c-w>
+              nav = true, -- misc bindings to work with windows
+              z = true, -- bindings for folds, spelling and others prefixed with z
+              g = true, -- bindings for prefixed with g
+            },
+          },
+          -- add operators that will trigger motion and text object completion
+          -- to enable all native operators, set the preset / operators plugin above
+          operators = { gc = "Comments" },
+          key_labels = {
+            ["<space>"] = "SPC",
+            ["<cr>"] = "RET",
+            ["<tab>"] = "TAB",
+          },
+          icons = {
+            breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
+            separator = "➜", -- symbol used between a key and it's label
+            group = "+", -- symbol prepended to a group
+          },
+          popup_mappings = {
+            scroll_down = '<c-d>', -- binding to scroll down inside the popup
+            scroll_up = '<c-u>', -- binding to scroll up inside the popup
+          },
+          window = {
+            border = "none", -- none, single, double, shadow
+            position = "top", -- bottom, top
+            margin = { 0, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
+            padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
+            winblend = 0
+          },
+          layout = {
+            height = { min = 4, max = 25 }, -- min and max height of the columns
+            width = { min = 20, max = 50 }, -- min and max width of the columns
+            spacing = 3, -- spacing between columns
+            align = "left", -- align columns left, center or right
+          },
+          ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
+          hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "<cr>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
+          show_help = true, -- show help message on the command line when the popup is visible
+          triggers = "auto", -- automatically setup triggers
+          -- triggers = {"<leader>"} -- or specify a list manually
+          triggers_blacklist = {
+            -- list of mode / prefixes that should never be hooked by WhichKey
+            -- this is mostly relevant for key maps that start with a native binding
+            -- most people should not need to change this
+            i = { "j", "k" },
+            v = { "j", "k" },
+          },
+        }
+      end,
+    }
+
+    use { "folke/todo-comments.nvim",
+      requires = "nvim-lua/plenary.nvim",
+      config = function()
+        require("todo-comments").setup {
+        }
+      end
+    }
+
+    use { "anuvyklack/pretty-fold.nvim",
+      -- ABOUT: Improve folding appearance.
+      -- HELP: https://github.com/anuvyklack/pretty-fold.nvim
+      config = function()
+        require("pretty-fold").setup{}
+      end,
+      requires = {
+        "anuvyklack/nvim-keymap-amend",
+      }
+    }
+
+    use { "anuvyklack/fold-preview.nvim",
+      -- ABOUT: Preview folds.
+      config = function()
+        require("fold-preview").setup()
+      end,
+      requires = {
+        "anuvyklack/keymap-amend.nvim",
+      }
+    }
+
+    use { "goolord/alpha-nvim",
+      config = function()
+        require("alpha").setup(require("alpha.themes.startify").config)
+      end
+    }
+
+    -- Git Integration:
+
+    use { "lewis6991/gitsigns.nvim",
+      -- ABOUT: Git integration.
+      config = function()
+        require("gitsigns").setup {
+          signs = {
+            add = { text = '+' },
+            change = { text = '~' },
+            delete = { text = '_' },
+            topdelete = { text = '‾' },
+            changedelete = { text = '~' },
+          },
+        }
+      end,
+      requires = {
+        "nvim-lua/plenary.nvim",
+      },
+    }
+
+    use { "f-person/git-blame.nvim",
+      setup = function()
+        vim.g.gitblame_enabled = 0
+        vim.g.gitblame_set_extmark_options = {
+          virt_text_pos = "right_align",
+        }
+      end,
+    }
+
+    use { "tpope/vim-fugitive",
+      -- ABOUT: Git integration for Vim.
+      -- HELP: fugitive.txt"
+    }
+
+    use { 'sindrets/diffview.nvim',
+      requires = 'nvim-lua/plenary.nvim'
+    }
+
+    use { "junegunn/gv.vim",
+      -- ABOUT: Fast Git commit browser.
+      -- USAGE:
+      --   :GV     | Open commit browser. You can pass git log options to the command,
+      --           | e.g. :GV -S foobar -- plugins. Also works on lines in visual mode.
+      --   :GV!    | List commits that affected the current file.
+      --   :GV?    | Fill the location list with the revisions of the current file.
+      --           | Also works on lines in visual mode.
+      --
+      -- MAPPINGS:
+      --   o       | Display commit contents or diff
+      --   O       | Opens a new tab instead
+      --   gb      | Launches :Gbrowse
+      --   ]]      | Move to next commit
+      --   [[      | Move to previous commit
+      --   .       | Start command-line with :Git [CURSOR] SHA à la fugitive
+      --   q       | to close
+    }
+
+    -- Treesitter Plugins:
 
     use { "nvim-treesitter/nvim-treesitter",
       -- ABOUT: Provide fast and accurate language parsing.
@@ -148,18 +331,6 @@ require("packer").startup {
       end,
     }
 
-    use { "JoosepAlviste/nvim-ts-context-commentstring",
-      -- ABOUT: Context based commenting
-      after = "nvim-treesitter",
-      config = function()
-        require("nvim-treesitter.configs").setup {
-          context_commentstring = {
-            enable = true
-          },
-        }
-      end,
-    }
-
     use { "theHamsta/nvim-treesitter-pairs",
       -- ABOUT: Provide language-specific % pairs
       after = "nvim-treesitter",
@@ -214,96 +385,148 @@ require("packer").startup {
       end,
     }
 
-    use { "lewis6991/gitsigns.nvim",
-      -- ABOUT: Git integration.
+    -- LSP / Completion / Linters / Formatters / Snippets Plugins:
+
+    use { "williamboman/mason.nvim",
+      -- ABOUT: Manage external editor tooling such as LSP servers,
+      -- DAP servers, linters, and formatters through a single interface.
       config = function()
-        require("gitsigns").setup {
-          signs = {
-            add = { text = '+' },
-            change = { text = '~' },
-            delete = { text = '_' },
-            topdelete = { text = '‾' },
-            changedelete = { text = '~' },
-          },
-        }
-      end,
-      requires = {
-        "nvim-lua/plenary.nvim",
-      },
+        require("mason").setup()
+      end
     }
 
-    use { "anuvyklack/pretty-fold.nvim",
-      -- ABOUT: Improve folding appearance.
-      -- HELP: https://github.com/anuvyklack/pretty-fold.nvim
+    use { "williamboman/mason-lspconfig.nvim",
+      after = "mason.nvim",
       config = function()
-        require("pretty-fold").setup{}
-      end,
-      requires = {
-        "anuvyklack/nvim-keymap-amend",
-      }
+        require("mason-lspconfig").setup()
+      end
     }
 
-    use { "anuvyklack/fold-preview.nvim",
-      -- ABOUT: Preview folds.
-      config = function()
-        require("fold-preview").setup()
-      end,
-      requires = {
-        "anuvyklack/keymap-amend.nvim",
-      }
+    use { "neovim/nvim-lspconfig",
+      -- ABOUT: Built-in LSP configuration mechanism.
+      after = "mason-lspconfig.nvim",
     }
 
-    use { "editorconfig/editorconfig-vim",
-      -- ABOUT: Support editorconfig.org configurations
-      -- HELP: editorconfig.txt
-      setup = function()
-        vim.g.EditorConfig_exclude_patterns = {"fugitive://.*"}
-      end,
-    }
-
-    use { "L3MON4D3/LuaSnip",
-      -- ABOUT: Snippet engine
-      -- HELP: luasnip.txt
+    --[[
+    use { "williamboman/nvim-lsp-installer",
+      -- ABOUT: LSP manager, so you don't have to do it yourself with nvim-lspconfig.
       config = function()
-        local ls = require "luasnip"
-        ls.config.set_config {
-            history = true,
-            updateevents = "TextChanged,TextChangedI",
-        }
+        local lsp_installer = require("nvim-lsp-installer")
+        local on_attach = function(_, bufnr)
+          -- Enable completion triggered by <c-x><c-o>
+          vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-        -- <c-k> is my expansion key
-        -- this will expand the current item or jump to the next item within the snippet.
-        vim.keymap.set({"i", "s"}, "<c-k>", function()
-            if ls.expand_or_jumpable() then
-                ls.expand_or_jump()
+          require("core").keymapper().register({
+            -- Replace Vim standard keybindings to use LSP:
+            ["gD"] = { "<cmd>lua vim.lsp.buf.declaration()<cr>", "Goto declaration [lsp]" },
+            ["gd"] = { "<cmd>lua vim.lsp.buf.definition()<cr>", "Goto definition [lsp]" },
+            ["gi"] = { "<cmd>lua vim.lsp.buf.implementation()<cr>", "Goto implementation [lsp]" },
+            ["gr"] = { "<cmd>lua vim.lsp.buf.references()<cr>", "Show references [lsp]" },
+            ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "Hover entity [lsp]" },
+            ["<C-k>"] = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Show signature help [lsp]" },
+            ["[d"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Previous diagnostic [lsp]" },
+            ["]d"] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next diagnostic [lsp]" },
+
+            ["<leader>e"] = { "<cmd>lua vim.diagnostic.open_float()<cr>", "Open diagnostics [lsp]" },
+            ["<leader>q"] = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Send diagnostics to QuickList [lsp]" },
+            ["<leader>wa"] = { "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>", "Add workspace folder [lsp]" },
+            ["<leader>wr"] = { "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>", "Remove workspace folder [lsp]" },
+            ["<leader>wl"] = { "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", "Show workspace folders [lsp]" },
+            ["<leader>D"] = { "<cmd>lua vim.lsp.buf.type_definition()<cr>", "Goto type definition [lsp]" },
+            ["<leader>rn"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename entity [lsp]" },
+            ["<leader>ca"] = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code actions [lsp]" },
+            ["<leader>so"] = { "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", "Search symbols [lsp]" },
+          })
+
+          vim.cmd "command! LspFormat execute 'lua vim.lsp.buf.formatting()'"
+        end
+
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+        if ok then
+          capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+        else
+          print("Warning: cannot load cmp_nvim_lsp, reduced completion capabilities")
+        end
+
+        -- Define :Format command to use LSP formatter.
+        lsp_installer.on_server_ready(function(server)
+          local opts = server:get_default_options()
+          opts.on_attach = on_attach
+          opts.capabilities = capabilities
+          opts.flags = {
+            debounce_text_changes = 250,
+          }
+
+          if server.name == "rust_analyzer" then
+            -- Initialize the LSP via rust-tools instead
+            local ok, rust_tools = pcall(require, "rust-tools")
+            if ok then
+              rust_tools.setup {
+                -- The "server" property provided in rust-tools setup function are the
+                -- settings rust-tools will provide to lspconfig during init.
+                -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
+                -- with the user's own settings (opts).
+                tools = { -- rust-tools options
+                  autoSetHints = true,
+                  hover_with_actions = true,
+                  inlay_hints = {
+                    show_parameter_hints = false,
+                    parameter_hints_prefix = "",
+                    other_hints_prefix = "",
+                  },
+                },
+                server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
+              }
+              server:attach_buffers()
+              -- Only if standalone support is needed
+              rust_tools.start_standalone_if_required()
+            else
+              server:setup(opts)
             end
+          elseif server.name == "sumneko_lua" then
+            local runtime_path = vim.split(package.path, ';')
+            table.insert(runtime_path, "lua/?.lua")
+            table.insert(runtime_path, "lua/?/init.lua")
+
+            opts.settings = {
+              Lua = {
+                runtime = {
+                  version = 'LuaJIT',
+                  path = runtime_path,
+                },
+                diagnostics = {
+                  -- Get the language server to recognize the `vim` global
+                  globals = {'vim'},
+                },
+                workspace = {
+                  -- Make the server aware of Neovim runtime files
+                  library = vim.api.nvim_get_runtime_file("", true),
+                },
+                telemetry = {
+                  enable = false,
+                },
+              }
+            }
+            server:setup(opts)
+          else
+            server:setup(opts)
+          end
         end)
-
-        -- <c-j> is my jump backwards key
-        -- this will always move to the previous item within the snippet.
-        vim.keymap.set({"i", "s"}, "<c-j>", function()
-            if ls.jumpable(-1) then
-                ls.jump(-1)
-            end
-        end)
-
-        vim.keymap.set("i", "<c-l>", function()
-            if ls.choice_active() then
-                ls.change_choice(1)
-            end
-        end)
-
-        vim.keymap.set({"n"}, "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<cr>")
-
-        require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/snippets"})
-        vim.cmd [[
-          command! LuaSnipEdit :lua require("luasnip.loaders.from_lua").edit_snippet_files()
-        ]]
       end,
-      requires = {
-        -- Snippet collections
-        "rafamadriz/friendly-snippets",
-      },
+    }
+    --]]
+
+    use { "tami5/lspsaga.nvim",
+      -- LSP enhancer
+      disable = true,
+      config = function()
+        require("lspsaga").setup()
+      end,
+    }
+
+    use { "liuchengxu/vista.vim",
+      -- ABOUT: View and search LSP symbols, tags in Vim/NeoVim.
     }
 
     use { "hrsh7th/nvim-cmp",
@@ -394,134 +617,17 @@ require("packer").startup {
       }
     }
 
-    use { "neovim/nvim-lspconfig",
-      -- ABOUT: Built-in LSP configuration mechanism.
-      -- NOTE: We can configure this, or we can use nvim-lsp-installer.
-    }
-
-    use { "williamboman/nvim-lsp-installer",
-      -- ABOUT: LSP manager, so you don't have to do it yourself with nvim-lspconfig.
-      config = function()
-        local lsp_installer = require("nvim-lsp-installer")
-        local on_attach = function(_, bufnr)
-          -- Enable completion triggered by <c-x><c-o>
-          vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-          require("core").keymapper().register({
-            -- Replace Vim standard keybindings to use LSP:
-            ["gD"] = { "<cmd>lua vim.lsp.buf.declaration()<cr>", "Goto declaration [lsp]" },
-            ["gd"] = { "<cmd>lua vim.lsp.buf.definition()<cr>", "Goto definition [lsp]" },
-            ["gi"] = { "<cmd>lua vim.lsp.buf.implementation()<cr>", "Goto implementation [lsp]" },
-            ["gr"] = { "<cmd>lua vim.lsp.buf.references()<cr>", "Show references [lsp]" },
-            ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "Hover entity [lsp]" },
-            ["<C-k>"] = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Show signature help [lsp]" },
-            ["[d"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Previous diagnostic [lsp]" },
-            ["]d"] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next diagnostic [lsp]" },
-
-            ["<leader>e"] = { "<cmd>lua vim.diagnostic.open_float()<cr>", "Open diagnostics [lsp]" },
-            ["<leader>q"] = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Send diagnostics to QuickList [lsp]" },
-            ["<leader>wa"] = { "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>", "Add workspace folder [lsp]" },
-            ["<leader>wr"] = { "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>", "Remove workspace folder [lsp]" },
-            ["<leader>wl"] = { "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", "Show workspace folders [lsp]" },
-            ["<leader>D"] = { "<cmd>lua vim.lsp.buf.type_definition()<cr>", "Goto type definition [lsp]" },
-            ["<leader>rn"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename entity [lsp]" },
-            ["<leader>ca"] = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code actions [lsp]" },
-            ["<leader>so"] = { "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", "Search symbols [lsp]" },
-          })
-
-          vim.cmd [[ command! LspFormat execute 'lua vim.lsp.buf.formatting()' ]]
-        end
-
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-        if ok then
-          capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-        else
-          print("Warning: cannot load cmp_nvim_lsp, reduced completion capabilities")
-        end
-
-        -- Define :Format command to use LSP formatter.
-        lsp_installer.on_server_ready(function(server)
-          local opts = server:get_default_options()
-          opts.on_attach = on_attach
-          opts.capabilities = capabilities
-          opts.flags = {
-            debounce_text_changes = 250,
-          }
-
-          if server.name == "rust_analyzer" then
-            -- Initialize the LSP via rust-tools instead
-            local ok, rust_tools = pcall(require, "rust-tools")
-            if ok then
-              rust_tools.setup {
-                -- The "server" property provided in rust-tools setup function are the
-                -- settings rust-tools will provide to lspconfig during init.
-                -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
-                -- with the user's own settings (opts).
-                tools = { -- rust-tools options
-                  autoSetHints = true,
-                  hover_with_actions = true,
-                  inlay_hints = {
-                    show_parameter_hints = false,
-                    parameter_hints_prefix = "",
-                    other_hints_prefix = "",
-                  },
-                },
-                server = vim.tbl_deep_extend("force", server:get_default_options(), opts),
-              }
-              server:attach_buffers()
-              -- Only if standalone support is needed
-              rust_tools.start_standalone_if_required()
-            else
-              server:setup(opts)
-            end
-          elseif server.name == "sumneko_lua" then
-            local runtime_path = vim.split(package.path, ';')
-            table.insert(runtime_path, "lua/?.lua")
-            table.insert(runtime_path, "lua/?/init.lua")
-
-            opts.settings = {
-              Lua = {
-                runtime = {
-                  version = 'LuaJIT',
-                  path = runtime_path,
-                },
-                diagnostics = {
-                  -- Get the language server to recognize the `vim` global
-                  globals = {'vim'},
-                },
-                workspace = {
-                  -- Make the server aware of Neovim runtime files
-                  library = vim.api.nvim_get_runtime_file("", true),
-                },
-                telemetry = {
-                  enable = false,
-                },
-              }
-            }
-            server:setup(opts)
-          else
-            server:setup(opts)
-          end
-        end)
-      end,
-    }
-
     use { "onsails/lspkind-nvim",
       -- ABOUT: Provide fancy icons for LSP information, in particular for nvim-cmp.
-    }
-
-    use { "tami5/lspsaga.nvim",
-      -- LSP enhancer
-      disable = true,
-      config = function()
-        require("lspsaga").setup()
-      end,
     }
 
     use { "jose-elias-alvarez/null-ls.nvim",
       -- ABOUT: Provide LSP diagnostics, formatting, and other code actions via
       -- nvim lua plugins.
+      after = "mason.nvim",
+      requires = {
+        "nvim-lua/plenary.nvim",
+      },
       config = function()
         local null_ls = require "null-ls"
         null_ls.setup{
@@ -545,96 +651,67 @@ require("packer").startup {
           }
         }
       end,
+    }
+
+    use { "jayp0521/mason-null-ls.nvim",
+      -- ABOUT: Install tools for null-ls automatically with Mason.
+      after = "null-ls.nvim",
+      config = function()
+        require("mason-null-ls").setup()
+      end,
+    }
+
+    use { "mfussenegger/nvim-dap"
+      -- ABOUT: Client for the Debug Adapter Protocol.
+      -- HELP: dap-configuration.txt
+    }
+
+    use { "L3MON4D3/LuaSnip",
+      -- ABOUT: Snippet engine
+      -- HELP: luasnip.txt
+      config = function()
+        local ls = require "luasnip"
+        ls.config.set_config {
+            history = true,
+            updateevents = "TextChanged,TextChangedI",
+        }
+
+        -- <c-k> is my expansion key
+        -- this will expand the current item or jump to the next item within the snippet.
+        vim.keymap.set({"i", "s"}, "<c-k>", function()
+            if ls.expand_or_jumpable() then
+                ls.expand_or_jump()
+            end
+        end)
+
+        -- <c-j> is my jump backwards key
+        -- this will always move to the previous item within the snippet.
+        vim.keymap.set({"i", "s"}, "<c-j>", function()
+            if ls.jumpable(-1) then
+                ls.jump(-1)
+            end
+        end)
+
+        vim.keymap.set("i", "<c-l>", function()
+            if ls.choice_active() then
+                ls.change_choice(1)
+            end
+        end)
+
+        vim.keymap.set({"n"}, "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<cr>")
+
+        require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/snippets"})
+        vim.cmd [[
+          command! LuaSnipEdit :lua require("luasnip.loaders.from_lua").edit_snippet_files()
+        ]]
+      end,
       requires = {
-        "nvim-lua/plenary.nvim",
+        -- Snippet collections
+        "rafamadriz/friendly-snippets",
       },
     }
 
-    use { "folke/which-key.nvim",
-      -- ABOUT: Provides popup reference for your keybindings.
-      config = function()
-        require("which-key").setup {
-          plugins = {
-            marks = true, -- shows a list of your marks on ' and `
-            registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
-            spelling = {
-              enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
-              suggestions = 20, -- how many suggestions should be shown in the list?
-            },
-            -- the presets plugin, adds help for a bunch of default keybindings in Neovim
-            -- No actual key bindings are created
-            presets = {
-              operators = true, -- adds help for operators like d, y, ... and registers them for motion / text object completion
-              motions = true, -- adds help for motions
-              text_objects = true, -- help for text objects triggered after entering an operator
-              windows = true, -- default bindings on <c-w>
-              nav = true, -- misc bindings to work with windows
-              z = true, -- bindings for folds, spelling and others prefixed with z
-              g = true, -- bindings for prefixed with g
-            },
-          },
-          -- add operators that will trigger motion and text object completion
-          -- to enable all native operators, set the preset / operators plugin above
-          operators = { gc = "Comments" },
-          key_labels = {
-            ["<space>"] = "SPC",
-            ["<cr>"] = "RET",
-            ["<tab>"] = "TAB",
-          },
-          icons = {
-            breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-            separator = "➜", -- symbol used between a key and it's label
-            group = "+", -- symbol prepended to a group
-          },
-          popup_mappings = {
-            scroll_down = '<c-d>', -- binding to scroll down inside the popup
-            scroll_up = '<c-u>', -- binding to scroll up inside the popup
-          },
-          window = {
-            border = "none", -- none, single, double, shadow
-            position = "top", -- bottom, top
-            margin = { 0, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
-            padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
-            winblend = 0
-          },
-          layout = {
-            height = { min = 4, max = 25 }, -- min and max height of the columns
-            width = { min = 20, max = 50 }, -- min and max width of the columns
-            spacing = 3, -- spacing between columns
-            align = "left", -- align columns left, center or right
-          },
-          ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-          hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "<cr>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
-          show_help = true, -- show help message on the command line when the popup is visible
-          triggers = "auto", -- automatically setup triggers
-          -- triggers = {"<leader>"} -- or specify a list manually
-          triggers_blacklist = {
-            -- list of mode / prefixes that should never be hooked by WhichKey
-            -- this is mostly relevant for key maps that start with a native binding
-            -- most people should not need to change this
-            i = { "j", "k" },
-            v = { "j", "k" },
-          },
-        }
-      end,
-    }
-
-    use { "folke/todo-comments.nvim",
-      requires = "nvim-lua/plenary.nvim",
-      config = function()
-        require("todo-comments").setup {
-        }
-      end
-    }
-
-    use { "f-person/git-blame.nvim",
-      setup = function()
-        vim.g.gitblame_enabled = 0
-        vim.g.gitblame_set_extmark_options = {
-          virt_text_pos = "right_align",
-        }
-      end,
-    }
+    -- Functionality Plugins:
 
     use { "natecraddock/sessions.nvim",
       -- ABOUT: Makes using sesions easier
@@ -738,66 +815,17 @@ require("packer").startup {
       end
     }
 
-    use { "nvim-telescope/telescope.nvim",
-      -- ABOUT: Universal fuzzy finder.
-      -- USAGE: Run :Telescope and check out the auto-complete.
+    use { "JoosepAlviste/nvim-ts-context-commentstring",
+      -- ABOUT: Context based commenting
+      after = "nvim-treesitter",
       config = function()
-        require("telescope").load_extension("fzf")
-        require("telescope").load_extension("packer")
-      end,
-      requires = {
-        {
-          "nvim-telescope/telescope-fzf-native.nvim",
-          run = "make",
-        },
-        {
-          "nvim-telescope/telescope-packer.nvim",
+        require("nvim-treesitter.configs").setup {
+          context_commentstring = {
+            enable = true
+          },
         }
-      }
-    }
-
-    use { "goolord/alpha-nvim",
-      config = function()
-        require("alpha").setup(require("alpha.themes.startify").config)
-      end
-    }
-
-    -------------------------------------------------------------------------------------
-    -- Colorschemes {{{
-
-    use { "EdenEast/nightfox.nvim",
-      config = function()
-        -- Configuration is in core/configs/nordfox.lua, because it will be sourced
-        -- by core.init_colorscheme.
-      end
-    }
-
-    --[[
-    use { "altercation/vim-colors-solarized" }
-    use { "ayu-theme/ayu-vim",
-      setup = function()
-        vim.g.ayucolor = "light"
       end,
     }
-    use { "dracula/vim", as = "dracula" }
-    use { "endel/vim-github-colorscheme" }
-    use { "jacoborus/tender.vim" }
-    use { "jnurmine/zenburn" }
-    use { "mjlbach/onedark.nvim" }
-    use { "morhetz/gruvbox",
-      setup = function()
-        vim.g.gruvbox_italic = 1
-        vim.g.gruvbox_contrast_dark = "hard"
-        vim.g.gruvbox_contrast_light = "hard"
-        vim.g.gruvbox_invert_selection = 0
-      end,
-    }
-    use { "nanotech/jellybeans.vim" }
-    use { "sjl/badwolf" }
-    use { "tomasr/molokai" }
-    --]]
-
-    -------------------------------------------------------------------------------------
 
     use { "numToStr/Comment.nvim",
       -- ABOUT: Provides ability to comment out and in sections in code.
@@ -809,56 +837,12 @@ require("packer").startup {
       --    `gc[count]{motion}`  (Op-pending) Toggles the region using linewise comment.
       --    `gb[count]{motion}`  (Op-pending) Toggles the region using blockwise comment.
       -- HELP: https://github.com/numToStr/Comment.nvim
+      after = "nvim-ts-context-commentstring",
       config = function()
         require("Comment").setup {
-          pre_hook = function(ctx)
-            -- Only calculate commentstring for tsx filetypes
-            if vim.bo.filetype == 'typescriptreact' then
-              local U = require('Comment.utils')
-
-              -- Detemine whether to use linewise or blockwise commentstring
-              local type = ctx.ctype == U.ctype.line and '__default' or '__multiline'
-
-              -- Determine the location where to calculate commentstring from
-              local location = nil
-              if ctx.ctype == U.ctype.block then
-                location = require('ts_context_commentstring.utils').get_cursor_location()
-              elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
-                location = require('ts_context_commentstring.utils').get_visual_start_location()
-              end
-
-              return require('ts_context_commentstring.internal').calculate_commentstring({
-                key = type,
-                location = location,
-              })
-            end
-          end,
+          pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
         }
       end
-    }
-
-    use { "tpope/vim-fugitive",
-      -- ABOUT: Git integration for Vim.
-      -- HELP: fugitive.txt"
-    }
-
-    use { "junegunn/gv.vim",
-      -- ABOUT: Fast Git commit browser.
-      -- USAGE:
-      --   :GV     | Open commit browser. You can pass git log options to the command,
-      --           | e.g. :GV -S foobar -- plugins. Also works on lines in visual mode.
-      --   :GV!    | List commits that affected the current file.
-      --   :GV?    | Fill the location list with the revisions of the current file.
-      --           | Also works on lines in visual mode.
-      --
-      -- MAPPINGS:
-      --   o       | Display commit contents or diff
-      --   O       | Opens a new tab instead
-      --   gb      | Launches :Gbrowse
-      --   ]]      | Move to next commit
-      --   [[      | Move to previous commit
-      --   .       | Start command-line with :Git [CURSOR] SHA à la fugitive
-      --   q       | to close
     }
 
     use { "tpope/vim-eunuch",
@@ -1006,10 +990,6 @@ require("packer").startup {
       end,
     }
 
-    use { "liuchengxu/vista.vim",
-      -- ABOUT: View and search LSP symbols, tags in Vim/NeoVim.
-    }
-
     use { "raghur/vim-ghost",
       -- ABOUT: Bi-directionally edit text content in the browser with Vim.
       -- REQUIREMENTS:
@@ -1029,7 +1009,19 @@ require("packer").startup {
       end
     }
 
-    ----------------------------------------------------------------------------------
+    use { "neomake/neomake",
+      -- ABOUT: Asyncronous make and friends.
+    }
+
+    -- Filetype Plugins:
+
+    use { "editorconfig/editorconfig-vim",
+      -- ABOUT: Support editorconfig.org configurations
+      -- HELP: editorconfig.txt
+      setup = function()
+        vim.g.EditorConfig_exclude_patterns = {"fugitive://.*"}
+      end,
+    }
 
     use { "sheerun/vim-polyglot",
       -- ABOUT: Collection of extra file-type plugins.
@@ -1052,16 +1044,21 @@ require("packer").startup {
       -- ABOUT: Advanced rust tooling.
     }
 
-    use { "neomake/neomake",
-      -- ABOUT: Asyncronous make and friends.
-    }
-
     use { "fatih/vim-go",
       setup = function()
         vim.g.go_highlight_trailing_whitespace_error = 0
         vim.g.go_auto_type_info = 1
         vim.g.go_fmt_command = "goimports"
         vim.g.go_fmt_experimental = 1
+      end
+    }
+
+    -- Colorscheme Plugins:
+
+    use { "EdenEast/nightfox.nvim",
+      config = function()
+        -- Configuration is in core/configs/nordfox.lua, because it will be sourced
+        -- by core.init_colorscheme.
       end
     }
 
