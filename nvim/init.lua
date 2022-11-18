@@ -654,8 +654,8 @@ require("packer").startup {
         "nvim-lua/plenary.nvim",
       },
       config = function()
-        local null_ls = require "null-ls"
-        null_ls.setup{
+        local null_ls = require("null-ls")
+        null_ls.setup({
           sources = {
             -- JSON
             null_ls.builtins.formatting.jq,
@@ -667,14 +667,23 @@ require("packer").startup {
             -- Python
             null_ls.builtins.diagnostics.pylint,
             null_ls.builtins.diagnostics.mypy,
+            null_ls.builtins.formatting.black,
 
             -- Git
             null_ls.builtins.code_actions.gitsigns,
 
             -- C++
             null_ls.builtins.formatting.clang_format,
+
+            -- Lua
+            null_ls.builtins.formatting.stylua,
           }
-        }
+        })
+
+        local key = require("core").keymapper()
+        key.register({
+          [",f"] = { ":lua vim.lsp.buf.format()", "Format file" }
+        })
       end,
     }
 
