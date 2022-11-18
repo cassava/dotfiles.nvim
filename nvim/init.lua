@@ -83,18 +83,6 @@ require("packer").startup {
       }
     }
 
-    use { "folke/trouble.nvim",
-      -- ABOUT: Error and warnings list.
-      after = "nvim-web-devicons",
-      config = function()
-        require("trouble").setup {
-          -- your configuration comes here
-          -- or leave it empty to use the default settings
-          -- refer to the configuration section below
-        }
-      end
-    }
-
     use { "folke/which-key.nvim",
       -- ABOUT: Provides popup reference for your keybindings.
       config = function()
@@ -162,6 +150,43 @@ require("packer").startup {
           },
         }
       end,
+    }
+
+    use { "folke/trouble.nvim",
+      -- ABOUT: Error and warnings list.
+      after = "nvim-web-devicons",
+      config = function()
+        local key = require("core").keymapper()
+        key.register({
+          ["]k"]   = {
+            function()
+              require("trouble").next({skip_groups = true, jump = true});
+            end,
+            "Next Trouble"
+          },
+
+          ["[k"] = {
+            function()
+              require("trouble").previous({skip_groups = true, jump = true});
+            end,
+            "Previous Trouble"
+          },
+
+          ["[K"] = {
+            function()
+              require("trouble").first({skip_groups = true, jump = true});
+            end,
+            "First Trouble"
+          },
+
+          ["]K"] = {
+            function()
+              require("trouble").last({skip_groups = true, jump = true});
+            end,
+            "Last Trouble"
+          }
+        })
+      end
     }
 
     use { "folke/todo-comments.nvim",
