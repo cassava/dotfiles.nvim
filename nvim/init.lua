@@ -39,7 +39,7 @@ require("packer").startup {
       -- ABOUT: Popup API implementation is a plugin until merged into neovim.
     }
 
-    use { "kyazdani42/nvim-web-devicons",
+    use { "nvim-tree/nvim-web-devicons",
       -- ABOUT: Fancy developer icons used in many other plugins.
     }
 
