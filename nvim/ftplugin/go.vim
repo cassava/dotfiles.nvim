@@ -8,6 +8,3 @@ setl expandtab
 setl nolist
 
 let g:go_auto_type_info = 0
-
-" Set up omnicompletion
-call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
