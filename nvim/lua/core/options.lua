@@ -9,6 +9,7 @@ set.undofile = true     -- support persistent undo via undodir=~/.local/share/nv
 set.startofline = false -- when opening a file, restore to last column of line, not the beginning of the line
 set.gdefault = true     -- search/replace globally in a line by default
 set.autowriteall = true -- auto save whenever moving out of buffer or quitting
+set.more = false        -- do not pipe output through more
 
 set.title = true        -- set the title of the terminal
 set.mouse = "a"         -- enable mouse support in normal and visual mode
