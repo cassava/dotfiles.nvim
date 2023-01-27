@@ -67,23 +67,56 @@ key.register({
 
 -- Git [g] -------------------------------------------------------------------
 key.register({
+  -- Jump between hunks
+  ["]g"] = { map=[[&diff ? ']g' : '<cmd>Gitsigns next_hunk<cr>']], opts={expr=true} },
+  ["[g"] = { map=[[&diff ? '[g' : '<cmd>Gitsigns prev_hunk<cr>']], opts={expr=true} },
+
   ["<leader>g"] = {
     name = "git",
-    f = { "<cmd>Telescope git_files<cr>", "Search files" },
-    b = { "<cmd>Telescope git_branches<cr>", "Search branches" },
-    l = { "<cmd>Telescope git_commits<cr>", "Search commits" },
-    s = { "<cmd>Telescope git_status<cr>", "View status" },
-    t = { "<cmd>Telescope git_stash<cr>", "View stash" },
+
+    -- Search
+    ["/"] = {
+      name = "search",
+      f = { "<cmd>Telescope git_files<cr>", "Search files" },
+      b = { "<cmd>Telescope git_branches<cr>", "Search branches" },
+      l = { "<cmd>Telescope git_commits<cr>", "Search commits" },
+      s = { "<cmd>Telescope git_status<cr>", "View status" },
+      t = { "<cmd>Telescope git_stash<cr>", "View stash" },
+    },
 
     -- Actions
-    A = { ":Git commit --amend", "Amend commit" },
-    B = { ":GitBlameToggle<cr>", "Show blame information" },
-    C = { ":Git commit<cr>", "Create commit" },
+    A = { "<cmd>Git commit --amend<cr>", "Amend commit" },
+    B = { "<cmd>Gitsigns toggle_current_line_blame<cr>", "Toggle blame" },
     F = { ":Git commit --fixup", "Create fixup! commit" },
     R = { ":Git rebase -i ", "Rebase (interactive)" },
 
+    -- Popup what's changed in a hunk under cursor
+    p = { "<cmd>Gitsigns preview_hunk<cr>", "Preview hunk" },
+
+    -- Stage/reset individual hunks under cursor in a file
+    s = { "<cmd>Gitsigns stage_hunk<cr>", "Stage hunk" },
+    r = { "<cmd>Gitsigns reset_hunk<cr>", "Reset hunk" },
+    u = { "<cmd>Gitsigns undo_stage_hunk<cr>", "Undo stage hunk" },
+
+    -- Stage/reset all hunks in a file
+    S = { "<cmd>Gitsigns stage_buffer<cr>", "Stage buffer" },
+    U = { "<cmd>Gitsigns reset_buffer_index<cr>", "Reset buffer index" },
+    R = { "<cmd>Gitsigns reset_buffer<cr>", "Reset buffer" },
+
+    -- Open git status in interative window (similar to lazygit)
+    g = { "<cmd>Git<cr>", "Status" },
+
+    -- Open commit window (creates commit after writing and saving commit msg)
+    C = { "<cmd>Git commit | startinsert<cr>", "Commit" },
+
+    -- Other tools from fugitive
+    d = { "<cmd>Git difftool<cr>", "Open difftool" },
+    m = { "<cmd>Git mergetool<cr>", "Open mergetool" },
+    ['|'] = { "<cmd>Gvdiffsplit<cr>", "Diff this vertical" },
+    ['_'] = { "<cmd>Gdiffsplit<cr>", "Diff this horizontal" },
+
     -- Misc
-    d = {
+    c = {
       function()
         local fid = vim.fn.expand("%:p:h")
         local cwd = require"core.utils".project_dir(fid)
@@ -118,14 +151,14 @@ key.register({
     n = { function() vim.opt.number = not vim.o.number end, "Toggle number" },
     r = { function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relativenumber" },
     t = { function() vim.opt.expandtab = not vim.o.expandtab end, "Toggle expandtab" },
-    ["<char-62>"] = {
+    ["<char-62>"] = { -- character '>'
       function()
         vim.opt.tabstop = vim.o.tabstop + 2
         vim.opt.shiftwidth = vim.o.tabstop
       end,
       "Increase tab width by 2"
     },
-    ["<char-60>"] = {
+    ["<char-60>"] = { -- character '<'
       function()
         if vim.o.tabstop >= 2 then
           vim.opt.tabstop = vim.o.tabstop - 2
