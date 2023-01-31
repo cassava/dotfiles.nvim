@@ -69,17 +69,15 @@ require("packer").startup {
       -- ABOUT: Universal fuzzy finder.
       -- USAGE: Run :Telescope and check out the auto-complete.
       config = function()
-        require("telescope").load_extension("fzf")
-        require("telescope").load_extension("packer")
+        local tele = require("telescope")
+        tele.load_extension("fzf")
+        tele.load_extension("packer")
+        tele.load_extension("undo")
       end,
       requires = {
-        {
-          "nvim-telescope/telescope-fzf-native.nvim",
-          run = "make",
-        },
-        {
-          "nvim-telescope/telescope-packer.nvim",
-        }
+        { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
+        { "nvim-telescope/telescope-packer.nvim" },
+        { "debugloop/telescope-undo.nvim" },
       }
     }
 
@@ -1013,18 +1011,6 @@ require("packer").startup {
       setup = function()
         vim.g.localvimrc_sandbox = 0
         vim.g.localvimrc_ask = 0
-      end,
-    }
-
-    use { "mbbill/undotree",
-      -- ABOUT: Provides a graphical representation of the vim undo tree.
-      -- USAGE:
-      --   :UndotreeToggle | Show or close the undo-tree panel
-      -- MAPPINGS:
-      --   ?               | Show quick help in undotree window
-      -- HELP: undotree.txt
-      setup = function()
-        vim.keymap.set("n", "<leader>u", ":UndotreeToggle<cr>")
       end,
     }
 

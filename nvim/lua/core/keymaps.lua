@@ -33,8 +33,13 @@ key.register({
 })
 
 -- Search [/] ----------------------------------------------------------------
-map("n", "<leader>/<space>", ":Telescope<cr>")
-map("n", "<leader>/g", ":Telescope git_files<cr>")
+key.register({
+  ["<leader>/"] = {
+    name = "Search",
+    ["/"] = { "<cmd>Telescope<cr>", "Telescope" },
+    ["g"] = { "<cmd>Telescope git_files<cr>", "Git files" },
+  }
+})
 key.register({
   ["<leader>*"] = {
     function()
@@ -178,6 +183,7 @@ key.register({
     d = { "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", "Cd to file directory" },
     f = { "gqip", "Format paragraph" },
     h = { "<cmd>Telescope help_tags<cr>", "Search Vim help tags" },
+    u = { "<cmd>Telescope undo<cr>", "Undo history" },
   }
 }, { silent = false })
 
