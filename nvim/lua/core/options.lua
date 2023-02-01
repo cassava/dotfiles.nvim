@@ -2,6 +2,7 @@ local M = {}
 
 local set = vim.opt
 local fn = vim.fn
+local global = vim.g
 
 set.fileencoding = "utf-8"
 
@@ -79,5 +80,8 @@ elseif fn.executable('ag') > 0 then
 end
 
 set.timeoutlen = 500
+
+global.mapleader = " "
+global.localmapleader = "\\"
 
 return M

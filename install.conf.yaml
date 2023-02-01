@@ -1,3 +1,4 @@
+---
 - defaults:
     link:
       relink: true
@@ -14,9 +15,9 @@
       create: true
 
 - shell:
-  - description: Install neovim if necessary (to /usr/local/)
-    command: ./check-version.sh 0.7.0 || ./build-neovim.sh
+    - description: Install neovim if necessary (to /usr/local/)
+      command: ./check-version.sh 0.7.0 || ./build-neovim.sh
 
 - shell:
-  - description: Initialize neovim configuration
-    command: nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+    - description: Initialize neovim configuration
+      command: nvim --headless +"Lazy! sync" +qa

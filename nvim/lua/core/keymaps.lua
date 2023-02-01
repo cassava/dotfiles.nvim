@@ -14,7 +14,7 @@ map("x", ">", ">gv")
 key.register({
   ["<leader>v"] = {
     name = "vim",
-    c = { "<cmd>source $MYVIMRC<cr><cmd>PackerSync<cr>", "Source config and sync" },
+    c = { "<cmd>source $MYVIMRC<cr><cmd>Lazy sync<cr>", "Source config and sync" },
     e = { "<cmd>vsplit $MYVIMRC<cr>", "Edit config" },
     f = { "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", "Find files in config" },
     h = { "<cmd>Telescope help_tags<cr>", "Search help tags" },
