@@ -1,4 +1,4 @@
-local key = require("core").keymapper()
+local key = require("util").keymapper()
 key.register({
   [","] = {
     a = { ":Cargo add ", "Add dependency" },

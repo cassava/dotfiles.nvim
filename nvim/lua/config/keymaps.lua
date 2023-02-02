@@ -1,8 +1,5 @@
-local key = require("core").keymapper()
+local key = require("util").keymapper()
 local map = vim.keymap.set
-
-vim.g.mapleader = " "
-vim.g.localmapleader = "\\"
 
 -- Replacements: -------------------------------------------------------------
 
@@ -44,7 +41,7 @@ key.register({
   ["<leader>*"] = {
     function()
       require("telescope.builtin").grep_string({
-        cwd = require"core.utils".project_dir()
+        cwd = require("util").project_dir()
       })
     end,
     "Search project for <CWORD>"
@@ -52,7 +49,7 @@ key.register({
   ["<leader>a"] = {
     function()
       require("telescope.builtin").live_grep({
-        cwd = require"core.utils".project_dir()
+        cwd = require("util").project_dir()
       })
     end,
     "Search project"
@@ -62,8 +59,8 @@ key.register({
   ["<leader>*"] = {
     function()
       require("telescope.builtin").grep_string({
-        search = require"core.utils".get_visual_selection(),
-        cwd = require"core.utils".project_dir(),
+        search = require("util").get_visual_selection(),
+        cwd = require("util").project_dir(),
       })
     end,
     "Search project for selection"
@@ -124,7 +121,7 @@ key.register({
     c = {
       function()
         local fid = vim.fn.expand("%:p:h")
-        local cwd = require"core.utils".project_dir(fid)
+        local cwd = require("util").project_dir(fid)
         vim.cmd("lcd "..cwd.."")
       end,
       "Cd to project directory"

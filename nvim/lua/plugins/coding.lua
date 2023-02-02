@@ -155,7 +155,7 @@ return {
         }
       })
 
-      local key = require("core").keymapper()
+      local key = require("util").keymapper()
       key.register({
         [",f"] = { ":lua vim.lsp.buf.format()", "Format file" }
       })

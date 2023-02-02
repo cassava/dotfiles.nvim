@@ -53,6 +53,8 @@ return {
     end,
   },
 
+  { "ethanholz/nvim-lastplace", config = true },
+
   { "folke/which-key.nvim",
     -- ABOUT: Provides popup reference for your keybindings.
     config = function()
@@ -125,7 +127,7 @@ return {
   { "folke/trouble.nvim",
     -- ABOUT: Error and warnings list.
     config = function()
-      local key = require("core").keymapper()
+      local key = require("util").keymapper()
       key.register({
         ["]k"]   = {
           function()
@@ -158,7 +160,7 @@ return {
     end
   },
 
-  { "folke/todo-comments.nvim" },
+  { "folke/todo-comments.nvim", config = true },
 
   { "goolord/alpha-nvim",
     config = function()
@@ -182,7 +184,7 @@ return {
     -- ABOUT: Pairs of handy bracket mappings
     event = "BufReadPost",
     config = function()
-      local key = require("core").keymapper()
+      local key = require("util").keymapper()
 
       -- Next and Previous builtins
       key.register({

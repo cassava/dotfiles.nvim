@@ -1,9 +1,38 @@
-local utils = {}
+local util = {}
+
+-- Automatically install Lazy if it has not been installed yet.
+function util.bootstrap()
+    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+    if not vim.loop.fs_stat(lazypath) then
+      vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", lazypath })
+      vim.fn.system({ "git", "-C", lazypath, "checkout", "tags/stable" })
+    end
+    vim.opt.rtp:prepend(lazypath)
+end
+
+-- Return a keymapper, preferably which-key.
+function util.keymapper()
+    local ok, key = pcall(require, "which-key")
+    if ok then
+        return key
+    else
+        print("Warning: cannot load which-key, user-mappings disabled.")
+        return {
+            execute = function() end,
+            load = function() end,
+            register = function(_, _) end,
+            reset = function() end,
+            setup = function() end,
+            show = function() end,
+            show_command = function() end,
+        }
+    end
+end
 
 -- @brief Return the current project directory, which is the toplevel of a Git
 -- project if we are in a git project, or the CWD if not in a git project.
 -- @param cwd Optional directory to start from.
-utils.project_dir = function(cwd)
+util.project_dir = function(cwd)
   local stdout, ret, _ = require("telescope.utils").get_os_command_output({"git", "rev-parse", "--show-toplevel"}, cwd)
   if ret == 0 then
     print(stdout[1])
@@ -14,7 +43,7 @@ utils.project_dir = function(cwd)
   end
 end
 
-utils.get_visual_selection = function()
+util.get_visual_selection = function()
   local mode = vim.fn.mode()
   if mode ~= "v" or mode ~= "V" or mode ~= "CTRL-V" then
     return nil
@@ -39,4 +68,4 @@ utils.get_visual_selection = function()
   return table.concat(lines, "\n")
 end
 
-return utils
+return util
