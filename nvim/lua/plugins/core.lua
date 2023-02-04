@@ -162,10 +162,9 @@ return {
 
   { "folke/todo-comments.nvim", config = true },
 
-  { "goolord/alpha-nvim",
-    config = function()
-      require("alpha").setup(require("alpha.themes.startify").config)
-    end
+  { "echasnovski/mini.starter",
+    name = "mini.starter",
+    version = false,
   },
 
   { "echasnovski/mini.sessions",
