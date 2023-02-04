@@ -305,16 +305,10 @@ return {
     end,
   },
 
-  { "tpope/vim-surround",
-    -- ABOUT: Tool for dealing with pairs of surroundings.
-    -- MAPPINGS:
-    --   ds{char}            | Delete surrounding given by {char}
-    --   cs{char}{char}      | Change first surround {char} to second {char}
-    --   ys{motion}{char}    | Surround text object or motion with {char}
-    --   S{char}             | In visual mode, surround selection with {char}
-    -- HELP: surround.txt
-    -- after = "vim-repeat",
-    event = "BufReadPost"
+  { "echasnovski/mini.surround",
+    name = "mini.surround",
+    version = false,
+    event = "VeryLazy",
   },
 
   { "mg979/vim-visual-multi",
