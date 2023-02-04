@@ -356,11 +356,9 @@ return {
     -- ABOUT: Asyncronous make and friends.
   },
 
-  { "editorconfig/editorconfig-vim",
-    -- ABOUT: Support editorconfig.org configurations
-    -- HELP: editorconfig.txt
-    init = function()
-      vim.g.EditorConfig_exclude_patterns = {"fugitive://.*"}
-    end,
+  { "gpanders/editorconfig.nvim",
+    version = "*",
+    lazy = false,
+    enabled = function() return vim.fn.has("nvim-0.9") == 0 end,
   },
 }
