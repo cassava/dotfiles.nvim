@@ -26,4 +26,5 @@ return {
   -- Fancy developer icons used in many other plugins.
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
+  { "echasnovski/mini.misc", name = "mini.misc", lazy = true, version = false }
 }
