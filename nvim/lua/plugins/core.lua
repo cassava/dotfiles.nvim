@@ -168,16 +168,9 @@ return {
     end
   },
 
-  { "natecraddock/sessions.nvim",
-    -- ABOUT: Makes using sesions easier
-    -- USAGE:
-    --    :SaveSession .session
-    --    :LoadSession .session
-    -- HELP: sessions.txt
-    cmd = { "SaveSession", "LoadSession" },
-    config = function()
-      require("sessions").setup()
-    end
+  { "echasnovski/mini.sessions",
+    name = "mini.sessions",
+    version = false,
   },
 
   { "tpope/vim-unimpaired",
