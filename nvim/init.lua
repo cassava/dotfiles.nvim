@@ -1,3 +1,4 @@
+
 require("config.options")
 require("util").bootstrap()
 require("lazy").setup({
@@ -33,11 +34,11 @@ require("lazy").setup({
   install = {
     colorscheme = { "nordfox", "slate" }
   },
-  checker = {
-    enabled = true
-  },
   ui = {
     border = "rounded"
+  },
+  change_detection = {
+    notify = false,
   },
   performance = {
     rtp = {
