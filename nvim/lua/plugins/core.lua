@@ -360,4 +360,18 @@ return {
     lazy = false,
     enabled = function() return vim.fn.has("nvim-0.9") == 0 end,
   },
+
+  { "echasnovski/mini.indentscope",
+    name = "mini.indentscope",
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.indentscope").setup({
+        draw = {
+          delay = 250,
+          animation = require("mini.indentscope").gen_animation.none()
+        },
+      })
+    end,
+  }
 }
