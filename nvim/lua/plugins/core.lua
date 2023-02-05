@@ -1,19 +1,20 @@
 return {
   { "gbprod/yanky.nvim",
     event = "BufReadPost",
+    enabled = false,
     config = function()
-      vim.g.clipboard = {
-        name = "xsel_override",
-        copy = {
-          ["+"] = "xsel --input --clipboard",
-          ["*"] = "xsel --input --primary",
-        },
-        paste = {
-          ["+"] = "xsel --output --clipboard",
-          ["*"] = "xsel --output --primary",
-        },
-        cache_enabled = 1,
-      }
+      -- vim.g.clipboard = {
+      --   name = "xsel_override",
+      --   copy = {
+      --     ["+"] = "xsel --input --clipboard",
+      --     ["*"] = "xsel --input --primary",
+      --   },
+      --   paste = {
+      --     ["+"] = "xsel --output --clipboard",
+      --     ["*"] = "xsel --output --primary",
+      --   },
+      --   cache_enabled = 1,
+      -- }
 
       require("yanky").setup({
         highlight = {
@@ -170,19 +171,77 @@ return {
     config = true,
   },
 
-  { "echasnovski/mini.starter",
-    name = "mini.starter",
+  { "echasnovski/mini.basics",
     version = false,
+    opts = {
+      options = {
+        basic = true,
+        extra_ui = true,
+        win_borders = "single",
+      },
+      mappings = {
+        basic = true,
+        option_toggle_prefix = "",
+      }
+    },
+    config = function(_, opts)
+      vim.opt.cursorline = false
+      vim.opt.smartindent = false
+      vim.opt.cindent = false
+
+      require("mini.basics").setup(opts)
+    end
+  },
+
+  { "echasnovski/mini.starter",
+    config = function(_, opts) require("mini.starter").setup(opts) end,
   },
 
   { "echasnovski/mini.sessions",
-    name = "mini.sessions",
-    version = false,
+    config = function(_, opts) require("mini.sessions").setup(opts) end,
+  },
+
+  { "echasnovski/mini.surround",
+    keys = { "sa", "sd", "sf" , "sF", "sh", "sr", "sn" },
+    config = function(_, opts) require("mini.surround").setup(opts) end,
+  },
+
+  { "echasnovski/mini.pairs",
+    event = "VeryLazy",
+    config = function(_, opts)
+      require("mini.pairs").setup(opts)
+
+      vim.api.nvim_set_keymap("i", "<c-b>", "", {
+        silent = true,
+        noremap = true,
+        desc = "Temporarily disable auto-pairing",
+        callback = function()
+          vim.g.minipairs_disable = true
+          vim.api.nvim_create_autocmd("InsertLeave", {
+            callback = function()
+              vim.g.minipairs_disable = false
+              return true
+            end
+          })
+        end
+      })
+    end,
+  },
+
+  { "echasnovski/mini.ai",
+    event = "VeryLazy",
+    config = function(_, opts) require("mini.ai").setup(opts) end,
+  },
+
+  { "echasnovski/mini.align",
+    keys = { "ga", "gA" },
+    config = function(_, opts) require("mini.align").setup(opts) end,
   },
 
   { "tpope/vim-unimpaired",
     -- ABOUT: Pairs of handy bracket mappings
     event = "VeryLazy",
+    enabled = false,
     config = function()
       local key = require("util").keymapper()
 
@@ -312,12 +371,6 @@ return {
     end,
   },
 
-  { "echasnovski/mini.surround",
-    name = "mini.surround",
-    version = false,
-    event = "VeryLazy",
-  },
-
   { "mg979/vim-visual-multi",
     -- ABOUT: Mutliple cursors.
     -- HELP: visual-multi.txt
@@ -337,49 +390,9 @@ return {
     end,
   },
 
-  { "andrewradev/linediff.vim",
-    -- ABOUT: Diff multiple blocks (lines) of text, instead of files.
-    -- If you want to diff files, you can use the internal :diffthis command on
-    -- multiple files. This plugin allows the same for lines.
-    --
-    -- USAGE: Use :LineDiff with multiple selections of lines.
-    -- HELP: linediff.txt
-    cmd = { "LineDiff" }
-  },
-
-  { "ludovicchabant/vim-gutentags",
-    -- ABOUT: This automatically manages the tags for your projects.
-    -- You may have to create the directory below.
-    -- USAGE: Automatic.
-    -- HELP: gutentags.txt
-    event = "VeryLazy",
-    disable = vim.fn.executable("ctags") ~= 1,
-    init = function()
-      vim.g.gutentags_cache_dir = "~/.cache/tags"
-    end,
-  },
-
-  { "neomake/neomake",
-    -- ABOUT: Asyncronous make and friends.
-  },
-
   { "gpanders/editorconfig.nvim",
     version = "*",
     lazy = false,
     enabled = function() return vim.fn.has("nvim-0.9") == 0 end,
   },
-
-  { "echasnovski/mini.indentscope",
-    name = "mini.indentscope",
-    version = false,
-    event = "VeryLazy",
-    config = function()
-      require("mini.indentscope").setup({
-        draw = {
-          delay = 250,
-          animation = require("mini.indentscope").gen_animation.none()
-        },
-      })
-    end,
-  }
 }

@@ -1,7 +1,11 @@
 return {
   { "b0o/incline.nvim",
     event = "BufReadPre",
-    config = true,
+    opts = {
+      hide = {
+        cursorline = true,
+      }
+    },
     init = function()
       vim.opt.laststatus = 3
     end
@@ -10,7 +14,7 @@ return {
   { "anuvyklack/pretty-fold.nvim",
     -- ABOUT: Improve folding appearance.
     -- HELP: https://github.com/anuvyklack/pretty-fold.nvim
-    event = "BufReadPost",
+    event = "VeryLazy",
     config = true,
     dependencies = {
       "anuvyklack/keymap-amend.nvim",
@@ -18,12 +22,22 @@ return {
   },
 
   { "anuvyklack/fold-preview.nvim",
-    -- ABOUT: Preview folds.
-    event = "VeryLazy",
+    lazy = true,
+    init = function()
+      vim.api.nvim_create_autocmd("WinEnter", {
+        callback = function()
+          if not vim.tbl_contains({"startup"},vim.bo.ft) then
+            require("lazy").load({plugins={"fold-preview.nvim"}})
+            return true
+          end
+          return false
+        end
+      })
+    end,
     config = true,
     dependencies = {
       "anuvyklack/keymap-amend.nvim",
-    }
+    },
   },
 
   { "nvim-lualine/lualine.nvim",
@@ -39,12 +53,29 @@ return {
     end,
   },
 
-  { "akinsho/bufferline.nvim",
-    -- ABOUT: Show buffers on the top as tabs.
-    -- HELP: bufferline.txt
-    enabled = false,
+  { "echasnovski/mini.indentscope",
+    name = "mini.indentscope",
+    version = false,
+    event = "VeryLazy",
     config = function()
-      require("bufferline").setup{}
+      require("mini.indentscope").setup({
+        draw = {
+          delay = 250,
+          animation = require("mini.indentscope").gen_animation.none()
+        },
+      })
     end,
+  },
+
+  { "petertriho/nvim-scrollbar",
+    config = true,
+  },
+
+  { "kevinhwang91/nvim-hlslens",
+    config = function()
+      require("scrollbar.handlers.search").setup({
+        -- hlslens config overrides
+      })
+    end
   },
 }

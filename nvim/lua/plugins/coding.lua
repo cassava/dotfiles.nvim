@@ -1,12 +1,36 @@
 return {
-  -- LSP / Completion / Linters / Formatters / Snippets Plugins:
+  { "andrewradev/linediff.vim",
+    -- ABOUT: Diff multiple blocks (lines) of text, instead of files.
+    -- If you want to diff files, you can use the internal :diffthis command on
+    -- multiple files. This plugin allows the same for lines.
+    --
+    -- USAGE: Use :LineDiff with multiple selections of lines.
+    -- HELP: linediff.txt
+    cmd = { "LineDiff" }
+  },
+
+  { "ludovicchabant/vim-gutentags",
+    -- ABOUT: This automatically manages the tags for your projects.
+    -- You may have to create the directory below.
+    -- USAGE: Automatic.
+    -- HELP: gutentags.txt
+    event = "VeryLazy",
+    enabled = vim.fn.executable("ctags") ~= 1,
+    init = function()
+      vim.g.gutentags_cache_dir = "~/.cache/tags"
+    end,
+  },
+
+  { "neomake/neomake",
+    -- ABOUT: Asyncronous make and friends.
+    enabled = false,
+  },
 
   { "williamboman/mason.nvim",
     -- ABOUT: Manage external editor tooling such as LSP servers,
     -- DAP servers, linters, and formatters through a single interface.
-    config = function()
-      require("mason").setup()
-    end
+    event = "VeryLazy",
+    config = true,
   },
 
   { "williamboman/mason-lspconfig.nvim",
@@ -19,7 +43,7 @@ return {
 
   { "tami5/lspsaga.nvim",
     -- LSP enhancer
-    disable = true,
+    enabled = false,
     config = true
   },
 
@@ -29,7 +53,6 @@ return {
   },
 
   { "hrsh7th/nvim-cmp",
-    version = false,
     event = "InsertEnter",
     config = function()
       local cmp = require "cmp"
@@ -124,10 +147,7 @@ return {
   { "jose-elias-alvarez/null-ls.nvim",
     -- ABOUT: Provide LSP diagnostics, formatting, and other code actions via
     -- nvim lua plugins.
-    -- after = "mason.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
+    event = "BufEnter",
     config = function()
       local null_ls = require("null-ls")
       null_ls.setup({
@@ -160,19 +180,20 @@ return {
         [",f"] = { ":lua vim.lsp.buf.format()", "Format file" }
       })
     end,
+    dependencies = {
+      { "jayp0521/mason-null-ls.nvim",
+        -- ABOUT: Install tools for null-ls automatically with Mason.
+        config = function()
+          require("mason-null-ls").setup()
+        end,
+      },
+    }
   },
 
-  { "jayp0521/mason-null-ls.nvim",
-    -- ABOUT: Install tools for null-ls automatically with Mason.
-    -- after = "null-ls.nvim",
-    config = function()
-      require("mason-null-ls").setup()
-    end,
-  },
-
-  { "mfussenegger/nvim-dap"
+  { "mfussenegger/nvim-dap",
     -- ABOUT: Client for the Debug Adapter Protocol.
     -- HELP: dap-configuration.txt
+    enabled = false,
   },
 
   { "L3MON4D3/LuaSnip",
@@ -223,8 +244,7 @@ return {
 
   { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
 
-  {
-    "echasnovski/mini.comment",
+  { "echasnovski/mini.comment",
     event = "VeryLazy",
     opts = {
       hooks = {

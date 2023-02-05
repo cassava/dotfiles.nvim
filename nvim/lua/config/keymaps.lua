@@ -22,12 +22,36 @@ key.register({
 
 -- Vim Windows [c-w] ---------------------------------------------------------
 key.register({
+  -- Add to help
   ["<c-w>"] = {
-    -- Add to help
     ["_"] = { "<c-w>_", "Max out height" },
     ["*"] = { "<c-w>_<c-w>|", "Max out width & height" },
   }
 })
+
+key.register({
+  -- Focus windows:
+  ["<a-h>"] = { "<c-\\><c-n><c-w>h", "Focus left window" },
+  ["<a-j>"] = { "<c-\\><c-n><c-w>j", "Focus below window" },
+  ["<a-k>"] = { "<c-\\><c-n><c-w>k", "Focus right window" },
+  ["<a-l>"] = { "<c-\\><c-n><c-w>l", "Focus above window" },
+
+  -- Move windows:
+  ["<a-H>"] = { "<c-\\><c-n><c-w>H", "Focus left window" },
+  ["<a-J>"] = { "<c-\\><c-n><c-w>J", "Focus below window" },
+  ["<a-K>"] = { "<c-\\><c-n><c-w>K", "Focus right window" },
+  ["<a-L>"] = { "<c-\\><c-n><c-w>L", "Focus above window" },
+
+  ["<a-T>"] = { "<c-\\><c-n><c-w>T", "Make window a tab" },
+  ["<a-o>"] = { "<c-\\><c-n>gt", "Focus next tab"},
+
+  ["<a-return>"] = { "<cmd>tabe term://zsh<cr>", "Open new term tab" },
+  ["<a-]>"] = { "<cmd>botright vsplit term://zsh<cr>", "Open new term right" },
+  ["<a-[>"] = { "<cmd>botright split term://zsh<cr>", "Open new term below" },
+
+  ["<a-w>"] = { "<c-\\><c-n><c-w>c", "Close focused window" },
+  ["<a-W>"] = { "<cmd>tabclose<cr>", "Close current tab" },
+}, { mode = {"n", "t", "i"}, silent = true })
 
 -- Search [/] ----------------------------------------------------------------
 key.register({
@@ -70,8 +94,8 @@ key.register({
 -- Git [g] -------------------------------------------------------------------
 key.register({
   -- Jump between hunks
-  ["]g"] = { map=[[&diff ? ']g' : '<cmd>Gitsigns next_hunk<cr>']], opts={expr=true} },
-  ["[g"] = { map=[[&diff ? '[g' : '<cmd>Gitsigns prev_hunk<cr>']], opts={expr=true} },
+  ["]g"] = { "&diff ? ']g' : '<cmd>Gitsigns next_hunk<cr>'", opts = { expr = true } },
+  ["[g"] = { "&diff ? '[g' : '<cmd>Gitsigns prev_hunk<cr>'", opts = { expr = true } },
 
   ["<leader>g"] = {
     name = "git",

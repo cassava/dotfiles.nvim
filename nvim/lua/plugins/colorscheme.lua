@@ -29,4 +29,8 @@ return {
       vim.cmd "colorscheme nordfox"
     end
   },
+
+  { "folke/tokyonight.nvim",
+    lazy = true,
+  },
 }

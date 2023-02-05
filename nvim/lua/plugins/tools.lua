@@ -16,7 +16,7 @@ return {
     --  * python3 neovim API
     --  * browser addon
     -- HELP: ghost.txt
-    run = function()
+    build = function()
       vim.fn.system "python3 -m pip install --user --upgrade neovim"
       vim.cmd "GhostInstall"
     end,
