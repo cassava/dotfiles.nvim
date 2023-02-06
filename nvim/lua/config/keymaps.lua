@@ -1,11 +1,4 @@
 local key = require("util").keymapper()
-local map = vim.keymap.set
-
--- Replacements: -------------------------------------------------------------
-
--- Don't lose selection when shifting sideways
-map("x", "<", "<gv")
-map("x", ">", ">gv")
 
 -- Vim [v] -------------------------------------------------------------------
 key.register({

@@ -56,7 +56,7 @@ return {
 
   { "ethanholz/nvim-lastplace",
     name = "lastplace",
-    version = false,
+    config = true,
   },
 
   { "folke/which-key.nvim",
@@ -166,13 +166,11 @@ return {
 
   { "folke/todo-comments.nvim",
     name = "todo-comments",
-    version = false,
     event = "VeryLazy",
     config = true,
   },
 
   { "echasnovski/mini.basics",
-    version = false,
     opts = {
       options = {
         basic = true,
@@ -204,6 +202,25 @@ return {
   { "echasnovski/mini.surround",
     keys = { "sa", "sd", "sf" , "sF", "sh", "sr", "sn" },
     config = function(_, opts) require("mini.surround").setup(opts) end,
+  },
+
+  { "echasnovski/mini.move",
+    event = "VeryLazy",
+    opts = {
+      mappings = {
+        left = '<c-h>',
+        right = '<c-l>',
+        down = '<c-j>',
+        up = '<c-k>',
+
+        -- Move current line in Normal mode
+        line_left = '<c-h>',
+        line_right = '<c-l>',
+        line_down = '<c-j>',
+        line_up = '<c-k>',
+      }
+    },
+    config = function(_, opts) require("mini.move").setup(opts) end,
   },
 
   { "echasnovski/mini.pairs",
