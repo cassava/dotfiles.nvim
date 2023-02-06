@@ -212,16 +212,16 @@ return {
     event = "VeryLazy",
     opts = {
       mappings = {
-        left = '<c-h>',
-        right = '<c-l>',
-        down = '<c-j>',
-        up = '<c-k>',
+        left = '<c-s-h>',
+        right = '<c-s-l>',
+        down = '<c-s-j>',
+        up = '<c-s-k>',
 
         -- Move current line in Normal mode
-        line_left = '<c-h>',
-        line_right = '<c-l>',
-        line_down = '<c-j>',
-        line_up = '<c-k>',
+        line_left = '<c-s-h>',
+        line_right = '<c-s-l>',
+        line_down = '<c-s-j>',
+        line_up = '<c-s-k>',
       }
     },
     config = function(_, opts) require("mini.move").setup(opts) end,
