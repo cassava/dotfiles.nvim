@@ -21,25 +21,6 @@ return {
     }
   },
 
-  { "anuvyklack/fold-preview.nvim",
-    lazy = true,
-    init = function()
-      vim.api.nvim_create_autocmd("WinEnter", {
-        callback = function()
-          if not vim.tbl_contains({"startup"},vim.bo.ft) then
-            require("lazy").load({plugins={"fold-preview.nvim"}})
-            return true
-          end
-          return false
-        end
-      })
-    end,
-    config = true,
-    dependencies = {
-      "anuvyklack/keymap-amend.nvim",
-    },
-  },
-
   { "nvim-lualine/lualine.nvim",
     -- About: Fancy status line with information from various sources.
     config = function()
