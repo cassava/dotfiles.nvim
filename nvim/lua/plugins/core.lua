@@ -232,11 +232,8 @@ return {
     config = function(_, opts)
       require("mini.pairs").setup(opts)
 
-      vim.api.nvim_set_keymap("i", "<c-b>", "", {
-        silent = true,
-        noremap = true,
-        desc = "Temporarily disable auto-pairing",
-        callback = function()
+      vim.keymap.set("i", "<c-v>",
+        function()
           vim.g.minipairs_disable = true
           vim.api.nvim_create_autocmd("InsertLeave", {
             callback = function()
@@ -244,8 +241,10 @@ return {
               return true
             end
           })
-        end
-      })
+          return "<c-v>"
+        end,
+        { silent = true, noremap = true, expr = true, desc = "Temporarily disable auto-pairing" }
+      )
     end,
   },
 
