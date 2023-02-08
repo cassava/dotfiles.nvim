@@ -1,4 +1,5 @@
-local key = require("core").keymapper()
+local key = require("util").keymapper()
+
 key.register({
   [","] = {
     f = { function() vim.lsp.buf.formatting() end, "Format file" },
