@@ -1,10 +1,8 @@
 return {
   { "nvim-treesitter/nvim-treesitter",
-    -- ABOUT: Provide fast and accurate language parsing.
-    --        This can be used for syntax highlighting among other things.
-    version = false,
+    desc = "Provide fast and accurate language parsing.",
     build = ":TSUpdate",
-    event = "BufReadPost",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       ensure_installed = "all",
       sync_install = false,
@@ -27,11 +25,9 @@ return {
         },
       },
     },
-    init = function()
-      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-    end,
     config = function(_, opts)
       require("nvim-treesitter.configs").setup(opts)
+      vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
     end,
   },
 

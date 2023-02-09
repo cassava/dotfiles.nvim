@@ -1,63 +1,182 @@
 return {
-  { "andrewradev/linediff.vim",
-    -- ABOUT: Diff multiple blocks (lines) of text, instead of files.
-    -- If you want to diff files, you can use the internal :diffthis command on
-    -- multiple files. This plugin allows the same for lines.
-    --
-    -- USAGE: Use :LineDiff with multiple selections of lines.
-    -- HELP: linediff.txt
-    cmd = { "LineDiff" }
-  },
+  { "neovim/nvim-lspconfig",
+    about = "Built-in LSP configuration mechanism.",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
+      { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
+      { "mason.nvim" },
+      { "williamboman/mason-lspconfig.nvim" },
+      { "hrsh7th/cmp-nvim-lsp" },
+    },
+    opts = {
+      -- options for vim.diagnostic.config()
+      diagnostics = {
+        underline = true,
+        update_in_insert = false,
+        virtual_text = { spacing = 4, prefix = "●" },
+        severity_sort = true,
+      },
+      -- Automatically format on save
+      autoformat = false,
+      -- options for vim.lsp.buf.format
+      -- `bufnr` and `filter` is handled by the LazyVim formatter,
+      -- but can be also overriden when specified
+      format = {
+        formatting_options = nil,
+        timeout_ms = nil,
+      },
+      -- LSP Server Settings
+      ---@type lspconfig.options
+      servers = {
+        jsonls = {},
+        sumneko_lua = {
+          -- mason = false, -- set to false if you don't want this server to be installed with mason
+          settings = {
+            Lua = {
+              workspace = {
+                checkThirdParty = false,
+              },
+              completion = {
+                callSnippet = "Replace",
+              },
+            },
+          },
+        },
+      },
+      -- you can do any additional lsp server setup here
+      -- return true if you don't want this server to be setup with lspconfig
+      ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+      setup = {
+        -- example to setup with typescript.nvim
+        -- tsserver = function(_, opts)
+        --   require("typescript").setup({ server = opts })
+        --   return true
+        -- end,
+        -- Specify * to use this function as a fallback for any server
+        -- ["*"] = function(server, opts) end,
+      },
+    },
+    ---@param opts PluginLspOpts
+    config = function(plugin, opts)
+      -- Enable completion triggered by <c-x><c-o>
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local buffer = args.buf
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-  { "ludovicchabant/vim-gutentags",
-    -- ABOUT: This automatically manages the tags for your projects.
-    -- You may have to create the directory below.
-    -- USAGE: Automatic.
-    -- HELP: gutentags.txt
-    event = "VeryLazy",
-    enabled = vim.fn.executable("ctags") ~= 1,
-    init = function()
-      vim.g.gutentags_cache_dir = "~/.cache/tags"
-    end,
-  },
+          vim.api.nvim_buf_set_option(buffer, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+          vim.keymap.set("n", ",f", function() vim.lsp.buf.format() end, { desc = "Format file" })
+          require("util").keymapper().register({
+            -- Replace Vim standard keybindings to use LSP:
+            ["gD"] = { "<cmd>lua vim.lsp.buf.declaration()<cr>", "Goto declaration [lsp]" },
+            ["gd"] = { "<cmd>lua vim.lsp.buf.definition()<cr>", "Goto definition [lsp]" },
+            ["gi"] = { "<cmd>lua vim.lsp.buf.implementation()<cr>", "Goto implementation [lsp]" },
+            ["gr"] = { "<cmd>lua vim.lsp.buf.references()<cr>", "Show references [lsp]" },
+            ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "Hover entity [lsp]" },
+            ["<C-k>"] = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Show signature help [lsp]" },
+            ["[d"] = { "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Previous diagnostic [lsp]" },
+            ["]d"] = { "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next diagnostic [lsp]" },
+            ["<leader>e"] = { "<cmd>lua vim.diagnostic.open_float()<cr>", "Open diagnostics [lsp]" },
+            ["<leader>q"] = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Send diagnostics to QuickList [lsp]" },
+            ["<leader>wa"] = { "<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>", "Add workspace folder [lsp]" },
+            ["<leader>wr"] = { "<cmd>lua vim.lsp.buf.remove_workspace_folder()<cr>", "Remove workspace folder [lsp]" },
+            ["<leader>wl"] = { "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<cr>", "Show workspace folders [lsp]" },
+            ["<leader>D"] = { "<cmd>lua vim.lsp.buf.type_definition()<cr>", "Goto type definition [lsp]" },
+            ["<leader>rn"] = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename entity [lsp]" },
+            ["<leader>ca"] = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code actions [lsp]" },
+            ["<leader>so"] = { "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>", "Search symbols [lsp]" },
+          })
+          vim.cmd "command! LspFormat execute 'lua vim.lsp.buf.formatting()'"
+        end
+      })
 
-  { "neomake/neomake",
-    -- ABOUT: Asyncronous make and friends.
-    enabled = false,
+      -- diagnostics
+      -- for name, icon in pairs(require("lazyvim.config").icons.diagnostics) do
+      --   name = "DiagnosticSign" .. name
+      --   vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
+      -- end
+      vim.diagnostic.config(opts.diagnostics)
+
+      local servers = opts.servers
+      local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+      local function setup(server)
+        local server_opts = vim.tbl_deep_extend("force", {
+          capabilities = vim.deepcopy(capabilities),
+        }, servers[server] or {})
+
+        if opts.setup[server] then
+          if opts.setup[server](server, server_opts) then
+            return
+          end
+        elseif opts.setup["*"] then
+          if opts.setup["*"](server, server_opts) then
+            return
+          end
+        end
+        require("lspconfig")[server].setup(server_opts)
+      end
+
+      local mlsp = require("mason-lspconfig")
+      local available = mlsp.get_available_servers()
+
+      local ensure_installed = {} ---@type string[]
+      for server, server_opts in pairs(servers) do
+        if server_opts then
+          server_opts = server_opts == true and {} or server_opts
+          -- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
+          if server_opts.mason == false or not vim.tbl_contains(available, server) then
+            setup(server)
+          else
+            ensure_installed[#ensure_installed + 1] = server
+          end
+        end
+      end
+
+      require("mason-lspconfig").setup({ ensure_installed = ensure_installed })
+      require("mason-lspconfig").setup_handlers({ setup })
+    end
   },
 
   { "williamboman/mason.nvim",
-    -- ABOUT: Manage external editor tooling such as LSP servers,
-    -- DAP servers, linters, and formatters through a single interface.
-    event = "VeryLazy",
-    config = true,
-  },
-
-  { "williamboman/mason-lspconfig.nvim",
-    config = true
-  },
-
-  { "neovim/nvim-lspconfig",
-    -- ABOUT: Built-in LSP configuration mechanism.
+    about = "Manage external editor tooling such as for LSP and DAP.",
+    cmd = "Mason",
+    opts = {
+      ensure_installed = {
+        -- Put sources that aren't language specific here.
+      }
+    },
+    config = function(plugin, opts)
+      require("mason").setup(opts)
+      local mr = require("mason-registry")
+      for _, tool in ipairs(opts.ensure_installed) do
+        local p = mr.get_package(tool)
+        if not p:is_installed() then
+          p:install()
+        end
+      end
+    end,
   },
 
   { "tami5/lspsaga.nvim",
-    -- LSP enhancer
+    about = "LSP enhancer.",
     enabled = false,
     config = true
   },
 
   { "liuchengxu/vista.vim",
-    -- ABOUT: View and search LSP symbols, tags in Vim/NeoVim.
+    about = "View and search LSP symbols and tags.",
     cmd = "Vista",
   },
 
   { "hrsh7th/nvim-cmp",
+    about = "Provide completion.",
     event = "InsertEnter",
     config = function()
-      local cmp = require "cmp"
-      local lspkind = require "lspkind"
-      local luasnip = require "luasnip"
+      local cmp = require("cmp")
+      local lspkind = require("lspkind")
+      local luasnip = require("luasnip")
 
       cmp.setup {
         mapping = cmp.mapping.preset.insert({
@@ -141,64 +260,29 @@ return {
   },
 
   { "onsails/lspkind-nvim",
-    -- ABOUT: Provide fancy icons for LSP information, in particular for nvim-cmp.
+    about = "Provide fancy icons for LSP information, in particular for nvim-cmp.",
   },
 
   { "jose-elias-alvarez/null-ls.nvim",
-    -- ABOUT: Provide LSP diagnostics, formatting, and other code actions via
-    -- nvim lua plugins.
-    event = "BufEnter",
-    config = function()
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        sources = {
-          -- JSON
-          null_ls.builtins.formatting.jq,
-
-          -- YAML
-          null_ls.builtins.diagnostics.actionlint,
-          null_ls.builtins.diagnostics.yamllint,
-
-          -- Python
-          null_ls.builtins.diagnostics.pylint,
-          null_ls.builtins.diagnostics.mypy,
-          null_ls.builtins.formatting.black,
-
-          -- Git
-          null_ls.builtins.code_actions.gitsigns,
-
-          -- C++
-          null_ls.builtins.formatting.clang_format,
-
-          -- Lua
-          null_ls.builtins.formatting.stylua,
-        }
-      })
-
-      local key = require("util").keymapper()
-      key.register({
-        [",f"] = { ":lua vim.lsp.buf.format()", "Format file" }
-      })
-    end,
+    about = "Provide LSP diagnostics, formatting, and code actions from non-LSP tools.",
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      sources = {
+        -- Put sources that aren't language specific here.
+      }
+    },
     dependencies = {
-      { "jayp0521/mason-null-ls.nvim",
-        -- ABOUT: Install tools for null-ls automatically with Mason.
-        config = function()
-          require("mason-null-ls").setup()
-        end,
-      },
+      { "jayp0521/mason-null-ls.nvim", about = "Install tools for null-ls via Mason.", config = true },
     }
   },
 
   { "mfussenegger/nvim-dap",
-    -- ABOUT: Client for the Debug Adapter Protocol.
-    -- HELP: dap-configuration.txt
+    about = "Client for the Debug Adapter Protocol.",
     enabled = false,
   },
 
   { "L3MON4D3/LuaSnip",
-    -- ABOUT: Snippet engine
-    -- HELP: luasnip.txt
+    about = "Powerful snippet engine.",
     event = "InsertEnter",
     config = function()
       local ls = require "luasnip"
@@ -237,14 +321,15 @@ return {
       ]]
     end,
     dependencies = {
-      -- Snippet collections
-      "rafamadriz/friendly-snippets",
+      { "rafamadriz/friendly-snippets", about = "Snippet collection." },
     },
   },
 
-  { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
-
   { "echasnovski/mini.comment",
+    about = "Provide gc keybindings for commenting code.",
+    dependencies = {
+      { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
+    },
     event = "VeryLazy",
     opts = {
       hooks = {

@@ -63,6 +63,26 @@ return {
     }
   },
 
+  { "nvim-telescope/telescope.nvim",
+    -- ABOUT: Universal fuzzy finder.
+    -- USAGE: Run :Telescope and check out the auto-complete.
+    dependencies = {
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        config = function()
+          require("telescope").load_extension("fzf")
+        end
+      },
+      { "debugloop/telescope-undo.nvim",
+        keys = { "<leader>u" },
+        config = function()
+          require("telescope").load_extension("undo")
+        end
+      },
+    }
+  },
+
   { "folke/which-key.nvim",
     -- ABOUT: Provides popup reference for your keybindings.
     name = "which-key",
@@ -350,6 +370,8 @@ return {
       })
     end
   },
+
+  ---
 
   { "tpope/vim-eunuch",
     -- ABOUT: Sugar for the UNIX shell commands that need it most.

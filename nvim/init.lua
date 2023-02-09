@@ -4,6 +4,7 @@ require("lazy").setup({
   spec = {
     { "folke/lazy.nvim", version = "*" },
     { import = "plugins" },
+    { import = "plugins.lang" },
   },
   defaults = {
     lazy = false

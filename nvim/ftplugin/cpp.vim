@@ -9,5 +9,5 @@ set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,bO:///,O://
 augroup cassava_ft_cpp
   autocmd!
   autocmd BufLeave *.{c,cc,cpp} mark C
-  autocmd BufLeave *.h          mark H
+  autocmd BufLeave *.{h,hpp}    mark H
 augroup END

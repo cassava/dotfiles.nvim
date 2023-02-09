@@ -1,30 +1,29 @@
 return {
-
-  -- measure startuptime
   { "dstein64/vim-startuptime",
+    desc = "Measure startup time.",
     cmd = "StartupTime",
     config = function()
       vim.g.startuptime_tries = 10
     end,
   },
 
-  -- library used by other plugins
-  { "nvim-lua/plenary.nvim", lazy = true },
+  { "nvim-lua/plenary.nvim",
+    desc = "Library used by other plugins.",
+    lazy = true
+  },
 
   { "tpope/vim-repeat",
-    -- ABOUT: Extend repeat command . to mappings.
-    --
-    -- This plugin is required by several other plugins to also provide sane repeat behavior.
-    --
-    -- HELP: https://github.com/tpope/vim-repeat
+    desc = "Extend repeat command . to mappings and plugins.",
     event = "VeryLazy"
   },
 
-  -- Popup API implementation is a plugin until merged into neovim.
-  { "nvim-lua/popup.nvim", lazy = true },
+  { "nvim-lua/popup.nvim",
+    desc = "Popup API implmentation is a plugin until merged into neovim.",
+    lazy = true
+  },
 
-  -- Fancy developer icons used in many other plugins.
-  { "nvim-tree/nvim-web-devicons", lazy = true },
-
-  { "echasnovski/mini.misc", name = "mini.misc", lazy = true, version = false }
+  { "echasnovski/mini.misc",
+    desc = "Miscellaneous useful functions.",
+    lazy = true
+  },
 }

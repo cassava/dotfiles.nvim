@@ -1,21 +1,11 @@
 return {
   { "qpkorr/vim-renamer",
-    -- ABOUT: Rename files in the system with vim.
-    --
-    -- Best way to start it is:
-    --
-    --    nvim +Ren
-    --
-    -- HELP: renamer.txt
-    cmd = { "Renamer" },
+    desc = "Rename files in the system with: nvim +Renamer",
+    cmd = "Renamer",
   },
 
   { "raghur/vim-ghost",
-    -- ABOUT: Bi-directionally edit text content in the browser with Vim.
-    -- REQUIREMENTS:
-    --  * python3 neovim API
-    --  * browser addon
-    -- HELP: ghost.txt
+    desc = "Bi-directionally edit text content in the browser.",
     build = function()
       vim.fn.system "python3 -m pip install --user --upgrade neovim"
       vim.cmd "GhostInstall"
