@@ -1,61 +1,50 @@
 return {
-  { "gbprod/yanky.nvim",
-    event = "BufReadPost",
-    enabled = false,
-    config = function()
-      -- vim.g.clipboard = {
-      --   name = "xsel_override",
-      --   copy = {
-      --     ["+"] = "xsel --input --clipboard",
-      --     ["*"] = "xsel --input --primary",
-      --   },
-      --   paste = {
-      --     ["+"] = "xsel --output --clipboard",
-      --     ["*"] = "xsel --output --primary",
-      --   },
-      --   cache_enabled = 1,
-      -- }
-
-      require("yanky").setup({
-        highlight = {
-          timer = 150,
+  { "folke/which-key.nvim",
+    about = "Provides popup reference for your keybindings.",
+    event = "VeryLazy",
+    opts = {
+      plugins = {
+        spelling = {
+          enabled = true,
         },
-        ring = {
-          storage = "shada"
-        },
+      },
+      key_labels = {
+        ["<space>"] = "SPC",
+        ["<cr>"] = "RET",
+        ["<tab>"] = "TAB",
+      },
+      window = {
+        border = "single",
+        position = "top",
+        margin = { 0, 0, 1, 0 },
+        winblend = 0
+      },
+    },
+    config = function(_, opts)
+      local wk = require("which-key")
+      wk.setup(opts)
+      wk.register({
+        mode = { "n", "v" },
+        ["g"] = { name = "+goto" },
+        ["s"] = { name = "+surround" },
+        ["]"] = { name = "+next" },
+        ["["] = { name = "+prev" },
+        -- ["<leader><tab>"] = { name = "+tabs" },
+        -- ["<leader>b"] = { name = "+buffer" },
+        -- ["<leader>c"] = { name = "+code" },
+        -- ["<leader>f"] = { name = "+file/find" },
+        ["<leader>g"] = { name = "+git" },
+        ["<leader>gh"] = { name = "+hunks" },
+        -- ["<leader>q"] = { name = "+quit/session" },
+        -- ["<leader>s"] = { name = "+search" },
+        ["<leader>n"] = { name = "+notify" },
+        -- ["<leader>w"] = { name = "+windows" },
+        -- ["<leader>x"] = { name = "+diagnostics/quickfix" },
       })
-
-      vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)")
-
-      vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
-      vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
-      vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
-      vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
-
-      vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
-      vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-
-      vim.keymap.set("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)")
-      vim.keymap.set("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)")
-      vim.keymap.set("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)")
-      vim.keymap.set("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)")
-
-      vim.keymap.set("n", ">p", "<Plug>(YankyPutIndentAfterShiftRight)")
-      vim.keymap.set("n", "<p", "<Plug>(YankyPutIndentAfterShiftLeft)")
-      vim.keymap.set("n", ">P", "<Plug>(YankyPutIndentBeforeShiftRight)")
-      vim.keymap.set("n", "<P", "<Plug>(YankyPutIndentBeforeShiftLeft)")
-
-      vim.keymap.set("n", "=p", "<Plug>(YankyPutAfterFilter)")
-      vim.keymap.set("n", "=P", "<Plug>(YankyPutBeforeFilter)")
-
-      vim.keymap.set("n", "<leader>P", function()
-        require("telescope").extensions.yank_history.yank_history({})
-      end, { desc = "Paste from Yanky" })
     end,
   },
 
   { "ethanholz/nvim-lastplace",
-    name = "lastplace",
     opts = {
       lastplace_ignore_buftype = {"quickfix", "nofile", "help"},
       lastplace_ignore_filetype = {"gitcommit", "gitrebase", "svn", "hgcommit"},
@@ -64,8 +53,7 @@ return {
   },
 
   { "nvim-telescope/telescope.nvim",
-    -- ABOUT: Universal fuzzy finder.
-    -- USAGE: Run :Telescope and check out the auto-complete.
+    about = "Universal fuzzy finder.",
     dependencies = {
       {
         "nvim-telescope/telescope-fzf-native.nvim",
@@ -80,75 +68,16 @@ return {
           require("telescope").load_extension("undo")
         end
       },
-    }
-  },
-
-  { "folke/which-key.nvim",
-    -- ABOUT: Provides popup reference for your keybindings.
-    name = "which-key",
-    version = "*",
-    opts = {
-      plugins = {
-        marks = true, -- shows a list of your marks on ' and `
-        registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
-        spelling = {
-          enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
-          suggestions = 20, -- how many suggestions should be shown in the list?
+      {
+        "theprimeagen/git-worktree.nvim",
+        keys = {
+          { "<leader>gw", "<cmd>Telescope git_worktree<cr>", desc = "Search worktrees" },
+          { "<leader>gW", function() require("telescope").extensions.git_worktree.create_git_worktree() end, desc = "Create worktree" },
         },
-        -- the presets plugin, adds help for a bunch of default keybindings in Neovim
-        -- No actual key bindings are created
-        presets = {
-          operators = true, -- adds help for operators like d, y, ... and registers them for motion / text object completion
-          motions = true, -- adds help for motions
-          text_objects = true, -- help for text objects triggered after entering an operator
-          windows = true, -- default bindings on <c-w>
-          nav = true, -- misc bindings to work with windows
-          z = true, -- bindings for folds, spelling and others prefixed with z
-          g = true, -- bindings for prefixed with g
-        },
-      },
-      -- add operators that will trigger motion and text object completion
-      -- to enable all native operators, set the preset / operators plugin above
-      operators = { gc = "Comments" },
-      key_labels = {
-        ["<space>"] = "SPC",
-        ["<cr>"] = "RET",
-        ["<tab>"] = "TAB",
-      },
-      icons = {
-        breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-        separator = "➜", -- symbol used between a key and it's label
-        group = "+", -- symbol prepended to a group
-      },
-      popup_mappings = {
-        scroll_down = '<c-d>', -- binding to scroll down inside the popup
-        scroll_up = '<c-u>', -- binding to scroll up inside the popup
-      },
-      window = {
-        border = "none", -- none, single, double, shadow
-        position = "top", -- bottom, top
-        margin = { 0, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
-        padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
-        winblend = 0
-      },
-      layout = {
-        height = { min = 4, max = 25 }, -- min and max height of the columns
-        width = { min = 20, max = 50 }, -- min and max width of the columns
-        spacing = 3, -- spacing between columns
-        align = "left", -- align columns left, center or right
-      },
-      ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
-      hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "<cr>", "call", "lua", "^:", "^ "}, -- hide mapping boilerplate
-      show_help = true, -- show help message on the command line when the popup is visible
-      triggers = "auto", -- automatically setup triggers
-      -- triggers = {"<leader>"} -- or specify a list manually
-      triggers_blacklist = {
-        -- list of mode / prefixes that should never be hooked by WhichKey
-        -- this is mostly relevant for key maps that start with a native binding
-        -- most people should not need to change this
-        i = { "j", "k" },
-        v = { "j", "k" },
-      },
+        config = function()
+          require("telescope").load_extension("git_worktree")
+        end
+      }
     }
   },
 
@@ -189,7 +118,6 @@ return {
   },
 
   { "folke/todo-comments.nvim",
-    name = "todo-comments",
     event = "VeryLazy",
     config = true,
   },
@@ -371,8 +299,6 @@ return {
     end
   },
 
-  ---
-
   { "tpope/vim-eunuch",
     -- ABOUT: Sugar for the UNIX shell commands that need it most.
     cmd = {
@@ -419,16 +345,6 @@ return {
     init = function()
       vim.g.VM_leader = "\\"
       vim.g.VM_mouse_mappings = 1
-    end,
-  },
-
-  { "embear/vim-localvimrc",
-    -- ABOUT: Load workspace specific settings.
-    -- HELP: localvimrc.txt
-    lazy = false,
-    init = function()
-      vim.g.localvimrc_sandbox = 0
-      vim.g.localvimrc_ask = 0
     end,
   },
 

@@ -2,7 +2,18 @@ require("config.options")
 require("util").bootstrap()
 require("lazy").setup({
   spec = {
-    { "folke/lazy.nvim", version = "*" },
+    { "folke/lazy.nvim",
+      about = "Plugin manager.",
+      version = "*",
+      config = function()
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = { "lazy" },
+          callback = function()
+            vim.opt_local.list = false
+          end
+        })
+      end,
+    },
     { import = "plugins" },
     { import = "plugins.lang" },
   },

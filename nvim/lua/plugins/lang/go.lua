@@ -1,3 +1,17 @@
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "go" },
+  callback = function()
+    -- This way I don't add tabs by accident when writing long
+    -- strings. The gofmt formatter will convert other spaces to tabs.
+    vim.opt_local.expandtab = true
+
+    -- Don't show whitespace like I normally do, because gofmt will handle it.
+    -- Occassionally, you should check strings to make sure they don't contain tabs.
+    vim.opt_local.list = false
+    vim.g.go_auto_type_info = 0
+  end
+})
+
 return {
   { "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)

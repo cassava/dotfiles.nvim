@@ -11,6 +11,31 @@ return {
     end
   },
 
+  { "rcarriga/nvim-notify",
+    opts = {
+      timeout = 5000,
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.75)
+      end,
+      render = "compact",
+    },
+    config = function(_, opts)
+      require("notify").setup(opts)
+      require("telescope").load_extension("notify")
+      vim.notify = require("notify")
+      vim.keymap.set("n", "<leader>nn", "<cmd>Telescope notify<cr>", { desc = "View notifications "})
+      vim.keymap.set("n", "<leader>nl",
+        function()
+          require("notify").dismiss({ silent = true, pending = true })
+        end,
+        { desc = "Clear all notifications" }
+      )
+    end
+  },
+
   { "anuvyklack/pretty-fold.nvim",
     -- ABOUT: Improve folding appearance.
     -- HELP: https://github.com/anuvyklack/pretty-fold.nvim
@@ -35,17 +60,17 @@ return {
   },
 
   { "echasnovski/mini.indentscope",
-    name = "mini.indentscope",
     version = false,
     event = "VeryLazy",
-    config = function()
-      require("mini.indentscope").setup({
+    opts = function()
+      return {
         draw = {
           delay = 250,
           animation = require("mini.indentscope").gen_animation.none()
         },
-      })
+      }
     end,
+    config = function(_, opts) require("mini.indentscope").setup(opts) end,
   },
 
   { "petertriho/nvim-scrollbar",

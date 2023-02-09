@@ -1,4 +1,21 @@
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "cpp", "c" },
+  callback = function()
+    -- Continue Doxygen C++ comments automatically
+    vim.opt_local.coments = "sO:* -,mO:*  ,exO:*/,s1:/*,mb:*,ex:*/,bO:///,O://"
+    vim.g.load_doxygen_syntax = 1
+  end
+})
+
 return {
+  { "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      vim.list_extend(opts.servers, {
+        clangd = {},
+      })
+    end
+  },
+
   { "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
       if type(opts.ensure_installed) == "table" then

@@ -2,7 +2,7 @@ return {
   { "nvim-treesitter/nvim-treesitter",
     desc = "Provide fast and accurate language parsing.",
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
+    event = { "BufReadPre", "BufNewFile" },
     opts = {
       ensure_installed = "all",
       sync_install = false,
@@ -66,7 +66,8 @@ return {
   },
 
   { "p00f/nvim-ts-rainbow",
-    -- ABOUT: Parenthesis highlighting
+    about = "Highlight parenthesis to matching pairs.",
+    enabled = false, -- not working correctly...
     event = "VeryLazy",
     config = function()
       require("nvim-treesitter.configs").setup {

@@ -1,5 +1,8 @@
 local key = require("util").keymapper()
 
+vim.keymap.set("v", "<", "<gv", { silent = true})
+vim.keymap.set("v", ">", ">gv", { silent = true})
+
 -- Vim [v] -------------------------------------------------------------------
 key.register({
   ["<leader>v"] = {
@@ -86,60 +89,17 @@ key.register({
 
 -- Git [g] -------------------------------------------------------------------
 key.register({
-  -- Jump between hunks
-  ["]g"] = { "&diff ? ']g' : '<cmd>Gitsigns next_hunk<cr>'", opts = { expr = true } },
-  ["[g"] = { "&diff ? '[g' : '<cmd>Gitsigns prev_hunk<cr>'", opts = { expr = true } },
-
   ["<leader>g"] = {
-    name = "git",
-
-    -- Search
-    ["/"] = {
-      name = "search",
-      f = { "<cmd>Telescope git_files<cr>", "Search files" },
-      b = { "<cmd>Telescope git_branches<cr>", "Search branches" },
-      l = { "<cmd>Telescope git_commits<cr>", "Search commits" },
-      s = { "<cmd>Telescope git_status<cr>", "View status" },
-      t = { "<cmd>Telescope git_stash<cr>", "View stash" },
-    },
-
-    -- Actions
-    A = { "<cmd>Git commit --amend<cr>", "Amend commit" },
-    B = { "<cmd>Gitsigns toggle_current_line_blame<cr>", "Toggle blame" },
-    F = { ":Git commit --fixup", "Create fixup! commit" },
-    R = { ":Git rebase -i ", "Rebase (interactive)" },
-
-    -- Popup what's changed in a hunk under cursor
-    p = { "<cmd>Gitsigns preview_hunk<cr>", "Preview hunk" },
-
-    -- Stage/reset individual hunks under cursor in a file
-    s = { "<cmd>Gitsigns stage_hunk<cr>", "Stage hunk" },
-    r = { "<cmd>Gitsigns reset_hunk<cr>", "Reset hunk" },
-    u = { "<cmd>Gitsigns undo_stage_hunk<cr>", "Undo stage hunk" },
-
-    -- Stage/reset all hunks in a file
-    S = { "<cmd>Gitsigns stage_buffer<cr>", "Stage buffer" },
-    U = { "<cmd>Gitsigns reset_buffer_index<cr>", "Reset buffer index" },
-    R = { "<cmd>Gitsigns reset_buffer<cr>", "Reset buffer" },
-
-    -- Open git status in interative window (similar to lazygit)
-    g = { "<cmd>Git<cr>", "Status" },
-
-    -- Open commit window (creates commit after writing and saving commit msg)
-    C = { "<cmd>Git commit | startinsert<cr>", "Commit" },
-
-    -- Other tools from fugitive
-    d = { "<cmd>Git difftool<cr>", "Open difftool" },
-    m = { "<cmd>Git mergetool<cr>", "Open mergetool" },
-    ['|'] = { "<cmd>Gvdiffsplit<cr>", "Diff this vertical" },
-    ['_'] = { "<cmd>Gdiffsplit<cr>", "Diff this horizontal" },
-
     -- Misc
-    c = {
+    z = {
       function()
         local fid = vim.fn.expand("%:p:h")
         local cwd = require("util").project_dir(fid)
-        vim.cmd("lcd "..cwd.."")
+        vim.cmd("lcd "..cwd)
+        vim.notify("Changed directory to: "..cwd, vim.log.levels.INFO, {
+          title = "cwd",
+          timeout = 2000,
+        })
       end,
       "Cd to project directory"
     },

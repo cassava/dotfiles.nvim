@@ -8,7 +8,6 @@ return {
   },
 
   { "jose-elias-alvarez/null-ls.nvim",
-    enabled = false,
     opts = function(_, opts)
       local nls = require("null-ls")
       vim.list_extend(opts.sources, {
@@ -23,7 +22,6 @@ return {
       version = false,
     },
     opts = {
-      -- make sure mason installs the server
       servers = {
         jsonls = {
           -- lazy-load schemastore when needed
