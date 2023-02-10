@@ -54,6 +54,7 @@ return {
 
   { "nvim-telescope/telescope.nvim",
     about = "Universal fuzzy finder.",
+    cmd = "Telescope",
     dependencies = {
       {
         "nvim-telescope/telescope-fzf-native.nvim",

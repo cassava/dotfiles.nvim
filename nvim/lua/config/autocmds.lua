@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
 })
 
 -- Set redact options when editing passwords
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
+vim.api.nvim_create_autocmd({ "BufReadPre" }, {
     pattern = {
         "/dev/shm/pass.?*/?*.txt",
         "/tmp/pass.?*/?*.txt",
