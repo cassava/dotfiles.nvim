@@ -31,8 +31,9 @@ return {
       servers = {},
       setup = {},
     },
-
     config = function(_, opts)
+      require("lspconfig.ui.windows").default_options.border = "rounded"
+
       -- Enable completion triggered by <c-x><c-o>
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
@@ -116,6 +117,9 @@ return {
     about = "Manage external editor tooling such as for LSP and DAP.",
     cmd = "Mason",
     opts = {
+      ui = {
+        border = "rounded"
+      },
       ensure_installed = {
         -- Put sources that aren't language specific here.
       }
