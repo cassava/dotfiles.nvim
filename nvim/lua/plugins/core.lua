@@ -69,16 +69,6 @@ return {
           require("telescope").load_extension("undo")
         end
       },
-      {
-        "theprimeagen/git-worktree.nvim",
-        keys = {
-          { "<leader>gw", "<cmd>Telescope git_worktree<cr>", desc = "Search worktrees" },
-          { "<leader>gW", function() require("telescope").extensions.git_worktree.create_git_worktree() end, desc = "Create worktree" },
-        },
-        config = function()
-          require("telescope").load_extension("git_worktree")
-        end
-      }
     }
   },
 

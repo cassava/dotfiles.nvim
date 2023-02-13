@@ -24,6 +24,18 @@ return {
       { "<leader>gs", "<cmd>Telescope git_status<cr>", desc = "Search status" },
       { "<leader>gt", "<cmd>Telescope git_stash<cr>", desc = "Search stash" },
       { "<leader>gw", "<cmd>Telescope git_branches<cr>", desc = "Search branches" },
+    },
+    dependencies = {
+      {
+        "theprimeagen/git-worktree.nvim",
+        keys = {
+          { "<leader>gw", "<cmd>Telescope git_worktree<cr>", desc = "Search worktrees" },
+          { "<leader>gW", function() require("telescope").extensions.git_worktree.create_git_worktree() end, desc = "Create worktree" },
+        },
+        config = function()
+          require("telescope").load_extension("git_worktree")
+        end
+      }
     }
   },
 
