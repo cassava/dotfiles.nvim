@@ -47,7 +47,7 @@ return {
             ["gi"] = { vim.lsp.buf.implementation, "Goto implementation [lsp]" },
             ["gr"] = { vim.lsp.buf.references, "Show references [lsp]" },
             ["K"] = { vim.lsp.buf.hover, "Hover entity [lsp]" },
-            ["<C-k>"] = { vim.lsp.buf.signature_help, "Show signature help [lsp]" },
+            ["<c-e>"] = { vim.lsp.buf.signature_help, "Show signature help [lsp]" },
             ["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic [lsp]" },
             ["]d"] = { vim.diagnostic.goto_next, "Next diagnostic [lsp]" },
             [",e"] = { vim.diagnostic.open_float, "Open diagnostics [lsp]" },
@@ -164,38 +164,35 @@ return {
     event = "InsertEnter",
     config = function()
       local cmp = require("cmp")
-      local lspkind = require("lspkind")
-      local luasnip = require("luasnip")
-
       cmp.setup {
         mapping = cmp.mapping.preset.insert({
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
-          ['<C-n>'] = cmp.mapping.select_next_item(),
-          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.close(),
+          ['<c-p>'] = cmp.mapping.select_prev_item(),
+          ['<c-n>'] = cmp.mapping.select_next_item(),
+          ['<c-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<c-f>'] = cmp.mapping.scroll_docs(4),
+          ['<c-space>'] = cmp.mapping.complete(),
+          ['<c-e>'] = cmp.mapping.abort(),
           ['<c-y>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
           },
         }),
         formatting = {
-          format = lspkind.cmp_format({
+          format = require("lspkind").cmp_format({
             mode = "symbol_text",
             menu = ({
               buffer = "[buffer]",
-              nvim_lsp = "[lsp]",
-              luasnip = "[snip]",
               calc = "[calc]",
-              path = "[path]",
               cmdline = "[cmdline]",
+              luasnip = "[snip]",
+              nvim_lsp = "[lsp]",
+              path = "[path]",
             })
           }),
         },
         snippet = {
           expand = function(args)
-            luasnip.lsp_expand(args.body)
+            require("luasnip").lsp_expand(args.body)
           end,
         },
         sources = {
@@ -216,11 +213,24 @@ return {
           end
           local context = require("cmp.config.context")
           return not(context.in_treesitter_capture("comment") == true or context.in_syntax_group("Comment"))
-        end
+        end,
+        experimental = {
+          ghost_text = {
+            hl_group = "LspCodeLens",
+          },
+        },
       }
 
+      cmp.setup.filetype("gitcommit", {
+        sources = cmp.config.sources({
+          { name = "cmp_git" },
+        }, {
+            { name = "buffer" },
+        })
+      })
+
       -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-      cmp.setup.cmdline('/', {
+      cmp.setup.cmdline({"/", "?"}, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
           { name = "buffer" }
@@ -256,44 +266,67 @@ return {
   { "L3MON4D3/LuaSnip",
     about = "Powerful snippet engine.",
     event = "InsertEnter",
-    config = function()
-      local ls = require "luasnip"
-      ls.config.set_config {
-          history = true,
-          updateevents = "TextChanged,TextChangedI",
-      }
-
-      -- <c-k> is my expansion key
-      -- this will expand the current item or jump to the next item within the snippet.
-      vim.keymap.set({"i", "s"}, "<c-k>", function()
+    opts = {
+      history = true,
+      delete_check_events = "TextChanged",
+    },
+    config = function(_, opts)
+      require("luasnip").setup(opts)
+      require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/snippets"})
+      vim.api.nvim_create_user_command("LuaSnipEdit", function() require("luasnip.loaders.from_lua").edit_snippet_files() end)
+    end,
+    keys = {
+      {
+        "<c-k>",
+        function()
+          local ls = require("luasnip")
           if ls.expand_or_jumpable() then
               ls.expand_or_jump()
           end
-      end)
-
-      -- <c-j> is my jump backwards key
-      -- this will always move to the previous item within the snippet.
-      vim.keymap.set({"i", "s"}, "<c-j>", function()
+        end,
+        mode = {"i", "s"},
+        desc = "Expand snippet / Next snippet position"
+      },
+      {
+        "<c-j>",
+        function()
+          local ls = require("luasnip")
           if ls.jumpable(-1) then
               ls.jump(-1)
           end
-      end)
-
-      vim.keymap.set("i", "<c-l>", function()
+        end,
+        mode = {"i", "s"},
+        desc = "Previous snippet position"
+      },
+      {
+        "<c-l>",
+        function()
+          local ls = require("luasnip")
           if ls.choice_active() then
               ls.change_choice(1)
+              return "<nop>"
+          else
+            return "<c-l>"
           end
-      end)
-
-      vim.keymap.set({"n"}, "<leader><leader>s", "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<cr>")
-
-      require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/snippets"})
-      vim.cmd [[
-        command! LuaSnipEdit :lua require("luasnip.loaders.from_lua").edit_snippet_files()
-      ]]
-    end,
+        end,
+        expr = true,
+        mode = "i",
+        desc = "Change snippet choice",
+      },
+      {
+        "<leader>vn",
+        "<cmd>source ~/.config/nvim/after/plugin/luasnip.lua<cr>",
+        desc = "Reload snippets"
+      },
+    },
     dependencies = {
-      { "rafamadriz/friendly-snippets", about = "Snippet collection." },
+      {
+        "rafamadriz/friendly-snippets",
+        about = "Snippet collection.",
+        config = function()
+          require("luasnip.loaders.from_vscode").lazy_load()
+        end,
+      },
     },
   },
 
