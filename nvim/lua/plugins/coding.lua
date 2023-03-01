@@ -273,7 +273,7 @@ return {
     config = function(_, opts)
       require("luasnip").setup(opts)
       require("luasnip.loaders.from_lua").load({paths = "~/.config/nvim/snippets"})
-      vim.api.nvim_create_user_command("LuaSnipEdit", function() require("luasnip.loaders.from_lua").edit_snippet_files() end)
+      vim.api.nvim_create_user_command("LuaSnipEdit", function() require("luasnip.loaders.from_lua").edit_snippet_files() end, {})
     end,
     keys = {
       {

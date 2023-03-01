@@ -305,29 +305,13 @@ return {
     }
   },
 
-  { "justinmk/vim-dirvish",
-    -- ABOUT: Minimalist directory viewer.
-    --
-    -- Dirvish basically dumps a list of paths into a Vim buffer and provides
-    -- some sugar to work with those paths.
-    --
-    -- It's totally fine to slice, dice, and smash any Dirvish buffer: it
-    -- will never modify the filesystem. If you edit the buffer, Dirvish
-    -- automatically disables conceal so you can see the full text.
-    --
-    -- MAPPINGS:
-    --   -    | Open the [count]th parent directory
-    --   <cr> | Open selected file(s)
-    --   o    | Open file in new window
-    --   K    | Show file info
-    --   p    | Preview file at cursor
-    --   c-n  | Preview next file
-    --   c-p  | Preview previous file
-    -- HELP: dirvish.txt
-    --
-    init = function()
-      vim.g.dirvish_mode = ":sort i@^.*[/]@"
-    end,
+  { "stevearc/oil.nvim",
+    about = "A file explorer that lets you edit your filesystem like a normal Neovim buffer",
+    lazy = false,
+    keys = {
+      { "-", function() require("oil").open(nil) end, desc = "Open parent directory" },
+    },
+    config = true,
   },
 
   { "mg979/vim-visual-multi",
