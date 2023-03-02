@@ -197,6 +197,11 @@ return {
     config = function(_, opts) require("mini.align").setup(opts) end,
   },
 
+  { "echasnovski/mini.bracketed",
+    event = "VeryLazy",
+    config = function(_, opts) require("mini.bracketed").setup(opts) end,
+  },
+
   { "tpope/vim-unimpaired",
     -- ABOUT: Pairs of handy bracket mappings
     event = "VeryLazy",

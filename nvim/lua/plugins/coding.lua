@@ -48,8 +48,6 @@ return {
             ["gr"] = { vim.lsp.buf.references, "Show references [lsp]" },
             ["K"] = { vim.lsp.buf.hover, "Hover entity [lsp]" },
             ["<c-e>"] = { vim.lsp.buf.signature_help, "Show signature help [lsp]" },
-            ["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic [lsp]" },
-            ["]d"] = { vim.diagnostic.goto_next, "Next diagnostic [lsp]" },
             [",e"] = { vim.diagnostic.open_float, "Open diagnostics [lsp]" },
             [",q"] = { vim.diagnostic.setloclist, "Send diagnostics to QuickList [lsp]" },
             [",wa"] = { vim.lsp.buf.add_workspace_folder, "Add workspace folder [lsp]" },
