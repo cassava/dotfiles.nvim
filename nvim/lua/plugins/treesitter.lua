@@ -9,7 +9,7 @@ return {
       ignore_install = { "comment" },
       highlight = {
         enable = true,
-        disable = {},
+        disable = { "cmake" },
         additional_vim_regex_highlighting = false,
       },
       indent = {

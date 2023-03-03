@@ -42,4 +42,12 @@ return {
       vim.g.gutentags_cache_dir = "~/.local/state/tags"
     end,
   },
+
+  { "williamboman/mason.nvim",
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, {
+        "clangd",
+      })
+    end
+  },
 }
