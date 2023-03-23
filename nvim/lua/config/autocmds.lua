@@ -32,9 +32,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     callback = function()
         if vim.o.filetype == 'help' then
           vim.cmd.wincmd("L")
-          if vim.api.nvim_win_get_width(0) > 80 then
-            vim.api.nvim_win_set_width(0, 80)
-          end
+          vim.api.nvim_win_set_width(0, 80)
         end
     end
 })
