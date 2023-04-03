@@ -3,6 +3,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     -- Continue Doxygen C++ comments automatically
     vim.opt_local.comments = "sO:* -,mO:*  ,exO:*/,s1:/*,mb:*,ex:*/,bO:///,O://"
+    vim.opt_local.commentstring = "// %s"
     vim.g.load_doxygen_syntax = 1
   end
 })
