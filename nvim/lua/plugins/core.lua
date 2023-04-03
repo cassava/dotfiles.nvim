@@ -55,6 +55,13 @@ return {
   { "nvim-telescope/telescope.nvim",
     about = "Universal fuzzy finder.",
     cmd = "Telescope",
+    opts = {
+      defaults = {
+        preview = {
+          filesize_limit = 1
+        }
+      }
+    },
     dependencies = {
       {
         "nvim-telescope/telescope-fzf-native.nvim",

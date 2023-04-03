@@ -1,3 +1,21 @@
+-- Disable treesitter modules for large files.
+local max_filesize = 256 * 1024
+local is_unsupported = function(_, bufnr)
+  return vim.fn.getfsize(vim.fn.getbufinfo(bufnr)[1]["name"]) > max_filesize
+end
+
+vim.api.nvim_create_autocmd({ "BufReadPre" }, {
+  pattern = "*",
+  callback = function(info)
+    if is_unsupported("", info.buf) then
+      vim.notify("Large file detected, disabling treesitter.")
+      vim.wo.foldmethod = "manual"
+      vim.cmd [[ syntax off ]]
+      require("gitsigns").detach(info.buf)
+    end
+  end
+})
+
 return {
   { "nvim-treesitter/nvim-treesitter",
     desc = "Provide fast and accurate language parsing.",
@@ -9,7 +27,9 @@ return {
       ignore_install = { "comment" },
       highlight = {
         enable = true,
-        disable = { "cmake" },
+        disable = function(lang, bufnr)
+          return is_unsupported(lang, bufnr) or lang == "cmake"
+        end,
         additional_vim_regex_highlighting = false,
       },
       indent = {
@@ -37,6 +57,7 @@ return {
     config = function()
       require("nvim-treesitter.configs").setup {
         textobjects = {
+          disable = is_unsupported,
           swap = {
             enable = true,
             swap_next = {
@@ -56,6 +77,7 @@ return {
     config = function()
       require("nvim-treesitter.configs").setup {
         refactor = {
+          disable = is_unsupported,
           highlight_definitions = {
             enable = true,
             clear_on_cursor_move = true, -- Set to false if you have an `updatetime` of ~100.
@@ -73,6 +95,7 @@ return {
       require("nvim-treesitter.configs").setup {
         rainbow = {
           enable = true,
+          disable = is_unsupported,
           -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
           extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
           max_file_lines = nil, -- Do not enable for files with more than n lines, int
@@ -90,7 +113,7 @@ return {
       require("nvim-treesitter.configs").setup {
         pairs = {
           enable = true,
-          disable = {},
+          disable = is_unsupported,
           highlight_pair_events = {"CursorMoved"}, -- when to highlight the pairs, {} to deactivate highlighting
           highlight_self = true, -- whether to highlight also the part of the pair under cursor (or only the partner)
           goto_right_end = false, -- whether to go to the xend of the right partner or the beginning
