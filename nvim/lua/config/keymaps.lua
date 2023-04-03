@@ -20,7 +20,6 @@ key.register({
 key.register({
   -- Add to help
   ["<c-w>"] = {
-    ["_"] = { "<c-w>_", "Max out height" },
     ["*"] = { "<c-w>_<c-w>|", "Max out width & height" },
   }
 })
