@@ -130,6 +130,20 @@ return {
     -- },
   },
 
+  { "sindrets/winshift.nvim",
+    about = "Allow full window moving capabilities.",
+    event = "VeryLazy",
+    confg = true,
+    keys = {
+      { "<c-w>m", "<cmd>WinShift<cr>", desc = "Shift window" },
+      { "<c-w>X", "<cmd>WinShift swap<cr>", desc = "Swap window" },
+      { "<a-H>", "<cmd>WinShift left<cr>", desc = "Move window left" },
+      { "<a-J>", "<cmd>WinShift down<cr>", desc = "Move window down" },
+      { "<a-K>", "<cmd>WinShift up<cr>", desc = "Move window up" },
+      { "<a-L>", "<cmd>WinShift right<cr>", desc = "Move window right" },
+    }
+  },
+
   { "echasnovski/mini.indentscope",
     version = "*",
     lazy = false,

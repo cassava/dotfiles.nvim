@@ -31,12 +31,6 @@ key.register({
   ["<a-k>"] = { "<c-\\><c-n><c-w>k", "Focus right window" },
   ["<a-l>"] = { "<c-\\><c-n><c-w>l", "Focus above window" },
 
-  -- Move windows:
-  ["<a-H>"] = { "<c-\\><c-n><c-w>H", "Focus left window" },
-  ["<a-J>"] = { "<c-\\><c-n><c-w>J", "Focus below window" },
-  ["<a-K>"] = { "<c-\\><c-n><c-w>K", "Focus right window" },
-  ["<a-L>"] = { "<c-\\><c-n><c-w>L", "Focus above window" },
-
   ["<a-T>"] = { "<c-\\><c-n><c-w>T", "Make window a tab" },
   ["<a-o>"] = { "<c-\\><c-n>gt", "Focus next tab"},
 
