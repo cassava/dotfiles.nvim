@@ -131,8 +131,22 @@ return {
   },
 
   { "echasnovski/mini.indentscope",
-    version = false,
-    event = "VeryLazy",
+    version = "*",
+    lazy = false,
+    keys = {
+      {
+        "<leader>oi",
+        function()
+          vim.b.miniindentscope_disable = not vim.b.miniindentscope_disable
+          if vim.b.miniindentscope_disable then
+            require("mini.indentscope").undraw()
+          else
+            require("mini.indentscope").draw()
+          end
+        end,
+        desc = "Toggle indentscope"
+      }
+    },
     opts = function()
       return {
         draw = {
@@ -141,7 +155,16 @@ return {
         },
       }
     end,
-    config = function(_, opts) require("mini.indentscope").setup(opts) end,
+    config = function(_, opts)
+      vim.api.nvim_create_autocmd({"BufEnter"}, {
+        callback = function()
+          if vim.b.miniindentscope_disable == nil then
+            vim.b.miniindentscope_disable = true
+          end
+        end
+      })
+      require("mini.indentscope").setup(opts)
+    end,
   },
 
   { "anuvyklack/pretty-fold.nvim",
