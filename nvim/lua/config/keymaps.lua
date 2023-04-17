@@ -123,14 +123,14 @@ key.register({
     n = { function() vim.opt.number = not vim.o.number end, "Toggle number" },
     r = { function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relativenumber" },
     t = { function() vim.opt.expandtab = not vim.o.expandtab end, "Toggle expandtab" },
-    ["<char-62>"] = { -- character '>'
+    [">"] = { -- character '>'
       function()
         vim.opt.tabstop = vim.o.tabstop + 2
         vim.opt.shiftwidth = vim.o.tabstop
       end,
       "Increase tab width by 2"
     },
-    ["<char-60>"] = { -- character '<'
+    ["<"] = { -- character '<'
       function()
         if vim.o.tabstop >= 2 then
           vim.opt.tabstop = vim.o.tabstop - 2

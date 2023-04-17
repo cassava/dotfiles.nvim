@@ -1,6 +1,7 @@
 return {
   { "folke/which-key.nvim",
     about = "Provides popup reference for your keybindings.",
+    version = "*",
     event = "VeryLazy",
     opts = {
       plugins = {
