@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd({ "BufReadPre" }, {
     pattern = {
         "/dev/shm/pass.?*/?*.txt",
         "/tmp/pass.?*/?*.txt",
-        vim.env.TMPDIR or "" .. "/pass.?*/?*.txt",
+        (vim.env.TMPDIR or "") .. "/pass.?*/?*.txt",
     },
     callback = function()
         vim.opt.backup = false
@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd({ "BufReadPre" }, {
         vim.opt.viminfo = ""
         vim.opt.undofile = false
 
-        vim.api.nvim_echo("Password redaction options set.")
+        vim.notify("Password redaction options set.")
         vim.g.password_redaction = 1
     end
 })
