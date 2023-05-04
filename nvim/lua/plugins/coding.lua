@@ -161,7 +161,7 @@ return {
       }
     },
     dependencies = {
-      { "jay-bubu/mason-null-ls.nvim",
+      { "jay-babu/mason-null-ls.nvim",
         about = "Install tools for null-ls via Mason.",
         config = true,
       },
@@ -306,9 +306,12 @@ return {
       { "<leader>df", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.frames) end, desc = "Show frames" },
       { "<leader>ds", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.scopes) end, desc = "Show scopes" },
     },
+    dependencies = {
+      "theHamsta/nvim-dap-virtual-text"
+    }
   },
 
-  { "jay-bubu/mason-nvim-dap.nvim",
+  { "jay-babu/mason-nvim-dap.nvim",
     about = "Install tools for nvim-dap via Mason.",
     event = "VeryLazy",
     opts = {
@@ -328,6 +331,12 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
       dapui.setup(opts)
     end
+  },
+
+  { "theHamsta/nvim-dap-virtual-text",
+    opts = {
+      commented = true,
+    }
   },
 
   { "L3MON4D3/LuaSnip",

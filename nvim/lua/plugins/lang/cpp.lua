@@ -53,7 +53,7 @@ return {
     end,
   },
 
-  { "jay-bubu/mason-nvim-dap.nvim",
+  { "jay-babu/mason-nvim-dap.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
         "codelldb"
