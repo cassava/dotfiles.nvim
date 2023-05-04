@@ -30,6 +30,8 @@ return {
         ["s"] = { name = "+surround" },
         ["]"] = { name = "+next" },
         ["["] = { name = "+prev" },
+        ["<leader>d"] = { name = "+dap" },
+        ["<leader>db"] = { name = "+breakpoints" },
         -- ["<leader><tab>"] = { name = "+tabs" },
         -- ["<leader>b"] = { name = "+buffer" },
         -- ["<leader>c"] = { name = "+code" },
@@ -55,6 +57,7 @@ return {
 
   { "nvim-telescope/telescope.nvim",
     about = "Universal fuzzy finder.",
+    version = "*",
     cmd = "Telescope",
     opts = {
       defaults = {

@@ -1,10 +1,24 @@
 return {
+  { "folke/neodev.nvim",
+    opts = {
+      experimental = {
+        pathStrict = true
+      },
+      library = {
+        plugins = {
+          "nvim-dap-ui"
+        },
+        types = true
+      },
+    }
+  },
+
   { "neovim/nvim-lspconfig",
     about = "Built-in LSP configuration mechanism.",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       { "folke/neoconf.nvim", cmd = "Neoconf", config = true },
-      { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
+      { "folke/neodev.nvim" },
       { "mason.nvim" },
       { "williamboman/mason-lspconfig.nvim" },
       { "hrsh7th/cmp-nvim-lsp" },
@@ -147,7 +161,10 @@ return {
       }
     },
     dependencies = {
-      { "jayp0521/mason-null-ls.nvim", about = "Install tools for null-ls via Mason.", config = true },
+      { "jay-bubu/mason-null-ls.nvim",
+        about = "Install tools for null-ls via Mason.",
+        config = true,
+      },
     }
   },
 
@@ -258,7 +275,59 @@ return {
 
   { "mfussenegger/nvim-dap",
     about = "Client for the Debug Adapter Protocol.",
-    enabled = false,
+    keys = {
+      -- Initialize & Terminate
+      { "<Leader>dL", function() require("dap").run_last() end, desc = "Run last" },
+      { "<leader>dR", function() require("dap").restart() end, desc = "Restart" },
+      { "<leader>dX", function() require("dap").terminate() end, desc = "Terminate" },
+      { "<leader>dP", function() require("dap").pause() end, desc = "Pause" },
+
+      -- Control Flow
+      { "<leader>dc", function() require("dap").continue() end, desc = "Continue (F5)" },
+      { "<F5>", function() require("dap").continue() end, desc = "Continue (F5)" },
+      { "<leader>ds", function() require("dap").step_over() end, desc = "Step over (F10)" },
+      { "<F10>", function() require("dap").step_over() end, desc = "Step over (F10)" },
+      { "<leader>di", function() require("dap").step_into() end, desc = "Step into (F11)" },
+      { "<F11>", function() require("dap").step_into() end, desc = "Step into (F11)" },
+      { "<leader>do", function() require("dap").step_out() end, desc = "Step out (F12)" },
+      { "<F12>", function() require("dap").step_out() end, desc = "Step out (F12)" },
+
+      -- Breakpoints
+      { "<leader>dbb", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
+      { "<leader>dbs", function() require("dap").set_breakpoint() end, desc = "Set breakpoint" },
+      { "<leader>dbl", function() require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end, desc = "Set logging breakpoint" },
+      { "<leader>dbe", function() require("dap").set_exception_breakpoints() end, desc = "Set exception breakpoint" },
+      { "<leader>dbc", function() require("dap").clear_breakpoints() end, desc = "Clear breakpoints" },
+
+      -- Info
+      { "<leader>dr", function() require("dap").repl.open() end, desc = "Open REPL" },
+      { "<leader>dh", function() require("dap.ui.widgets").hover() end, mode = {"v", "n"}, desc = "Show hover" },
+      { "<leader>dp", function() require("dap.ui.widgets").preview() end, mode = {"v", "n"}, desc = "Show preview" },
+      { "<leader>df", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.frames) end, desc = "Show frames" },
+      { "<leader>ds", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.scopes) end, desc = "Show scopes" },
+    },
+  },
+
+  { "jay-bubu/mason-nvim-dap.nvim",
+    about = "Install tools for nvim-dap via Mason.",
+    event = "VeryLazy",
+    opts = {
+      ensure_installed = {},
+      handlers = {}
+    },
+  },
+
+  { "rcarriga/nvim-dap-ui",
+    keys = {
+      { "<leader>dd", function() require("dapui").toggle() end, desc = "Open UI" },
+    },
+    config = function(_, opts)
+      local dap, dapui = require("dap"), require("dapui")
+      dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+      dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+      dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
+      dapui.setup(opts)
+    end
   },
 
   { "L3MON4D3/LuaSnip",

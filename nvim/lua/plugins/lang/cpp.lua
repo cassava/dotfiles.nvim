@@ -48,6 +48,15 @@ return {
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
         "clangd",
+        "codelldb",
+      })
+    end,
+  },
+
+  { "jay-bubu/mason-nvim-dap.nvim",
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, {
+        "codelldb"
       })
     end
   },
