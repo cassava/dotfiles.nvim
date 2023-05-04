@@ -3,6 +3,8 @@ local M = {}
 vim.g.mapleader = " "
 vim.g.localmapleader = "\\"
 
+vim.opt.exrc = true
+
 -- vim.opt.undofile = true     -- support persistent undo via undodir=~/.local/share/nvim/undo
 vim.opt.startofline = false -- when opening a file, restore to last column of line, not the beginning of the line
 vim.opt.gdefault = true     -- search/replace globally in a line by default
