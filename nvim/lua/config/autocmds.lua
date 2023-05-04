@@ -6,6 +6,26 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
     callback = function() vim.wo.cursorline = true end,
 })
 
+-- Load exrc files from parent directories
+--
+-- Make sure that each of these scripts ensures that it is resistant to
+-- being run multiple times.
+vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
+  pattern = "*",
+  callback = function()
+    local dir = vim.v.event.cwd or vim.fn.getcwd()
+    for _, f in ipairs(vim.fs.find(
+      { ".nvim.lua" },
+      { upward = true, path = dir, limit = math.huge }
+    )) do
+      local src = vim.secure.read(f)
+      if src ~= nil then
+        dofile(f)
+      end
+    end
+  end
+})
+
 -- Set redact options when editing passwords
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
     pattern = {
