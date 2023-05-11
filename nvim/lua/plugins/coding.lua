@@ -301,10 +301,10 @@ return {
 
       -- Info
       { "<leader>dr", function() require("dap").repl.open() end, desc = "Open REPL" },
-      { "<leader>dh", function() require("dap.ui.widgets").hover() end, mode = {"v", "n"}, desc = "Show hover" },
-      { "<leader>dp", function() require("dap.ui.widgets").preview() end, mode = {"v", "n"}, desc = "Show preview" },
-      { "<leader>df", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.frames) end, desc = "Show frames" },
-      { "<leader>ds", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.scopes) end, desc = "Show scopes" },
+      { "<leader>dwh", function() require("dap.ui.widgets").hover() end, mode = {"v", "n"}, desc = "Show hover" },
+      { "<leader>dwp", function() require("dap.ui.widgets").preview() end, mode = {"v", "n"}, desc = "Show preview" },
+      { "<leader>dwf", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.frames) end, desc = "Show frames" },
+      { "<leader>dws", function() local widgets = require("dap.ui.widgets"); widgets.centered_float(widgets.scopes) end, desc = "Show scopes" },
     },
     dependencies = {
       "theHamsta/nvim-dap-virtual-text"
