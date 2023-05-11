@@ -66,6 +66,14 @@ return {
         }
       }
     },
+    keys = {
+      -- Builtin:
+      {"<leader>b", "<cmd>Telescope buffers<cr>", desc = "Search buffers" },
+      {"<leader>h", "<cmd>Telescope help_tags<cr>", desc = "Search help tags"},
+
+      -- telescope-undo.nvim
+      {"<leader>u", "<cmd>Telescope undo<cr>", desc = "Search undo history" },
+    },
     dependencies = {
       {
         "nvim-telescope/telescope-fzf-native.nvim",
@@ -83,6 +91,16 @@ return {
       { "nvim-telescope/telescope-dap.nvim",
         config = function()
           require("telescope").load_extension("dap")
+        end
+      },
+      { "nvim-telescope/telescope-project.nvim",
+        config = function()
+          require("telescope").load_extension("project")
+        end
+      },
+      { "nvim-telescope/telescope-live-grep-args.nvim",
+        config = function()
+          require("telescope").load_extension("live_grep_args")
         end
       }
     }

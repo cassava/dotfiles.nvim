@@ -145,11 +145,8 @@ key.register({
 -- Miscellaneous -------------------------------------------------------------
 key.register({
   ["<leader>"] = {
-    b = { "<cmd>Telescope buffers<cr>", "Search buffers" },
     c = { "<cmd>cclose<cr><cmd>lclose<cr>", "Close quicklist" },
     f = { "gqip", "Format paragraph" },
-    h = { "<cmd>Telescope help_tags<cr>", "Search Vim help tags" },
-    u = { "<cmd>Telescope undo<cr>", "Undo history" },
   },
   [",z"] = { "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", "Cd to file directory" },
 }, { silent = false })
