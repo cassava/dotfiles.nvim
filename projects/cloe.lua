@@ -56,7 +56,7 @@ M.setup = function()
             program = M.find_cloe_engine,
             cwd = function() return M.project_dir() .. "/engine" end,
             stopOnEntry = false,
-            args = vim.fn.input("cloe-engine ", "-l debug run tests/"),
+            args = function() return vim.fn.input("cloe-engine ", "-l debug run tests/") end,
             runInTerminal = true,
         },
 
