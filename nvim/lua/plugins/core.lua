@@ -67,12 +67,8 @@ return {
       }
     },
     keys = {
-      -- Builtin:
       {"<leader>b", "<cmd>Telescope buffers<cr>", desc = "Search buffers" },
       {"<leader>h", "<cmd>Telescope help_tags<cr>", desc = "Search help tags"},
-
-      -- telescope-undo.nvim
-      {"<leader>u", "<cmd>Telescope undo<cr>", desc = "Search undo history" },
     },
     dependencies = {
       {
@@ -83,7 +79,9 @@ return {
         end
       },
       { "debugloop/telescope-undo.nvim",
-        keys = { "<leader>u" },
+        keys = {
+          {"<leader>u", "<cmd>Telescope undo<cr>", desc = "Search undo history" },
+        },
         config = function()
           require("telescope").load_extension("undo")
         end
