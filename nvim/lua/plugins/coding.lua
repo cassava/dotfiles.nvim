@@ -423,4 +423,17 @@ return {
       require("mini.comment").setup(opts)
     end,
   },
+
+  { "stevearc/aerial.nvim",
+    about = "Provide a symbol outline.",
+    cmd = {
+      "AerialOpen",
+      "AerialOpenAll",
+      "AerialToggle",
+    },
+    keys = {
+      { ",o", "<cmd>AerialToggle!<cr>", desc = "Toggle outline" },
+    },
+    config = true,
+  }
 }
