@@ -32,7 +32,7 @@ end
 -- @brief Return the current project directory, which is the toplevel of a Git
 -- project if we are in a git project, or the CWD if not in a git project.
 -- @param cwd Optional directory to start from.
-util.project_dir = function(cwd)
+function util.project_dir(cwd)
   local stdout, ret, _ = require("telescope.utils").get_os_command_output({"git", "rev-parse", "--show-toplevel"}, cwd)
   if ret == 0 then
     print(stdout[1])
@@ -43,7 +43,7 @@ util.project_dir = function(cwd)
   end
 end
 
-util.get_visual_selection = function()
+function util.get_visual_selection()
   local mode = vim.fn.mode()
   if mode ~= "v" or mode ~= "V" or mode ~= "CTRL-V" then
     return nil
@@ -66,6 +66,44 @@ util.get_visual_selection = function()
   lines[n] = string.sub(lines[n], 1, end_col)
   lines[1] = string.sub(lines[1], start_col)
   return table.concat(lines, "\n")
+end
+
+function util.make()
+  local lines = {""}
+  local winnr = vim.fn.win_getid()
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
+
+  local makeprg = vim.bo[bufnr].makeprg or vim.o.makeprg
+  if not makeprg then
+    return
+  end
+
+  local cmd = vim.fn.expandcmd(makeprg)
+  vim.notify("Running: " .. cmd)
+  local function on_event(job_id, data, event)
+    if event == "stdout" or event == "stderr" then
+      if data then
+        vim.list_extend(lines, data)
+      end
+    end
+
+    if event == "exit" then
+      vim.fn.setqflist({}, "r", {
+        title = cmd,
+        lines = lines,
+        -- efm = vim.bo[bufnr].errorformat or vim.o.errorformat
+      })
+      vim.api.nvim_command("doautocmd QuickFixCmdPost")
+    end
+  end
+
+  local job_id = vim.fn.jobstart(cmd, {
+    on_stderr = on_event,
+    on_stdout = on_event,
+    on_exit = on_event,
+    stdout_buffered = true,
+    stderr_buffered = true,
+  })
 end
 
 return util

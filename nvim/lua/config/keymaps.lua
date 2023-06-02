@@ -147,6 +147,7 @@ key.register({
   ["<leader>"] = {
     c = { "<cmd>cclose<cr><cmd>lclose<cr>", "Close quicklist" },
     f = { "gqip", "Format paragraph" },
+    m = { function() require("util").make() end, "Make" },
   },
   [",z"] = { "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", "Cd to file directory" },
 }, { silent = false })
