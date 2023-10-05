@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd({ "BufReadPre" }, {
 
 return {
   { "nvim-treesitter/nvim-treesitter",
-    desc = "Provide fast and accurate language parsing.",
+    about = "Provide fast and accurate language parsing.",
     build = ":TSUpdate",
     event = { "BufReadPre", "BufNewFile" },
     opts = {

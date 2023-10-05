@@ -133,7 +133,7 @@ return {
   { "sindrets/winshift.nvim",
     about = "Allow full window moving capabilities.",
     event = "VeryLazy",
-    confg = true,
+    config = true,
     keys = {
       { "<c-w>m", "<cmd>WinShift<cr>", desc = "Shift window" },
       { "<c-w>X", "<cmd>WinShift swap<cr>", desc = "Swap window" },

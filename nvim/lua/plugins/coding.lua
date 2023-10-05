@@ -127,6 +127,7 @@ return {
 
   { "williamboman/mason.nvim",
     about = "Manage external editor tooling such as for LSP and DAP.",
+    version = "*",
     cmd = "Mason",
     opts = {
       ui = {
@@ -277,7 +278,7 @@ return {
     about = "Client for the Debug Adapter Protocol.",
     keys = {
       -- Initialize & Terminate
-      { "<Leader>dL", function() require("dap").run_last() end, desc = "Run last" },
+      { "<leader>dL", function() require("dap").run_last() end, desc = "Run last" },
       { "<leader>dR", function() require("dap").restart() end, desc = "Restart" },
       { "<leader>dX", function() require("dap").terminate() end, desc = "Terminate" },
       { "<leader>dP", function() require("dap").pause() end, desc = "Pause" },
