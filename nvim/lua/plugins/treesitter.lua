@@ -133,18 +133,6 @@ return {
     end,
   },
 
-  { "JoosepAlviste/nvim-ts-context-commentstring",
-    -- ABOUT: Context based commenting
-    event = "VeryLazy",
-    config = function()
-      require("nvim-treesitter.configs").setup {
-        context_commentstring = {
-          enable = true
-        },
-      }
-    end,
-  },
-
   { "nvim-treesitter/playground",
     -- ABOUT: Provide a playground, accessible via :TSPlaygroundToggle
     cmd = "TSPlaygroundToggle",

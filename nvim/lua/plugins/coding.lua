@@ -50,10 +50,14 @@ return {
 
       -- Enable completion triggered by <c-x><c-o>
       vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
         callback = function(args)
-          local buffer = args.buf
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client and client.server_capabilities.inlayHintProvider then
+              vim.lsp.inlay_hint.enable(args.buf, true)
+          end
 
-          vim.api.nvim_buf_set_option(buffer, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+          vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
           require("util").keymapper().register({
             -- Replace Vim standard keybindings to use LSP:
             ["gD"] = { vim.lsp.buf.declaration, "Goto declaration [lsp]" },
@@ -409,17 +413,7 @@ return {
 
   { "echasnovski/mini.comment",
     about = "Provide gc keybindings for commenting code.",
-    dependencies = {
-      { "JoosepAlviste/nvim-ts-context-commentstring", lazy = true },
-    },
     event = "VeryLazy",
-    opts = {
-      hooks = {
-        pre = function()
-          require("ts_context_commentstring.internal").update_commentstring({})
-        end,
-      },
-    },
     config = function(_, opts)
       require("mini.comment").setup(opts)
     end,
