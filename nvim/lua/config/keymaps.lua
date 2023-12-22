@@ -100,6 +100,14 @@ key.register({
 })
 
 -- Options [o] ---------------------------------------------------------------
+local function notify_option(str, value)
+  local state = "disabled"
+  if value then
+    state = "enabled"
+  end
+  vim.notify(str .. " " .. state .. ".")
+end
+
 key.register({
   ["<leader>o"] = {
     name = "editor",
@@ -118,6 +126,27 @@ key.register({
         end
       end,
       "Toggle colorcolumn"
+    },
+    i = {
+      function()
+        local enabled = true
+        if vim.opt.indentexpr:get() == "" then
+          vim.opt.indentexpr = "nvim_treesitter#indent()"
+        else
+          vim.opt.indentexpr = ""
+          enabled = false
+        end
+        notify_option("Indent", enabled)
+      end,
+      "Toggle indent"
+    },
+    h = {
+      function()
+        local enable = not vim.lsp.inlay_hint.is_enabled(0)
+        vim.lsp.inlay_hint.enable(0, enable)
+        notify_option("Inlay hinting", enable)
+      end,
+      "Toggle inlay hinting"
     },
     w = { function() vim.opt.wrap = not vim.o.wrap end, "Toggle wrap" },
     n = { function() vim.opt.number = not vim.o.number end, "Toggle number" },
