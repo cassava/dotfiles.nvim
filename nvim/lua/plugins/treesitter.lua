@@ -109,6 +109,7 @@ return {
   { "theHamsta/nvim-treesitter-pairs",
     -- ABOUT: Provide language-specific % pairs
     event = "VeryLazy",
+    enabled = false, -- ffs, why can't we have nice things? tanks performance
     config = function()
       require("nvim-treesitter.configs").setup {
         pairs = {
