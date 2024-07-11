@@ -54,7 +54,7 @@ return {
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client and client.server_capabilities.inlayHintProvider then
-              vim.lsp.inlay_hint.enable(args.buf, true)
+              vim.lsp.inlay_hint.enable(true, { bufnr = args.bufnr })
           end
 
           vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = args.buf })
