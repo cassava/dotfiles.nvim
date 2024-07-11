@@ -142,8 +142,8 @@ key.register({
     },
     h = {
       function()
-        local enable = not vim.lsp.inlay_hint.is_enabled(0)
-        vim.lsp.inlay_hint.enable(0, enable)
+        local enable = not vim.lsp.inlay_hint.is_enabled()
+        vim.lsp.inlay_hint.enable(enable)
         notify_option("Inlay hinting", enable)
       end,
       "Toggle inlay hinting"
