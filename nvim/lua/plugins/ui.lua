@@ -97,13 +97,11 @@ return {
     end,
   },
 
-  { "petertriho/nvim-scrollbar",
+  { "lewis6991/satellite.nvim",
     event = "VeryLazy",
-    config = true,
   },
 
-  {
-    "folke/noice.nvim",
+  { "folke/noice.nvim",
     event = "VeryLazy",
     enabled = false,
     opts = {
@@ -195,6 +193,6 @@ return {
   },
 
   { "nvim-tree/nvim-web-devicons",
-    lazy = true
+    lazy = true,
   },
 }
