@@ -148,6 +148,17 @@ key.register({
       end,
       "Toggle inlay hinting"
     },
+    l = {
+      function()
+        local clients = vim.lsp.get_clients()
+        if #clients > 0 then
+          vim.lsp.stop_client(clients)
+        else
+          vim.cmd "edit"
+        end
+      end,
+      "Disable LSP",
+    },
     w = { function() vim.opt.wrap = not vim.o.wrap end, "Toggle wrap" },
     n = { function() vim.opt.number = not vim.o.number end, "Toggle number" },
     r = { function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relativenumber" },
