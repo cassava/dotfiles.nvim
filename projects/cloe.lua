@@ -179,6 +179,11 @@ M.setup_alternate_file = function()
 end
 
 M.setup_compile_commands = function(path)
+    if M.find_dir_containing("compile_commands.json", path) then
+        -- Any compile_commands.json in a parent directory should be used,
+        -- because we use the super-build now.
+        return
+    end
     local package_dir = M.find_package_dir(path)
     if not package_dir then
         return
